@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,8 +21,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
-import com.solinor.paymenthighway.PaymentHighwayUtility;
-
 /**
  * PaymentHighway Form API Connections
  * 
@@ -35,21 +32,28 @@ public class FormAPIConnection {
 	private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
 	private final static String METHOD = "POST";
 	
-	Properties props = null;
+	String serviceUrl = null;
+	String account = null;
+	String merchant = null;
+	String signatureKeyId = null;
+	String signatureSecret = null;
 	
 	/**
 	 * Constructor
 	 */
-	public FormAPIConnection() {	
-		// read properties
-		try {
-			this.props = PaymentHighwayUtility.getPropertyValues();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public FormAPIConnection(String serviceUrl, 
+			String account, 
+			String merchant, 
+			String signatureKeyId, 
+			String signatureSecret) {	
+		
+		this.serviceUrl = serviceUrl;
+		this.account = account;
+		this.merchant = merchant;
+		this.signatureKeyId = signatureKeyId;
+		this.signatureSecret = signatureSecret;
 	}
 		
-	
 	/**
 	 * Form API call to add card
 	 * 
@@ -57,12 +61,12 @@ public class FormAPIConnection {
 	 * @return String responseBody
 	 * @throws IOException
 	 */
-	protected String addCardRequest(List<NameValuePair> nameValuePairs) throws IOException {
+	public String addCardRequest(List<NameValuePair> nameValuePairs) throws IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		final String formUri = "/form/view/add_card";
 		
         try {
-            HttpPost httpPost = new HttpPost(props.getProperty("service_url") + formUri);
+            HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
             
             // sort alphabetically per key
             this.sortParameters(nameValuePairs);
@@ -78,7 +82,7 @@ public class FormAPIConnection {
             
             // Create a custom response handler
             ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
+            	// TODO: shall we handle responses like 401 unauthorized in some way?
                 public String handleResponse(
                         final HttpResponse response) throws ClientProtocolException, IOException {
                     int status = response.getStatusLine().getStatusCode();
@@ -105,12 +109,12 @@ public class FormAPIConnection {
 	 * @return 
 	 * @throws IOException
 	 */
-	protected String paymentRequest(List<NameValuePair> nameValuePairs) throws IOException {
+	public String paymentRequest(List<NameValuePair> nameValuePairs) throws IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		final String formPaymentUri = "/form/view/pay_with_card";
 		
         try {
-            HttpPost httpPost = new HttpPost(props.getProperty("service_url") + formPaymentUri);
+            HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
             
             // sort alphabetically per key
             this.sortParameters(nameValuePairs);
@@ -139,8 +143,8 @@ public class FormAPIConnection {
                 }
 
             };
-            return httpclient.execute(httpPost, responseHandler);	
-		
+            return httpclient.execute(httpPost, responseHandler);
+
         } finally {
             httpclient.close();
         }
@@ -153,14 +157,14 @@ public class FormAPIConnection {
 	 * @return 
 	 * @throws IOException
 	 */
-	protected String addCardAndPayRequest(
+	public String addCardAndPayRequest(
 			List<NameValuePair> nameValuePairs) throws IOException {
 		
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		String formPaymentUri = "/form/view/add_and_pay_with_card";
 		
         try {
-            HttpPost httpPost = new HttpPost(props.getProperty("service_url") + formPaymentUri);
+            HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
             
             // sort alphabetically per key
             this.sortParameters(nameValuePairs);
@@ -168,7 +172,7 @@ public class FormAPIConnection {
             // create signature
             String signature = this.createSignature(METHOD, formPaymentUri, nameValuePairs);
             nameValuePairs.add(new BasicNameValuePair("signature", signature));
-            
+
             // add request headers
             this.addHeaders(httpPost);
             
@@ -208,7 +212,7 @@ public class FormAPIConnection {
 				List<NameValuePair> nameValuePairs) {
 		
 		nameValuePairs = this.parseParameters(nameValuePairs);
-		SecureSigner ss = new SecureSigner(this.props.getProperty("signature_key_id"), this.props.getProperty("signature_secret"));
+		SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
 		return ss.createSignature("POST", uri, nameValuePairs, "");
 	}
 

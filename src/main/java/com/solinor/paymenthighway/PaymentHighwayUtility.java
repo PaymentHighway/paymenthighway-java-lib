@@ -44,7 +44,7 @@ public class PaymentHighwayUtility {
 	 * @return Properties
 	 * @throws IOException
 	 */
-	public static Properties getPropertyValues() throws IOException {
+	public static Properties getProperties() throws IOException {
 			
 		Properties props = new Properties();
 		BufferedReader br = null;

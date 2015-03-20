@@ -3,12 +3,11 @@
  */
 package com.solinor.paymenthighway;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import org.junit.After;
@@ -16,8 +15,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.solinor.paymenthighway.PaymentHighwayUtility;
 
 /**
  * @author tero.kallio
@@ -62,7 +59,7 @@ public class PaymentHighwayUtilityTest {
 	public void testReadProperties() { 
 		Properties p = null;
 		try {
-			p = PaymentHighwayUtility.getPropertyValues();
+			p = PaymentHighwayUtility.getProperties();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

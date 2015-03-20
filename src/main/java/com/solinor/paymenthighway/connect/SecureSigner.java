@@ -17,7 +17,7 @@ import org.apache.http.NameValuePair;
 
 /**
  * Creates a signature for PaymentHighway messages
- * @author tero.kallio
+ * @author tero.kallio@solinor.com
  */
 public class SecureSigner {
 
@@ -71,7 +71,7 @@ public class SecureSigner {
      */
     public String createSignature(String method, String uri, List<NameValuePair> keyValues,
             String body)  {
-  	
+    	
     	String signedString = String.format("%s %s %s",
     			SignatureScheme,
     			secretKeyId,

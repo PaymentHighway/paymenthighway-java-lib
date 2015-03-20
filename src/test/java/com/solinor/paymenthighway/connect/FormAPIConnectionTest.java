@@ -30,6 +30,14 @@ import com.solinor.paymenthighway.PaymentHighwayUtility;
  */
 public class FormAPIConnectionTest {
 	
+	// Payment Highway Merchant configuration
+	private String serviceUrl = null;
+	private String account = null;
+	private String merchant =  null;
+	private String signatureKeyId = null;
+	private String signatureSecret = null;
+	
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -49,6 +57,12 @@ public class FormAPIConnectionTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		Properties p = PaymentHighwayUtility.getProperties();
+		this.account = p.getProperty("sph-account");
+		this.merchant = p.getProperty("sph-merchant");
+		this.serviceUrl = p.getProperty("service_url");
+		this.signatureKeyId = p.getProperty("signature_key_id");
+		this.signatureSecret = p.getProperty("signature_secret");
 		
 	}
 
@@ -68,21 +82,15 @@ public class FormAPIConnectionTest {
         formParameters.add(new BasicNameValuePair("sph-amount", "990"));
         formParameters.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com"));
         formParameters.add(new BasicNameValuePair("sph-currency", "EUR"));
-        formParameters.add(new BasicNameValuePair("sph-failure-url", "http://www.terokallio.com"));
+        formParameters.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
         formParameters.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
         formParameters.add(new BasicNameValuePair("sph-order", "1000123A"));
         formParameters.add(new BasicNameValuePair("sph-request-id", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
         formParameters.add(new BasicNameValuePair("sph-success-url", "https://www.solinor.com"));
         formParameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
         
-        Properties p = null;
-		try {
-			p = PaymentHighwayUtility.getPropertyValues();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 		String uri = "/form/view/add_card";
-		SecureSigner ss = new SecureSigner(p.getProperty("signature_key_id"), p.getProperty("signature_secret"));
+		SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
 		String sig = ss.createSignature("POST", uri, formParameters, "");
 		assertTrue(sig.contains("SPH1"));
 		
@@ -97,14 +105,15 @@ public class FormAPIConnectionTest {
         formParameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
         formParameters.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com"));
         formParameters.add(new BasicNameValuePair("sph-currency", "EUR"));
-        formParameters.add(new BasicNameValuePair("sph-failure-url", "http://www.terokallio.com"));
+        formParameters.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
         formParameters.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
         formParameters.add(new BasicNameValuePair("sph-order", "1000123A"));
         formParameters.add(new BasicNameValuePair("sph-request-id", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
         formParameters.add(new BasicNameValuePair("sph-success-url", "https://www.solinor.com"));
         formParameters.add(new BasicNameValuePair("this should be removed", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
         
-        FormAPIConnection conn = new FormAPIConnection();
+        FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.account, this.merchant, this.signatureKeyId, this.signatureSecret);
+        
         List<NameValuePair> map = conn.parseParameters(formParameters);
         assertEquals(new BasicNameValuePair("sph-account", "test"), map.get(0));
         assertEquals(new BasicNameValuePair("sph-success-url", "https://www.solinor.com"), map.get(map.size()-1));
@@ -121,14 +130,14 @@ public class FormAPIConnectionTest {
         formParameters.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com"));
         formParameters.add(new BasicNameValuePair("sph-currency", "EUR"));
 		formParameters.add(new BasicNameValuePair("sph-account", "test"));
-        formParameters.add(new BasicNameValuePair("sph-failure-url", "http://www.terokallio.com"));
+        formParameters.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
         formParameters.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
         formParameters.add(new BasicNameValuePair("sph-order", "1000123A"));
         formParameters.add(new BasicNameValuePair("sph-request-id", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
         formParameters.add(new BasicNameValuePair("sph-success-url", "https://www.solinor.com"));
         formParameters.add(new BasicNameValuePair("language", "EN"));
 
-        FormAPIConnection conn = new FormAPIConnection();
+        FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.account, this.merchant, this.signatureKeyId, this.signatureSecret);
         conn.sortParameters(formParameters);
         assertEquals(new BasicNameValuePair("sph-account", "test"), formParameters.get(1)); // first
         assertTrue(formParameters.get(formParameters.size()-1).toString().startsWith("sph-timestamp")); // last
@@ -144,17 +153,17 @@ public class FormAPIConnectionTest {
         formParameters.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com"));
         formParameters.add(new BasicNameValuePair("sph-currency", "EUR"));
 		formParameters.add(new BasicNameValuePair("sph-account", "test"));
-        formParameters.add(new BasicNameValuePair("sph-failure-url", "http://www.terokallio.com"));
+        formParameters.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
         formParameters.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
         formParameters.add(new BasicNameValuePair("sph-order", "1000123A"));
         formParameters.add(new BasicNameValuePair("sph-request-id", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
         formParameters.add(new BasicNameValuePair("sph-success-url", "https://www.solinor.com"));
         formParameters.add(new BasicNameValuePair("language", "EN"));
         
-		FormAPIConnection sph = new FormAPIConnection();
+        FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.account, this.merchant, this.signatureKeyId, this.signatureSecret);
 		String response = null;
 		try {
-			response = sph.addCardRequest(formParameters);
+			response = conn.addCardRequest(formParameters);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -172,7 +181,7 @@ public class FormAPIConnectionTest {
         nameValuePairs.add(new BasicNameValuePair("sph-account", "test"));
         nameValuePairs.add(new BasicNameValuePair("sph-amount", "990"));
         nameValuePairs.add(new BasicNameValuePair("sph-currency", "EUR"));
-        nameValuePairs.add(new BasicNameValuePair("sph-failure-url", "http://www.terokallio.com"));
+        nameValuePairs.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
         nameValuePairs.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
         nameValuePairs.add(new BasicNameValuePair("sph-order", "1000123A"));
         nameValuePairs.add(new BasicNameValuePair("sph-request-id", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
@@ -181,15 +190,15 @@ public class FormAPIConnectionTest {
         nameValuePairs.add(new BasicNameValuePair("language", "EN"));
         nameValuePairs.add(new BasicNameValuePair("description", "this is a description field"));
         
-        FormAPIConnection sph = new FormAPIConnection();
+        FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.account, this.merchant, this.signatureKeyId, this.signatureSecret);
 	
         String response = null;
 		try {
-			response = sph.paymentRequest(nameValuePairs);
+			response = conn.paymentRequest(nameValuePairs);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// System.out.println(response);
+		
 		assertTrue(response.contains("XXXX XXXX XXXX XXXX"));
 		assertTrue(response.contains("viewport"));
 		assertTrue(response.contains("Solinor Payment Highway"));
@@ -205,7 +214,7 @@ public class FormAPIConnectionTest {
         nameValuePairs.add(new BasicNameValuePair("sph-amount", "990"));
         nameValuePairs.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com"));
         nameValuePairs.add(new BasicNameValuePair("sph-currency", "EUR"));
-        nameValuePairs.add(new BasicNameValuePair("sph-failure-url", "http://www.terokallio.com"));
+        nameValuePairs.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
         nameValuePairs.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
         nameValuePairs.add(new BasicNameValuePair("sph-order", "1000123A"));
         nameValuePairs.add(new BasicNameValuePair("sph-request-id", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
@@ -214,15 +223,15 @@ public class FormAPIConnectionTest {
         nameValuePairs.add(new BasicNameValuePair("language", "EN"));
         nameValuePairs.add(new BasicNameValuePair("description", "this is a description field"));
 
-        FormAPIConnection sph = new FormAPIConnection();
+        FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.account, this.merchant, this.signatureKeyId, this.signatureSecret);
 	
         String response = null;
 		try {
-			response = sph.addCardAndPayRequest(nameValuePairs);
+			response = conn.addCardAndPayRequest(nameValuePairs);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// System.out.println(response);
+		
 		assertTrue(response.contains("XXXX XXXX XXXX XXXX"));
 		assertTrue(response.contains("viewport"));
 		assertTrue(response.contains("Solinor Payment Highway"));
@@ -232,7 +241,7 @@ public class FormAPIConnectionTest {
 	@Test
 	public void testAddHeaders1() {
 		HttpPost httpPost = new HttpPost("http://www.anygivenurl.com");
-		FormAPIConnection conn = new FormAPIConnection();
+		FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.account, this.merchant, this.signatureKeyId, this.signatureSecret);
 		conn.addHeaders(httpPost);
 		Header[] headers = httpPost.getHeaders("USER_AGENT");
 		
@@ -243,7 +252,7 @@ public class FormAPIConnectionTest {
 	@Test
 	public void testAddHeaders2() {
 		HttpPost httpPost = new HttpPost("http://www.anygivenurl.com");
-		FormAPIConnection conn = new FormAPIConnection();
+		FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.account, this.merchant, this.signatureKeyId, this.signatureSecret);
 		conn.addHeaders(httpPost);
 		Header[] headers = httpPost.getHeaders("CONTENT_TYPE");
 		
