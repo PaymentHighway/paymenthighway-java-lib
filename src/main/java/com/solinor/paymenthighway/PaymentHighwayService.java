@@ -11,8 +11,9 @@ import org.apache.http.NameValuePair;
 import com.solinor.paymenthighway.connect.FormAPIConnection;
 
 /**
+ * PaymentHighway Java API Service.
+ * 
  * @author tero.kallio
- *
  */
 public class PaymentHighwayService {
 
