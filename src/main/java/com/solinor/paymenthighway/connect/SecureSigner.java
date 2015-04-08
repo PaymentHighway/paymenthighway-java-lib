@@ -17,7 +17,7 @@ import org.apache.http.NameValuePair;
 
 /**
  * Creates a signature for PaymentHighway messages
- * @author tero.kallio@solinor.com
+ * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class SecureSigner {
 
@@ -81,7 +81,7 @@ public class SecureSigner {
     }
     
     /**
-     * Create signature String from actual parameters
+     * Create signature String from the actual parameters
      * 
      * @param method
      * @param uri
