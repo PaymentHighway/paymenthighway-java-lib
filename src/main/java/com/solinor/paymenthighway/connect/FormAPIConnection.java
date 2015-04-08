@@ -24,13 +24,13 @@ import org.apache.http.util.EntityUtils;
 /**
  * PaymentHighway Form API Connections
  * 
- * @author tero.kallio@solinor.com
+ * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class FormAPIConnection {
 
 	private final static String USER_AGENT = "PaymentHighway Java Lib";
 	private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
-	private final static String METHOD = "POST";
+	private final static String METHOD_POST = "POST";
 	
 	String serviceUrl = null;
 	String account = null;
@@ -72,7 +72,7 @@ public class FormAPIConnection {
             this.sortParameters(nameValuePairs);
             
             // create signature
-            String signature = this.createSignature(METHOD, formUri, nameValuePairs);
+            String signature = this.createSignature(METHOD_POST, formUri, nameValuePairs);
             nameValuePairs.add(new BasicNameValuePair("signature", signature));
             
             // add request headers
@@ -120,7 +120,7 @@ public class FormAPIConnection {
             this.sortParameters(nameValuePairs);
             
             // create signature
-            String signature = this.createSignature(METHOD, formPaymentUri, nameValuePairs);
+            String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
             nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
         	// add request headers
@@ -170,7 +170,7 @@ public class FormAPIConnection {
             this.sortParameters(nameValuePairs);
             
             // create signature
-            String signature = this.createSignature(METHOD, formPaymentUri, nameValuePairs);
+            String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
             nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
             // add request headers
@@ -256,8 +256,8 @@ public class FormAPIConnection {
 	 * @return HttpPost with headers
 	 */
 	protected void addHeaders(HttpPost httpPost) {
-		httpPost.addHeader("USER_AGENT", USER_AGENT);
-        httpPost.addHeader("CONTENT_TYPE", CONTENT_TYPE);
+		httpPost.addHeader("User-Agent", USER_AGENT);
+        httpPost.addHeader("Content-Type", CONTENT_TYPE);
 	}
 	
 }
