@@ -25,7 +25,8 @@ import org.junit.Test;
 import com.solinor.paymenthighway.PaymentHighwayUtility;
 
 /**
- * @author tero.kallio
+ * Test class for Form API connections
+ * @author Tero Kallio <tero.kallio@solinor.com>
  *
  */
 public class FormAPIConnectionTest {
@@ -243,9 +244,9 @@ public class FormAPIConnectionTest {
 		HttpPost httpPost = new HttpPost("http://www.anygivenurl.com");
 		FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.account, this.merchant, this.signatureKeyId, this.signatureSecret);
 		conn.addHeaders(httpPost);
-		Header[] headers = httpPost.getHeaders("USER_AGENT");
+		Header[] headers = httpPost.getHeaders("User-Agent");
 		
-		assertTrue((headers[0].getName().equalsIgnoreCase("USER_AGENT")));
+		assertTrue((headers[0].getName().equalsIgnoreCase("User-Agent")));
 		assertTrue((headers[0].getValue().equalsIgnoreCase("PaymentHighway Java Lib")));
 		
 	}
@@ -254,9 +255,9 @@ public class FormAPIConnectionTest {
 		HttpPost httpPost = new HttpPost("http://www.anygivenurl.com");
 		FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.account, this.merchant, this.signatureKeyId, this.signatureSecret);
 		conn.addHeaders(httpPost);
-		Header[] headers = httpPost.getHeaders("CONTENT_TYPE");
+		Header[] headers = httpPost.getHeaders("Content-Type");
 		
-		assertTrue((headers[0].getName().equalsIgnoreCase("CONTENT_TYPE")));
+		assertTrue((headers[0].getName().equalsIgnoreCase("Content-Type")));
 		assertTrue((headers[0].getValue().equalsIgnoreCase("application/x-www-form-urlencoded")));
 		
 	}
