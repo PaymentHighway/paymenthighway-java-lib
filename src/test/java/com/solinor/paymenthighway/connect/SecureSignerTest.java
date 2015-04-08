@@ -65,7 +65,6 @@ public class SecureSignerTest {
         nameValuePairs.add(new BasicNameValuePair("language", "EN"));
         nameValuePairs.add(new BasicNameValuePair("description", "this is a description"));
         
-        
         String sig = ss.createSignature(
         		formPaymentMethod, formPaymentUri, nameValuePairs, formPaymentBody);
        
