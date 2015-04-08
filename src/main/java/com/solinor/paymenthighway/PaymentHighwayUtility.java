@@ -16,7 +16,7 @@ import java.util.SimpleTimeZone;
 
 /**
  * General helper methods.
- * @author tero.kallio@solinor.com
+ * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class PaymentHighwayUtility {
 
