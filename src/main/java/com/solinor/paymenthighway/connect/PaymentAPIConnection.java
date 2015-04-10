@@ -37,7 +37,6 @@ import com.solinor.paymenthighway.model.TransactionRequest;
 import com.solinor.paymenthighway.model.TransactionResponse;
 import com.solinor.paymenthighway.model.TransactionStatusResponse;
 
-
 /**
  * PaymentHighway Payment API Connections
  * 
@@ -50,13 +49,13 @@ public class PaymentAPIConnection {
 	private static final String USER_AGENT = "PaymentHighway Java Lib";
 	private static final String METHOD_POST = "POST";
 	private static final String METHOD_GET = "GET";
-	
+
 	private String serviceUrl = "";
 	private String signatureKeyId = null;
 	private String signatureSecret = null;
 
 	/**
-	 * Constructor 
+	 * Constructor
 	 * 
 	 * @param serviceUrl
 	 * @param account
@@ -64,412 +63,454 @@ public class PaymentAPIConnection {
 	 * @param signatureKeyId
 	 * @param signatureSecret
 	 */
-	public PaymentAPIConnection(String serviceUrl, 
-			String signatureKeyId, 
+	public PaymentAPIConnection(String serviceUrl, String signatureKeyId,
 			String signatureSecret) {
-		
+
 		this.serviceUrl = serviceUrl;
 		this.signatureKeyId = signatureKeyId;
 		this.signatureSecret = signatureSecret;
 	}
-	
-	public InitTransactionResponse initTransactionHandle(List<NameValuePair> nameValuePairs ) throws ClientProtocolException, IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
-	
-		 // sort alphabetically per key
-        this.sortParameters(nameValuePairs);
-        
-		final String paymentUri = "/transaction";
-		 try {
-			 HttpPost httpPost = new HttpPost(this.serviceUrl + paymentUri);
-			 
-			 // create signature
-			 String signature = this.createSignature(METHOD_POST, paymentUri, nameValuePairs, null);
-			 nameValuePairs.add(new BasicNameValuePair("signature", signature));
-		        
-			// add request headers
-	        this.addHeaders(httpPost, nameValuePairs);
-		     
-	        // Create a custom response handler
-	        ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 
-	        public String handleResponse(
-                     final HttpResponse response) throws ClientProtocolException, IOException {
-                 int status = response.getStatusLine().getStatusCode();
-                 if (status >= 200 && status < 300) {
-                     HttpEntity entity = response.getEntity();
-                     return entity != null ? EntityUtils.toString(entity) : null;
-                 } else {
-                	 System.err.println("response="+response.toString());
-                     throw new ClientProtocolException("Unexpected response status: " + status);
-                 }
-             }
-
-         };
-         
-         JsonParser parser = new JsonParser();
-         return parser.mapInitTransactionResponse(httpclient.execute(httpPost, responseHandler));
-		 
-		 } finally {
-			 httpclient.close();
-		 }
-	}
-	
-	
-	public TransactionResponse debitTransaction(List<NameValuePair> nameValuePairs, UUID transactionId, TransactionRequest request) throws ClientProtocolException, IOException {
+	public InitTransactionResponse initTransactionHandle(
+			List<NameValuePair> nameValuePairs) throws ClientProtocolException,
+			IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
+
 		// sort alphabetically per key
 		this.sortParameters(nameValuePairs);
-        
+
+		final String paymentUri = "/transaction";
+		try {
+			HttpPost httpPost = new HttpPost(this.serviceUrl + paymentUri);
+
+			// create signature
+			String signature = this.createSignature(METHOD_POST, paymentUri,
+					nameValuePairs, null);
+			nameValuePairs.add(new BasicNameValuePair("signature", signature));
+
+			// add request headers
+			this.addHeaders(httpPost, nameValuePairs);
+
+			// Create a custom response handler
+			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+				public String handleResponse(final HttpResponse response)
+						throws ClientProtocolException, IOException {
+					int status = response.getStatusLine().getStatusCode();
+					if (status >= 200 && status < 300) {
+						HttpEntity entity = response.getEntity();
+						return entity != null ? EntityUtils.toString(entity)
+								: null;
+					} else {
+						System.err.println("response=" + response.toString());
+						throw new ClientProtocolException(
+								"Unexpected response status: " + status);
+					}
+				}
+
+			};
+
+			JsonParser parser = new JsonParser();
+			return parser.mapInitTransactionResponse(httpclient.execute(
+					httpPost, responseHandler));
+
+		} finally {
+			httpclient.close();
+		}
+	}
+
+	public TransactionResponse debitTransaction(
+			List<NameValuePair> nameValuePairs, UUID transactionId,
+			TransactionRequest request) throws ClientProtocolException,
+			IOException {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+
+		// sort alphabetically per key
+		this.sortParameters(nameValuePairs);
+
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/debit";
 		String debitUri = paymentUri + transactionId + actionUri;
-				
-		 try {
-			 HttpPost httpPost = new HttpPost(this.serviceUrl + debitUri);
-			 
-			 // create signature
-			 String signature = this.createSignature(METHOD_POST, debitUri, nameValuePairs, request);
-			 nameValuePairs.add(new BasicNameValuePair("signature", signature));
-		        
+
+		try {
+			HttpPost httpPost = new HttpPost(this.serviceUrl + debitUri);
+
+			// create signature
+			String signature = this.createSignature(METHOD_POST, debitUri,
+					nameValuePairs, request);
+			nameValuePairs.add(new BasicNameValuePair("signature", signature));
+
 			// add request headers
-	        this.addHeaders(httpPost, nameValuePairs);
-	        
-		    // add request body
-	        this.addBody(httpPost, request);
-	        
-	        // Create a custom response handler
-	        ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+			this.addHeaders(httpPost, nameValuePairs);
 
-	        public String handleResponse(
-                     final HttpResponse response) throws ClientProtocolException, IOException {
-                 int status = response.getStatusLine().getStatusCode();
-                 if (status >= 200 && status < 300) {
-                     HttpEntity entity = response.getEntity();
-                     return entity != null ? EntityUtils.toString(entity) : null;
-                 } else {
-                	 System.err.println("response="+response.toString());
-                     throw new ClientProtocolException("Unexpected response status: " + status);
-                 }
-             }
+			// add request body
+			this.addBody(httpPost, request);
 
-         };
-	 
-         JsonParser jpar = new JsonParser();
-         return jpar.mapTransactionResponse(httpclient.execute(httpPost, responseHandler));
-		 
-		 } finally {
-			 httpclient.close();
-		 }
+			// Create a custom response handler
+			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+				public String handleResponse(final HttpResponse response)
+						throws ClientProtocolException, IOException {
+					int status = response.getStatusLine().getStatusCode();
+					if (status >= 200 && status < 300) {
+						HttpEntity entity = response.getEntity();
+						return entity != null ? EntityUtils.toString(entity)
+								: null;
+					} else {
+						System.err.println("response=" + response.toString());
+						throw new ClientProtocolException(
+								"Unexpected response status: " + status);
+					}
+				}
+
+			};
+
+			JsonParser jpar = new JsonParser();
+			return jpar.mapTransactionResponse(httpclient.execute(httpPost,
+					responseHandler));
+
+		} finally {
+			httpclient.close();
+		}
 	}
-	
-	public TransactionResponse creditTransaction(List<NameValuePair> nameValuePairs, UUID transactionId, TransactionRequest request) throws ClientProtocolException, IOException {
+
+	public TransactionResponse creditTransaction(
+			List<NameValuePair> nameValuePairs, UUID transactionId,
+			TransactionRequest request) throws ClientProtocolException,
+			IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
+
 		// sort alphabetically per key
 		this.sortParameters(nameValuePairs);
-        
+
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/credit";
 		String creditUri = paymentUri + transactionId + actionUri;
-				
-		 try {
-			 HttpPost httpPost = new HttpPost(this.serviceUrl + creditUri);
-			 
-			 // create signature
-			 String signature = this.createSignature(METHOD_POST, creditUri, nameValuePairs, request);
-			 nameValuePairs.add(new BasicNameValuePair("signature", signature));
-		        
+
+		try {
+			HttpPost httpPost = new HttpPost(this.serviceUrl + creditUri);
+
+			// create signature
+			String signature = this.createSignature(METHOD_POST, creditUri,
+					nameValuePairs, request);
+			nameValuePairs.add(new BasicNameValuePair("signature", signature));
+
 			// add request headers
-	        this.addHeaders(httpPost, nameValuePairs);
-	        
-		    // add request body
-	        this.addBody(httpPost, request);
-	        	
-	        // Create a custom response handler
-	        ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+			this.addHeaders(httpPost, nameValuePairs);
 
-	        public String handleResponse(
-                     final HttpResponse response) throws ClientProtocolException, IOException {
-                 int status = response.getStatusLine().getStatusCode();
-                 if (status >= 200 && status < 300) {
-                     HttpEntity entity = response.getEntity();
-                     return entity != null ? EntityUtils.toString(entity) : null;
-                 } else {
-                	 System.err.println("response="+response.toString());
-                     throw new ClientProtocolException("Unexpected response status: " + status);
-                 }
-             }
+			// add request body
+			this.addBody(httpPost, request);
 
-         };
-	 
-         JsonParser jpar = new JsonParser();
-         return jpar.mapTransactionResponse(httpclient.execute(httpPost, responseHandler));
-		 
-		 } finally {
-			 httpclient.close();
-		 }
+			// Create a custom response handler
+			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+				public String handleResponse(final HttpResponse response)
+						throws ClientProtocolException, IOException {
+					int status = response.getStatusLine().getStatusCode();
+					if (status >= 200 && status < 300) {
+						HttpEntity entity = response.getEntity();
+						return entity != null ? EntityUtils.toString(entity)
+								: null;
+					} else {
+						System.err.println("response=" + response.toString());
+						throw new ClientProtocolException(
+								"Unexpected response status: " + status);
+					}
+				}
+
+			};
+
+			JsonParser jpar = new JsonParser();
+			return jpar.mapTransactionResponse(httpclient.execute(httpPost,
+					responseHandler));
+
+		} finally {
+			httpclient.close();
+		}
 	}
-	
-	public TransactionResponse revertTransaction(List<NameValuePair> nameValuePairs, UUID transactionId, RevertTransactionRequest request) throws ClientProtocolException, IOException {
+
+	public TransactionResponse revertTransaction(
+			List<NameValuePair> nameValuePairs, UUID transactionId,
+			RevertTransactionRequest request) throws ClientProtocolException,
+			IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
+
 		// sort alphabetically per key
 		this.sortParameters(nameValuePairs);
-        
+
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/revert";
 		String revertUri = paymentUri + transactionId + actionUri;
-				
-		 try {
-			 HttpPost httpPost = new HttpPost(this.serviceUrl + revertUri);
-			 
-			 // create signature
-			 String signature = this.createSignature(METHOD_POST, revertUri, nameValuePairs, request);
-			 nameValuePairs.add(new BasicNameValuePair("signature", signature));
-		        
+
+		try {
+			HttpPost httpPost = new HttpPost(this.serviceUrl + revertUri);
+
+			// create signature
+			String signature = this.createSignature(METHOD_POST, revertUri,
+					nameValuePairs, request);
+			nameValuePairs.add(new BasicNameValuePair("signature", signature));
+
 			// add request headers
-	        this.addHeaders(httpPost, nameValuePairs);
-	        
-		    // add request body
-	        this.addBody(httpPost, request);
-	        	
-	        // Create a custom response handler
-	        ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+			this.addHeaders(httpPost, nameValuePairs);
 
-	        public String handleResponse(
-                     final HttpResponse response) throws ClientProtocolException, IOException {
-                 int status = response.getStatusLine().getStatusCode();
-                 if (status >= 200 && status < 300) {
-                     HttpEntity entity = response.getEntity();
-                     return entity != null ? EntityUtils.toString(entity) : null;
-                 } else {
-                	 System.err.println("response="+response.toString());
-                     throw new ClientProtocolException("Unexpected response status: " + status);
-                 }
-             }
+			// add request body
+			this.addBody(httpPost, request);
 
-         };
-	 
-         JsonParser jpar = new JsonParser();
-         return jpar.mapTransactionResponse(httpclient.execute(httpPost, responseHandler));
-		 
-		 } finally {
-			 httpclient.close();
-		 }
+			// Create a custom response handler
+			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+				public String handleResponse(final HttpResponse response)
+						throws ClientProtocolException, IOException {
+					int status = response.getStatusLine().getStatusCode();
+					if (status >= 200 && status < 300) {
+						HttpEntity entity = response.getEntity();
+						return entity != null ? EntityUtils.toString(entity)
+								: null;
+					} else {
+						System.err.println("response=" + response.toString());
+						throw new ClientProtocolException(
+								"Unexpected response status: " + status);
+					}
+				}
+
+			};
+
+			JsonParser jpar = new JsonParser();
+			return jpar.mapTransactionResponse(httpclient.execute(httpPost,
+					responseHandler));
+
+		} finally {
+			httpclient.close();
+		}
 	}
-	
-	public CommitTransactionResponse commitTransaction(List<NameValuePair> nameValuePairs, UUID transactionId, CommitTransactionRequest request) throws ClientProtocolException, IOException {
+
+	public CommitTransactionResponse commitTransaction(
+			List<NameValuePair> nameValuePairs, UUID transactionId,
+			CommitTransactionRequest request) throws ClientProtocolException,
+			IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
+
 		// sort alphabetically per key
 		this.sortParameters(nameValuePairs);
-        
+
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/commit";
 		String commitUri = paymentUri + transactionId + actionUri;
-				
-		 try {
-			 HttpPost httpPost = new HttpPost(this.serviceUrl + commitUri);
-			 
-			 // create signature
-			 String signature = this.createSignature(METHOD_POST, commitUri, nameValuePairs, request);
-			 nameValuePairs.add(new BasicNameValuePair("signature", signature));
-		        
+
+		try {
+			HttpPost httpPost = new HttpPost(this.serviceUrl + commitUri);
+
+			// create signature
+			String signature = this.createSignature(METHOD_POST, commitUri,
+					nameValuePairs, request);
+			nameValuePairs.add(new BasicNameValuePair("signature", signature));
+
 			// add request headers
-	        this.addHeaders(httpPost, nameValuePairs);
-	        
-		    // add request body
-	        this.addBody(httpPost, request);
-	        	
-	        // Create a custom response handler
-	        ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+			this.addHeaders(httpPost, nameValuePairs);
 
-	        public String handleResponse(
-                     final HttpResponse response) throws ClientProtocolException, IOException {
-                 int status = response.getStatusLine().getStatusCode();
-                 if (status >= 200 && status < 300) {
-                     HttpEntity entity = response.getEntity();
-                     return entity != null ? EntityUtils.toString(entity) : null;
-                 } else {
-                	 System.err.println("response="+response.toString());
-                     throw new ClientProtocolException("Unexpected response status: " + status);
-                 }
-             }
+			// add request body
+			this.addBody(httpPost, request);
 
-         };
-	 
-         JsonParser jpar = new JsonParser();
-         return jpar.mapCommitTransactionResponse(httpclient.execute(httpPost, responseHandler));
-		 
-		 } finally {
-			 httpclient.close();
-		 }
+			// Create a custom response handler
+			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+				public String handleResponse(final HttpResponse response)
+						throws ClientProtocolException, IOException {
+					int status = response.getStatusLine().getStatusCode();
+					if (status >= 200 && status < 300) {
+						HttpEntity entity = response.getEntity();
+						return entity != null ? EntityUtils.toString(entity)
+								: null;
+					} else {
+						System.err.println("response=" + response.toString());
+						throw new ClientProtocolException(
+								"Unexpected response status: " + status);
+					}
+				}
+
+			};
+
+			JsonParser jpar = new JsonParser();
+			return jpar.mapCommitTransactionResponse(httpclient.execute(
+					httpPost, responseHandler));
+
+		} finally {
+			httpclient.close();
+		}
 	}
-	
-	public TransactionStatusResponse transactionStatus(List<NameValuePair> nameValuePairs, UUID transactionId) throws ClientProtocolException, IOException {
+
+	public TransactionStatusResponse transactionStatus(
+			List<NameValuePair> nameValuePairs, UUID transactionId)
+			throws ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
+
 		// sort alphabetically per key
 		this.sortParameters(nameValuePairs);
-        
+
 		final String paymentUri = "/transaction/";
-		
+
 		String statusUri = paymentUri + transactionId;
-		
-		 try {
-			 HttpGet httpGet = new HttpGet(this.serviceUrl + statusUri);
-			
-			 // create signature
-			 String signature = this.createSignature(METHOD_GET, statusUri, nameValuePairs, null);
-			 nameValuePairs.add(new BasicNameValuePair("signature", signature));
-		    
-			 // add request headers
-			 this.addHeaders(httpGet, nameValuePairs);
-	        	
-			 // Create a custom response handler
-			 ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 
-	        public String handleResponse(
-                     final HttpResponse response) throws ClientProtocolException, IOException {
-                 int status = response.getStatusLine().getStatusCode();
-                 if (status >= 200 && status < 300) {
-                     HttpEntity entity = response.getEntity();
-                     return entity != null ? EntityUtils.toString(entity) : null;
-                 } else {
-                	 System.err.println("response="+response.toString());
-                	 throw new ClientProtocolException("Unexpected response status: " + status);
-                 }
-             }
+		try {
+			HttpGet httpGet = new HttpGet(this.serviceUrl + statusUri);
 
-         };
-         
-         JsonParser jpar = new JsonParser();
-         return jpar.mapTransactionStatusResponse(httpclient.execute(httpGet, responseHandler));
-		 
-		 } finally {
-			 httpclient.close();
-		 }
+			// create signature
+			String signature = this.createSignature(METHOD_GET, statusUri,
+					nameValuePairs, null);
+			nameValuePairs.add(new BasicNameValuePair("signature", signature));
+
+			// add request headers
+			this.addHeaders(httpGet, nameValuePairs);
+
+			// Create a custom response handler
+			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+				public String handleResponse(final HttpResponse response)
+						throws ClientProtocolException, IOException {
+					int status = response.getStatusLine().getStatusCode();
+					if (status >= 200 && status < 300) {
+						HttpEntity entity = response.getEntity();
+						return entity != null ? EntityUtils.toString(entity)
+								: null;
+					} else {
+						System.err.println("response=" + response.toString());
+						throw new ClientProtocolException(
+								"Unexpected response status: " + status);
+					}
+				}
+
+			};
+
+			JsonParser jpar = new JsonParser();
+			return jpar.mapTransactionStatusResponse(httpclient.execute(
+					httpGet, responseHandler));
+
+		} finally {
+			httpclient.close();
+		}
 	}
-	
-	public TokenizationResponse tokenization(List<NameValuePair> nameValuePairs, UUID transactionId) throws ClientProtocolException, IOException {
+
+	public TokenizationResponse tokenization(
+			List<NameValuePair> nameValuePairs, String tokenizationId)
+			throws ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
+
 		// sort alphabetically per key
 		this.sortParameters(nameValuePairs);
-        
+
 		final String paymentUri = "/tokenization/";
-		
-		String tokenUri = paymentUri + transactionId;
 
-		 try {
-			 HttpGet httpGet = new HttpGet(this.serviceUrl + tokenUri);
-			
-			 // create signature
-			 String signature = this.createSignature(METHOD_GET, tokenUri, nameValuePairs, null);
-			 nameValuePairs.add(new BasicNameValuePair("signature", signature));
-		    
-			 // add request headers
-			 this.addHeaders(httpGet, nameValuePairs);
-	        	
-			 // Create a custom response handler
-			 ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+		String tokenUri = paymentUri + tokenizationId;
+		System.out.println("tokenUri=" + tokenUri);
+		try {
+			HttpGet httpGet = new HttpGet(this.serviceUrl + tokenUri);
 
-	        public String handleResponse(
-                     final HttpResponse response) throws ClientProtocolException, IOException {
-                 int status = response.getStatusLine().getStatusCode();
-                 if (status >= 200 && status < 300) {
-                     HttpEntity entity = response.getEntity();
-                     // String res = EntityUtils.toString(response.getEntity());
-                     // System.out.println("res="+res);
-                     return entity != null ? EntityUtils.toString(entity) : null;
-                 } else {
-                	 // String res = EntityUtils.toString(response.getEntity());
-                     // System.out.println("res="+res);
-                	 throw new ClientProtocolException("Unexpected response status: " + status);
-                 }
-             }
+			// create signature
+			String signature = this.createSignature(METHOD_GET, tokenUri,
+					nameValuePairs, null);
+			nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-         };
-         
-         JsonParser jpar = new JsonParser();
-         return jpar.mapTokenizationResponse(httpclient.execute(httpGet, responseHandler));
-		 
-		 } finally {
-			 httpclient.close();
-		 }
+			// add request headers
+			this.addHeaders(httpGet, nameValuePairs);
+
+			// Create a custom response handler
+			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+				public String handleResponse(final HttpResponse response)
+						throws ClientProtocolException, IOException {
+					int status = response.getStatusLine().getStatusCode();
+					if (status >= 200 && status < 300) {
+						HttpEntity entity = response.getEntity();
+						return entity != null ? EntityUtils.toString(entity)
+								: null;
+					} else {
+						System.err.println("response=" + response.toString());
+						throw new ClientProtocolException(
+								"Unexpected response status: " + status);
+					}
+				}
+
+			};
+
+			JsonParser jpar = new JsonParser();
+			return jpar.mapTokenizationResponse(httpclient.execute(httpGet,
+					responseHandler));
+
+		} finally {
+			httpclient.close();
+		}
 	}
-	
-	public String fetchReport(List<NameValuePair> nameValuePairs, String date) throws ClientProtocolException, IOException {
+
+	public String fetchReport(List<NameValuePair> nameValuePairs, String date)
+			throws ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
+
 		// sort alphabetically per key
 		this.sortParameters(nameValuePairs);
-        
-		final String reportUri = "/report/batch/";
-		
-		String tokenUri = reportUri + date;
-		
-		 try {
-			 HttpGet httpGet = new HttpGet(this.serviceUrl + tokenUri);
-			
-			 // create signature
-			 String signature = this.createSignature(METHOD_GET, tokenUri, nameValuePairs, null);
-			 nameValuePairs.add(new BasicNameValuePair("signature", signature));
-		    
-			 // add request headers
-			 this.addHeaders(httpGet, nameValuePairs);
-	        	
-			 // Create a custom response handler
-			 ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-			
-	        public String handleResponse(
-                     final HttpResponse response) throws ClientProtocolException, IOException {
-                 int status = response.getStatusLine().getStatusCode();
-                 if (status >= 200 && status < 300) {
-                     HttpEntity entity = response.getEntity();
-                     return entity != null ? EntityUtils.toString(entity) : null;
-                 } else {
-                	 throw new ClientProtocolException("Unexpected response status: " + status);
-                 }
-             }
 
-         };
-         
-         // JsonParser jpar = new JsonParser();
-         // return jpar.mapTokenizationResponse(httpclient.execute(httpGet, responseHandler));
-		 return httpclient.execute(httpGet, responseHandler);
-		 } finally {
-			 httpclient.close();
-		 }
-		
+		final String reportUri = "/report/batch/";
+
+		String tokenUri = reportUri + date;
+
+		try {
+			HttpGet httpGet = new HttpGet(this.serviceUrl + tokenUri);
+
+			// create signature
+			String signature = this.createSignature(METHOD_GET, tokenUri,
+					nameValuePairs, null);
+			nameValuePairs.add(new BasicNameValuePair("signature", signature));
+
+			// add request headers
+			this.addHeaders(httpGet, nameValuePairs);
+
+			// Create a custom response handler
+			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+				public String handleResponse(final HttpResponse response)
+						throws ClientProtocolException, IOException {
+					int status = response.getStatusLine().getStatusCode();
+					if (status >= 200 && status < 300) {
+						HttpEntity entity = response.getEntity();
+						return entity != null ? EntityUtils.toString(entity)
+								: null;
+					} else {
+						throw new ClientProtocolException(
+								"Unexpected response status: " + status);
+					}
+				}
+
+			};
+
+			return httpclient.execute(httpGet, responseHandler);
+		} finally {
+			httpclient.close();
+		}
+
 	}
-	
+
 	protected void addHeaders(HttpRequestBase httpPost,
 			List<NameValuePair> nameValuePairs) {
-		       
-		 httpPost.addHeader(HTTP.USER_AGENT, USER_AGENT);
-	     httpPost.addHeader(HTTP.CONTENT_TYPE, "application/json; charset=utf-8");
-	     
-	     ListIterator<NameValuePair> li = nameValuePairs.listIterator();
-	     
-	     while (li.hasNext()) {
-	    	 NameValuePair param = li.next();
-	    	 httpPost.addHeader(param.getName(), param.getValue());
-	     }
+
+		httpPost.addHeader(HTTP.USER_AGENT, USER_AGENT);
+		httpPost.addHeader(HTTP.CONTENT_TYPE, "application/json; charset=utf-8");
+
+		ListIterator<NameValuePair> li = nameValuePairs.listIterator();
+
+		while (li.hasNext()) {
+			NameValuePair param = li.next();
+			httpPost.addHeader(param.getName(), param.getValue());
+		}
 	}
 
 	private void addBody(HttpPost httpPost, Object request) {
 		JsonGenerator jsonGen = new JsonGenerator();
 		String requestBody = jsonGen.createTransactionJson(request);
-				StringEntity requestEntity = new StringEntity(
-			    requestBody,"utf-8");
-		
+		StringEntity requestEntity = new StringEntity(requestBody, "utf-8");
+
 		httpPost.setEntity(requestEntity);
 	}
-	
-	/** 
+
+	/**
 	 * Create secure signature
 	 * 
 	 * @param method
@@ -477,11 +518,12 @@ public class PaymentAPIConnection {
 	 * @param formPaymentSphParameters
 	 * @return String signature
 	 */
-	private String createSignature(String method, String uri, 
-				List<NameValuePair> nameValuePairs, Object request) {
-		
+	private String createSignature(String method, String uri,
+			List<NameValuePair> nameValuePairs, Object request) {
+
 		nameValuePairs = this.parseParameters(nameValuePairs);
-		SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
+		SecureSigner ss = new SecureSigner(this.signatureKeyId,
+				this.signatureSecret);
 		String json = "";
 		if (request != null) {
 			JsonGenerator jsonGenerator = new JsonGenerator();
@@ -491,37 +533,37 @@ public class PaymentAPIConnection {
 	}
 
 	/**
-	 * Signature is formed from parameters that start with "sph-"
-	 * Therefore we remove other parameters from the signature param set.
+	 * Signature is formed from parameters that start with "sph-" Therefore we
+	 * remove other parameters from the signature param set.
 	 * 
-	 * @param map TreeMap that may include all params
+	 * @param map
+	 *            TreeMap that may include all params
 	 * @return TreeMap with only params starting "sph-"
 	 */
-	protected List<NameValuePair> parseParameters(
-			List<NameValuePair> map) {
-		for(Iterator<NameValuePair> it = map.iterator(); it.hasNext(); ) {
-		      NameValuePair entry = it.next();
-		      if(!entry.getName().startsWith("sph-")) {
-		        it.remove();
-		      }
+	protected List<NameValuePair> parseParameters(List<NameValuePair> map) {
+		for (Iterator<NameValuePair> it = map.iterator(); it.hasNext();) {
+			NameValuePair entry = it.next();
+			if (!entry.getName().startsWith("sph-")) {
+				it.remove();
+			}
 		}
 		return map;
 	}
-	
+
 	/**
 	 * Sort alphabetically per key
+	 * 
 	 * @param nameValuePairs
 	 * @return List sorted list
 	 */
-	protected void sortParameters(
-			List<NameValuePair> nameValuePairs) {
-		Comparator<NameValuePair> comp = new Comparator<NameValuePair>() { 
+	protected void sortParameters(List<NameValuePair> nameValuePairs) {
+		Comparator<NameValuePair> comp = new Comparator<NameValuePair>() {
 			@Override
-            public int compare(NameValuePair p1, NameValuePair p2) {
-              return p1.getName().compareTo(p2.getName());
-            }
-        };
-        Collections.sort(nameValuePairs, comp);
+			public int compare(NameValuePair p1, NameValuePair p2) {
+				return p1.getName().compareTo(p2.getName());
+			}
+		};
+		Collections.sort(nameValuePairs, comp);
 	}
-	
+
 }
