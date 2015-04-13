@@ -7,10 +7,9 @@ This code is provided as-is, use it as inspiration, reference or drop it directl
 
 For full documentation on the PaymentHighway API visit our developer website: https://paymenthighway.fi/dev/
 
-The Java Client is a Maven project built so that it will work on Java 1.7 and Java 1.8. It requires the following third party frameworks: Apache HttpComponents, Jackson JSON. It also uses JUnit test packages.
+The Java Client is a Maven project built so that it will work on Java 1.7 and Java 1.8. It requires the following third party frameworks: Apache HttpComponents and Jackson JSON. It also uses JUnit test packages.
 
 # Structure 
-
 
 * com.solinor.paymenthighway
 
@@ -42,6 +41,6 @@ Contains classes that take care of keys and signatures.
 - [ ] should we do init transaction on behalf of customer when doing transactions?
 - [ ] daily batch report response model is not done. 
 - [ ] response authentication
-- [ ] response handling design?
+- [ ] response handling design
 - [ ] write documents ( https://paymenthighway.fi/dev/ )
 
