@@ -79,16 +79,12 @@ public class FormAPITest {
 			e.printStackTrace();
 		}
 		
-        String account = props.getProperty("sph_account");
-        String merchant = props.getProperty("sph_merchant");
         String serviceUrl = props.getProperty("service_url");
         String signatureKeyId = props.getProperty("signature_key_id");
         String signatureSecret = props.getProperty("signature_secret");
         
         // create the payment highway service
         FormAPI service = new FormAPI();
-        service.setAccount(account);
-        service.setMerchant(merchant);
         service.setServiceUrl(serviceUrl);
         service.setSignatureKeyId(signatureKeyId);
         service.setSignatureSecret(signatureSecret);
@@ -128,16 +124,12 @@ public class FormAPITest {
 			e.printStackTrace();
 		}
 		
-        String account = props.getProperty("sph_account");
-        String merchant = props.getProperty("sph_merchant");
         String serviceUrl = props.getProperty("service_url");
         String signatureKeyId = props.getProperty("signature_key_id");
         String signatureSecret = props.getProperty("signature_secret");
         
         // create the paymenthighway service
         FormAPI service = new FormAPI();
-        service.setAccount(account);
-        service.setMerchant(merchant);
         service.setServiceUrl(serviceUrl);
         service.setSignatureKeyId(signatureKeyId);
         service.setSignatureSecret(signatureSecret);
@@ -177,16 +169,13 @@ public class FormAPITest {
 			e.printStackTrace();
 		}
 		
-        String account = props.getProperty("sph_account");
-        String merchant = props.getProperty("sph_merchant");
+
         String serviceUrl = props.getProperty("service_url");
         String signatureKeyId = props.getProperty("signature_key_id");
         String signatureSecret = props.getProperty("signature_secret");
         
         // create the paymenthighway service
         FormAPI service = new FormAPI();
-        service.setAccount(account);
-        service.setMerchant(merchant);
         service.setServiceUrl(serviceUrl);
         service.setSignatureKeyId(signatureKeyId);
         service.setSignatureSecret(signatureSecret);
