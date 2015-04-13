@@ -16,19 +16,19 @@ The Java Client is a Maven project built so that it will work on Java 1.7 and Ja
 
 Contains API classes. Use these to create Payment Highway API requests.
 
-* connect
+* com.solinor.paymenthighway.connect
 
 Contains the actual classes that are responsible of the communication with Payment Highway.
 
-* json
+* com.solinor.paymenthighway.json
 
 Contains classes that serialize and deserialize objects to and from JSON.
 
-* model
+* com.solinor.paymenthighway.model
 
 Data structures that will be serialized and deserialized
 
-* security
+* com.solinor.paymenthighway.security
 
 Contains classes that take care of keys and signatures.
 
@@ -39,7 +39,7 @@ Contains classes that take care of keys and signatures.
 - [ ] JSON model coherence check
 - [x] daily batch report might be empty? note: only for today. reports available from previous day.
 - [x] Form API probably doesn't need merchant and account data everywhere. remove. 
-- [ ]should we do init transaction on behalf of customer when doing transactions?
+- [ ] should we do init transaction on behalf of customer when doing transactions?
 - [ ] daily batch report response model is not done. 
 - [ ] response authentication
 - [ ] response handling design?
