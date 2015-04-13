@@ -536,8 +536,7 @@ public class PaymentAPIConnection {
 	 * Signature is formed from parameters that start with "sph-" Therefore we
 	 * remove other parameters from the signature param set.
 	 * 
-	 * @param map
-	 *            TreeMap that may include all params
+	 * @param map TreeMap that may include all params           
 	 * @return TreeMap with only params starting "sph-"
 	 */
 	protected List<NameValuePair> parseParameters(List<NameValuePair> map) {
