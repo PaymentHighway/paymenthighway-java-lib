@@ -33,8 +33,6 @@ public class FormAPIConnection {
 	private final static String METHOD_POST = "POST";
 	
 	String serviceUrl = null;
-	String account = null;
-	String merchant = null;
 	String signatureKeyId = null;
 	String signatureSecret = null;
 	
@@ -42,14 +40,10 @@ public class FormAPIConnection {
 	 * Constructor
 	 */
 	public FormAPIConnection(String serviceUrl, 
-			String account, 
-			String merchant, 
 			String signatureKeyId, 
 			String signatureSecret) {	
 		
 		this.serviceUrl = serviceUrl;
-		this.account = account;
-		this.merchant = merchant;
 		this.signatureKeyId = signatureKeyId;
 		this.signatureSecret = signatureSecret;
 	}
