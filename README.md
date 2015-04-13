@@ -9,7 +9,12 @@ For full documentation on the PaymentHighway API visit our developer website: ht
 
 The Java Client is a Maven project built so that it will work on Java 1.7 and Java 1.8. It requires the following third party frameworks: Apache HttpComponents, Jackson JSON. It also uses JUnit test packages.
 
-# Structure
+# Structure 
+
+
+* com.solinor.paymenthighway
+
+Contains API classes. Use these to create Payment Highway API requests.
 
 * connect
 
@@ -21,7 +26,7 @@ Contains classes that serialize and deserialize objects to and from JSON.
 
 * model
 
-Data structures that will be serialized and deserialized in to JSON.
+Data structures that will be serialized and deserialized
 
 * security
 
