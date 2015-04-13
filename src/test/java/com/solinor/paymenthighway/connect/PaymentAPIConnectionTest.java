@@ -824,18 +824,10 @@ public class PaymentAPIConnectionTest {
 			e.printStackTrace();
 		}
 		// test result
-		// System.out.println("status:" + statusResponse.getResult());
 		assertTrue(statusResponse.getResult().toString().contains("message=OK"));
 		assertTrue(statusResponse.getResult().toString().contains("code=100"));
 		assertEquals(statusResponse.getTransaction().get("current_amount"), 9999);
 		assertEquals(statusResponse.getTransaction().get("id"), transactionId.toString());
-		
-		// System.out.println(" transaction:" + statusResponse.getTransaction());
-		// System.out.println(" card:" + statusResponse.getTransaction().get("card"));
-		// System.out.println(" acquirer:" + statusResponse.getTransaction().get("acquirer"));
-		// System.out.println(" id:" + statusResponse.getTransaction().get("id"));
-		// System.out.println(" current amount:" + statusResponse.getTransaction().get("current_amount"));
-	
 	}
 	
 	/**
@@ -903,7 +895,6 @@ public class PaymentAPIConnectionTest {
 		
 	}
 	
-	
 	/**
 	 * This will test successful tokenization request
 	 */
@@ -924,20 +915,22 @@ public class PaymentAPIConnectionTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		UUID id = response.getId();
-		// System.out.println("id:" + id);
+		
 		assertEquals("100", response.getResultCode());
 		assertEquals("OK", response.getResultMessage());
 		
-//		TokenizationResponse tokenResponse = null;
-//		try {
-//			tokenResponse = conn.tokenization(sphHeaders, id);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-		// System.out.println("tokenResponse.getCardToken()=" + tokenResponse.toString());
+		String tokenizationId = "08cc223a-cf93-437c-97a2-f338eaf0d860";
 		
+		TokenizationResponse tokenResponse = null;
+		try {
+			tokenResponse = conn.tokenization(sphHeaders, tokenizationId);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		assertEquals(tokenResponse.getCard().getExpireYear(), "2017");
+		assertEquals(tokenResponse.getCardToken().toString(), "71435029-fbb6-4506-aa86-8529efb640b0");
 	}
+	
 	/**
 	 * This will test successful batch report request
 	 */
@@ -954,14 +947,15 @@ public class PaymentAPIConnectionTest {
 		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
 		
 		// day format: <yyyyMMdd>
-		String date = "20150407";
+		String date = "20150408";
 		String result = null;
 		try {
 			result = conn.fetchReport(sphHeaders, date);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+		// tests only that response is from the right function
+		assertTrue(result.contains("settlements"));
 	}
 }
 
