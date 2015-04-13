@@ -22,8 +22,6 @@ public class FormAPI {
 	 * either assign directly or use setter methods.
 	 */
 	String serviceUrl = null;
-	String account = null;
-	String merchant = null;
 	String signatureKeyId = null;
 	String signatureSecret = null;
 
@@ -40,8 +38,8 @@ public class FormAPI {
 	 * @throws IOException
 	 */
 	public String addCard(List<NameValuePair> parameters) throws IOException {
-		FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, this.account, 
-				this.merchant, this.signatureKeyId, this.signatureSecret);
+		FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, 
+				this.signatureKeyId, this.signatureSecret);
 		return formApi.addCardRequest(parameters);
 	}
 	
@@ -52,8 +50,8 @@ public class FormAPI {
 	 * @throws IOException
 	 */
 	public String payWithCard(List<NameValuePair> parameters) throws IOException {
-		FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, this.account, 
-				this.merchant, this.signatureKeyId, this.signatureSecret);
+		FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
+				this.signatureKeyId, this.signatureSecret);
 		return formApi.paymentRequest(parameters);
 	}
 	
@@ -64,8 +62,8 @@ public class FormAPI {
 	 * @throws IOException
 	 */
 	public String addCardAndPay(List<NameValuePair> parameters) throws IOException {
-		FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, this.account, 
-				this.merchant, this.signatureKeyId, this.signatureSecret);
+		FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, 
+				this.signatureKeyId, this.signatureSecret);
 		return formApi.addCardAndPayRequest(parameters);
 	}
 	
@@ -74,14 +72,6 @@ public class FormAPI {
 	 */
 	public void setServiceUrl(String serviceUrl) {
 		this.serviceUrl = serviceUrl;
-	}
-
-	public void setAccount(String account) {
-		this.account = account;
-	}
-
-	public void setMerchant(String merchant) {
-		this.merchant = merchant;
 	}
 
 	public void setSignatureKeyId(String signatureKeyId) {
