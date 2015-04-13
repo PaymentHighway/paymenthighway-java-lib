@@ -291,7 +291,7 @@ public class FormAPIConnectionTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("response="+ response);// parse tokenization id from response. regex look behind pattern
+		// System.out.println("response="+ response);// parse tokenization id from response. regex look behind pattern
 		Matcher matcher = Pattern.compile("(?<=form action=\").{51}").matcher(response);
 		matcher.find();
 		String formUri = matcher.group();
