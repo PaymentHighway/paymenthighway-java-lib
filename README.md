@@ -7,7 +7,28 @@ This code is provided as-is, use it as inspiration, reference or drop it directl
 
 For full documentation on the PaymentHighway API visit our developer website: https://paymenthighway.fi/dev/
 
-TODO: 
+The Java Client is a Maven project built so that it will work on Java 1.7 and Java 1.8. It requires the following third party frameworks: Apache HttpComponents, Jackson JSON. It also uses JUnit test packages.
+
+# Structure
+
+* connect
+
+Contains the actual classes that are responsible for the communication Payment Highway.
+
+* json
+
+Contains classes that serialize and deserialize objects to and from JSON.
+
+* model
+
+Data structures that will be serialized and deserialized in to JSON.
+
+* security
+
+Contains classes that take care of keys and signatures.
+
+# TODO
+
 - Test Form API submit form (get redirect and token)
 - Test debit transaction with token.
 - JSON model coherence check

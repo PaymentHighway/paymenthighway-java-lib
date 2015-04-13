@@ -16,7 +16,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.solinor.paymenthighway.PaymentHighwayUtility;
-import com.solinor.paymenthighway.connect.SecureSigner;
+import com.solinor.paymenthighway.security.SecureSigner;
 
 public class SecureSignerTest {
 

@@ -36,6 +36,7 @@ import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
 import com.solinor.paymenthighway.model.TransactionResponse;
 import com.solinor.paymenthighway.model.TransactionStatusResponse;
+import com.solinor.paymenthighway.security.SecureSigner;
 
 /**
  * PaymentHighway Payment API Connections

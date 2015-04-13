@@ -32,6 +32,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.solinor.paymenthighway.PaymentHighwayUtility;
+import com.solinor.paymenthighway.security.SecureSigner;
 
 /**
  * Test class for Form API connections

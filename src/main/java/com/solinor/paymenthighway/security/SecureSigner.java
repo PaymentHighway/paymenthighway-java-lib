@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.solinor.paymenthighway.connect;
+package com.solinor.paymenthighway.security;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
