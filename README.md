@@ -18,7 +18,7 @@ Contains API classes. Use these to create Payment Highway API requests.
 
 * connect
 
-Contains the actual classes that are responsible for the communication Payment Highway.
+Contains the actual classes that are responsible of the communication with Payment Highway.
 
 * json
 
@@ -34,18 +34,14 @@ Contains classes that take care of keys and signatures.
 
 # TODO
 
-- Test Form API submit form (get redirect and token)
-- Test debit transaction with token.
-- JSON model coherence check
-
-DONE: - daily batch report might be empty? note: only for today. reports available from previous day.
-DONE: - Form API probably doesn't need merchant and account data everywhere. remove. 
-
-- should we do init transaction on behalf of customer when doing transactions?
-
-- daily batch report response model is not done. 
-
-- response authentication
-- response handling design?
-- write documents ( https://paymenthighway.fi/dev/ )
+- [ ] Test Form API submit form (get redirect and token)
+- [ ] Test debit transaction with token.
+- [ ] JSON model coherence check
+- [x] daily batch report might be empty? note: only for today. reports available from previous day.
+- [x] Form API probably doesn't need merchant and account data everywhere. remove. 
+- [ ]should we do init transaction on behalf of customer when doing transactions?
+- [ ] daily batch report response model is not done. 
+- [ ] response authentication
+- [ ] response handling design?
+- [ ] write documents ( https://paymenthighway.fi/dev/ )
 
