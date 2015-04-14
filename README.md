@@ -44,3 +44,7 @@ Contains classes that take care of keys and signatures.
 - [ ] response handling design
 - [ ] write documents ( https://paymenthighway.fi/dev/ )
 
+# Help us make it better
+
+Please tell us how we can make the API better. If you have a specific feature request or if you found a bug, please use GitHub issues. Fork these docs and send a pull request with improvements.
+
