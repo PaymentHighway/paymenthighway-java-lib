@@ -21,6 +21,7 @@ import com.solinor.paymenthighway.model.CommitTransactionRequest;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
 import com.solinor.paymenthighway.model.RevertTransactionRequest;
+import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
 import com.solinor.paymenthighway.model.TransactionResponse;
 import com.solinor.paymenthighway.model.TransactionStatusResponse;
@@ -373,5 +374,34 @@ public class PaymentAPITest {
 		assertEquals(statusResponse.getTransaction().get("current_amount"), 49);
 		assertEquals(statusResponse.getTransaction().get("id"),
 				transactionId.toString());
+	}
+	
+	@Test
+	public void testTokenize() {
+		
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("sph-account", "test"));
+		nameValuePairs.add(new BasicNameValuePair("sph-merchant",
+				"test_merchantId"));
+		nameValuePairs.add(new BasicNameValuePair("sph-timestamp",
+				PaymentHighwayUtility.getUtcTimestamp()));
+		nameValuePairs.add(new BasicNameValuePair("sph-request-id",
+				PaymentHighwayUtility.createRequestId()));
+
+		// create the payment highway service
+		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
+				this.signatureKeyId, this.signatureSecret);
+		
+		// TODO: Change this so that a fresh tokenId is read from paymenthighway
+		String tokenizationId = "08cc223a-cf93-437c-97a2-f338eaf0d860";
+		
+		TokenizationResponse tokenResponse = null;
+		try {
+			tokenResponse = paymentAPI.tokenize(nameValuePairs, tokenizationId);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		assertEquals(tokenResponse.getCard().getExpireYear(), "2017");
+		assertEquals(tokenResponse.getCardToken().toString(), "71435029-fbb6-4506-aa86-8529efb640b0");
 	}
 }

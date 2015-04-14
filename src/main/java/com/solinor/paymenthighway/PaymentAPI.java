@@ -14,6 +14,7 @@ import com.solinor.paymenthighway.model.CommitTransactionRequest;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
 import com.solinor.paymenthighway.model.RevertTransactionRequest;
+import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
 import com.solinor.paymenthighway.model.TransactionResponse;
 import com.solinor.paymenthighway.model.TransactionStatusResponse;
@@ -26,7 +27,7 @@ import com.solinor.paymenthighway.model.TransactionStatusResponse;
 public class PaymentAPI {
 
 	/*
-	 * These needs to be defined either assign directly, via constructor or use
+	 * These needs to be defined: either assign directly, via constructor or use
 	 * setter methods.
 	 */
 	String serviceUrl = null;
@@ -127,6 +128,21 @@ public class PaymentAPI {
 				this.serviceUrl, this.signatureKeyId, this.signatureSecret);
 		return paymentApi.commitTransaction(nameValuePairs, transactionId,
 				request);
+	}
+
+	/**
+	 * Payment Highway Tokenize Request
+	 * 
+	 * @param nameValuePairs
+	 * @param transactionId
+	 * @return TokenizationResponse
+	 * @throws IOException
+	 */
+	public TokenizationResponse tokenize(List<NameValuePair> nameValuePairs,
+			String tokenizationId) throws IOException {
+		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
+				this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		return paymentApi.tokenization(nameValuePairs, tokenizationId);
 	}
 
 	/*
