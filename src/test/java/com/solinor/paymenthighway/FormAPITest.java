@@ -118,7 +118,7 @@ public class FormAPITest {
         nameValuePairs.add(new BasicNameValuePair("language", "EN"));
         nameValuePairs.add(new BasicNameValuePair("description", "payment description"));
         
-        // create the paymenthighway service
+        // create the payment highway service
         FormAPI service = new FormAPI();
         service.setServiceUrl(this.serviceUrl);
         service.setSignatureKeyId(this.signatureKeyId);
@@ -150,7 +150,7 @@ public class FormAPITest {
         nameValuePairs.add(new BasicNameValuePair("language", "EN"));
         nameValuePairs.add(new BasicNameValuePair("description", "payment description"));
         
-        // create the paymenthighway service
+        // create the payment highway service
         FormAPI service = new FormAPI();
         service.setServiceUrl(this.serviceUrl);
         service.setSignatureKeyId(this.signatureKeyId);
