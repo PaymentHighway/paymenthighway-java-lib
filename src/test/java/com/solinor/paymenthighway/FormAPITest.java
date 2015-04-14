@@ -25,6 +25,11 @@ import org.junit.Test;
  */
 public class FormAPITest {
 
+	Properties props = null;
+	private String serviceUrl;
+	private String signatureKeyId;
+	private String signatureSecret;
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -44,6 +49,17 @@ public class FormAPITest {
 	 */
 	@Before
 	public void setUp() throws Exception {
+		// required system information and authentication credentials
+        // we read this from file, but can be from everywhere
+		try {
+			this.props = PaymentHighwayUtility.getProperties();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		this.serviceUrl = this.props.getProperty("service_url");
+        this.signatureKeyId = this.props.getProperty("signature_key_id");
+        this.signatureSecret = this.props.getProperty("signature_secret");
 	}
 
 	/**
@@ -57,41 +73,28 @@ public class FormAPITest {
 	public void testAddCard() {
 		
 		// required fields
-		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-		parameters.add(new BasicNameValuePair("sph-account", "test"));
-        parameters.add(new BasicNameValuePair("sph-amount", "990"));
-        parameters.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com/"));
-        parameters.add(new BasicNameValuePair("sph-currency", "EUR"));
-        parameters.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
-        parameters.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        parameters.add(new BasicNameValuePair("sph-order", "1000123A"));
-        parameters.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-        parameters.add(new BasicNameValuePair("sph-success-url", "https://www.paymenthighway.fi/"));
-        parameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        parameters.add(new BasicNameValuePair("language", "EN"));
-        
-        // required system information and authentication credentials
-        // we read this from file, but can be from everywhere
-        Properties props = null;
-		try {
-			props = PaymentHighwayUtility.getProperties();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-        String serviceUrl = props.getProperty("service_url");
-        String signatureKeyId = props.getProperty("signature_key_id");
-        String signatureSecret = props.getProperty("signature_secret");
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("sph-account", "test"));
+        nameValuePairs.add(new BasicNameValuePair("sph-amount", "990"));
+        nameValuePairs.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com/"));
+        nameValuePairs.add(new BasicNameValuePair("sph-currency", "EUR"));
+        nameValuePairs.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
+        nameValuePairs.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
+        nameValuePairs.add(new BasicNameValuePair("sph-order", "1000123A"));
+        nameValuePairs.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
+        nameValuePairs.add(new BasicNameValuePair("sph-success-url", "https://www.paymenthighway.fi/"));
+        nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
+        nameValuePairs.add(new BasicNameValuePair("language", "EN"));
         
         // create the payment highway service
         FormAPI service = new FormAPI();
-        service.setServiceUrl(serviceUrl);
-        service.setSignatureKeyId(signatureKeyId);
-        service.setSignatureSecret(signatureSecret);
+        service.setServiceUrl(this.serviceUrl);
+        service.setSignatureKeyId(this.signatureKeyId);
+        service.setSignatureSecret(this.signatureSecret);
         
         String result = null;
 		try {
-			result = service.addCard(parameters);
+			result = service.addCard(nameValuePairs);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -101,42 +104,29 @@ public class FormAPITest {
 	public void testPayWithCard() {
 		
 		// required fields
-		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-		parameters.add(new BasicNameValuePair("sph-account", "test"));
-        parameters.add(new BasicNameValuePair("sph-amount", "990"));
-        parameters.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com/"));
-        parameters.add(new BasicNameValuePair("sph-currency", "EUR"));
-        parameters.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
-        parameters.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        parameters.add(new BasicNameValuePair("sph-order", "1000123A"));
-        parameters.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-        parameters.add(new BasicNameValuePair("sph-success-url", "https://www.paymenthighway.fi/"));
-        parameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        parameters.add(new BasicNameValuePair("language", "EN"));
-        parameters.add(new BasicNameValuePair("description", "payment description"));
-        
-        // required system information and authentication credentials
-        // we read this from file, but can be from everywhere
-        Properties props = null;
-		try {
-			props = PaymentHighwayUtility.getProperties();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-        String serviceUrl = props.getProperty("service_url");
-        String signatureKeyId = props.getProperty("signature_key_id");
-        String signatureSecret = props.getProperty("signature_secret");
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("sph-account", "test"));
+        nameValuePairs.add(new BasicNameValuePair("sph-amount", "990"));
+        nameValuePairs.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com/"));
+        nameValuePairs.add(new BasicNameValuePair("sph-currency", "EUR"));
+        nameValuePairs.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
+        nameValuePairs.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
+        nameValuePairs.add(new BasicNameValuePair("sph-order", "1000123A"));
+        nameValuePairs.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
+        nameValuePairs.add(new BasicNameValuePair("sph-success-url", "https://www.paymenthighway.fi/"));
+        nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
+        nameValuePairs.add(new BasicNameValuePair("language", "EN"));
+        nameValuePairs.add(new BasicNameValuePair("description", "payment description"));
         
         // create the paymenthighway service
         FormAPI service = new FormAPI();
-        service.setServiceUrl(serviceUrl);
-        service.setSignatureKeyId(signatureKeyId);
-        service.setSignatureSecret(signatureSecret);
+        service.setServiceUrl(this.serviceUrl);
+        service.setSignatureKeyId(this.signatureKeyId);
+        service.setSignatureSecret(this.signatureSecret);
         
         String result = null;
 		try {
-			result = service.payWithCard(parameters);
+			result = service.payWithCard(nameValuePairs);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -146,47 +136,32 @@ public class FormAPITest {
 	public void testAddCardAndPay() {
 		
 		// required fields
-		List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-		parameters.add(new BasicNameValuePair("sph-account", "test"));
-        parameters.add(new BasicNameValuePair("sph-amount", "990"));
-        parameters.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com/"));
-        parameters.add(new BasicNameValuePair("sph-currency", "EUR"));
-        parameters.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
-        parameters.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        parameters.add(new BasicNameValuePair("sph-order", "1000123A"));
-        parameters.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-        parameters.add(new BasicNameValuePair("sph-success-url", "https://www.paymenthighway.fi/"));
-        parameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        parameters.add(new BasicNameValuePair("language", "EN"));
-        parameters.add(new BasicNameValuePair("description", "payment description"));
-        
-        // required system information and authentication credentials
-        // we read this from file, but can be from everywhere
-        Properties props = null;
-		try {
-			props = PaymentHighwayUtility.getProperties();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-
-        String serviceUrl = props.getProperty("service_url");
-        String signatureKeyId = props.getProperty("signature_key_id");
-        String signatureSecret = props.getProperty("signature_secret");
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("sph-account", "test"));
+        nameValuePairs.add(new BasicNameValuePair("sph-amount", "990"));
+        nameValuePairs.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com/"));
+        nameValuePairs.add(new BasicNameValuePair("sph-currency", "EUR"));
+        nameValuePairs.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
+        nameValuePairs.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
+        nameValuePairs.add(new BasicNameValuePair("sph-order", "1000123A"));
+        nameValuePairs.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
+        nameValuePairs.add(new BasicNameValuePair("sph-success-url", "https://www.paymenthighway.fi/"));
+        nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
+        nameValuePairs.add(new BasicNameValuePair("language", "EN"));
+        nameValuePairs.add(new BasicNameValuePair("description", "payment description"));
         
         // create the paymenthighway service
         FormAPI service = new FormAPI();
-        service.setServiceUrl(serviceUrl);
-        service.setSignatureKeyId(signatureKeyId);
-        service.setSignatureSecret(signatureSecret);
+        service.setServiceUrl(this.serviceUrl);
+        service.setSignatureKeyId(this.signatureKeyId);
+        service.setSignatureSecret(this.signatureSecret);
         
         String result = null;
 		try {
-			result = service.addCardAndPay(parameters);
+			result = service.addCardAndPay(nameValuePairs);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// System.out.println("add card and pay result="+ result);
         assertTrue(result.contains("Test customer"));
         assertTrue(result.contains("sph-card-form"));
 	}
