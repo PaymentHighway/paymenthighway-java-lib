@@ -34,6 +34,9 @@ import com.solinor.paymenthighway.model.TransactionRequest.Card;
 public class PaymentAPITest {
 
 	Properties props;
+	private String serviceUrl;
+	private String signatureKeyId;
+	private String signatureSecret;
 
 	/**
 	 * @throws java.lang.Exception
@@ -62,6 +65,9 @@ public class PaymentAPITest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		this.serviceUrl = this.props.getProperty("service_url");
+		this.signatureKeyId = this.props.getProperty("signature_key_id");
+		this.signatureSecret = this.props.getProperty("signature_secret");
 	}
 
 	/**
@@ -74,12 +80,8 @@ public class PaymentAPITest {
 	@Test
 	public void testInitTransaction() {
 
-		String serviceUrl = this.props.getProperty("service_url");
-		String signatureKeyId = this.props.getProperty("signature_key_id");
-		String signatureSecret = this.props.getProperty("signature_secret");
-
 		// create the payment highway service
-		PaymentAPI paymentService = new PaymentAPI(serviceUrl, signatureKeyId,
+		PaymentAPI paymentAPI = new PaymentAPI(serviceUrl, signatureKeyId,
 				signatureSecret);
 
 		List<NameValuePair> nameValueHeaders = new ArrayList<NameValuePair>();
@@ -94,7 +96,7 @@ public class PaymentAPITest {
 
 		InitTransactionResponse response = null;
 		try {
-			response = paymentService.initTransaction(nameValueHeaders);
+			response = paymentAPI.initTransaction(nameValueHeaders);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -106,13 +108,9 @@ public class PaymentAPITest {
 	@Test
 	public void testDebitTransaction() {
 
-		String serviceUrl = this.props.getProperty("service_url");
-		String signatureKeyId = this.props.getProperty("signature_key_id");
-		String signatureSecret = this.props.getProperty("signature_secret");
-
 		// create the payment highway service
-		PaymentAPI paymentService = new PaymentAPI(serviceUrl, signatureKeyId,
-				signatureSecret);
+		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
+				this.signatureKeyId, this.signatureSecret);
 
 		List<NameValuePair> nameValueHeaders = new ArrayList<NameValuePair>();
 
@@ -126,7 +124,7 @@ public class PaymentAPITest {
 
 		InitTransactionResponse response = null;
 		try {
-			response = paymentService.initTransaction(nameValueHeaders);
+			response = paymentAPI.initTransaction(nameValueHeaders);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -148,8 +146,8 @@ public class PaymentAPITest {
 
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = paymentService.debitTransaction(
-					nameValueHeaders, transactionId, transaction);
+			transactionResponse = paymentAPI.debitTransaction(nameValueHeaders,
+					transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -161,13 +159,9 @@ public class PaymentAPITest {
 	@Test
 	public void testCommitTransaction() {
 
-		String serviceUrl = this.props.getProperty("service_url");
-		String signatureKeyId = this.props.getProperty("signature_key_id");
-		String signatureSecret = this.props.getProperty("signature_secret");
-
 		// create the payment highway service
-		PaymentAPI paymentService = new PaymentAPI(serviceUrl, signatureKeyId,
-				signatureSecret);
+		PaymentAPI paymentService = new PaymentAPI(this.serviceUrl,
+				this.signatureKeyId, this.signatureSecret);
 
 		List<NameValuePair> nameValueHeaders = new ArrayList<NameValuePair>();
 
@@ -233,13 +227,9 @@ public class PaymentAPITest {
 	@Test
 	public void testRevertTransaction() {
 
-		String serviceUrl = this.props.getProperty("service_url");
-		String signatureKeyId = this.props.getProperty("signature_key_id");
-		String signatureSecret = this.props.getProperty("signature_secret");
-
 		// create the payment highway service
-		PaymentAPI paymentService = new PaymentAPI(serviceUrl, signatureKeyId,
-				signatureSecret);
+		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
+				this.signatureKeyId, this.signatureSecret);
 
 		List<NameValuePair> nameValueHeaders = new ArrayList<NameValuePair>();
 
@@ -254,7 +244,7 @@ public class PaymentAPITest {
 		// init transaction
 		InitTransactionResponse response = null;
 		try {
-			response = paymentService.initTransaction(nameValueHeaders);
+			response = paymentAPI.initTransaction(nameValueHeaders);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -277,8 +267,8 @@ public class PaymentAPITest {
 
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = paymentService.debitTransaction(
-					nameValueHeaders, transactionId, transaction);
+			transactionResponse = paymentAPI.debitTransaction(nameValueHeaders,
+					transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -288,14 +278,12 @@ public class PaymentAPITest {
 
 		// revert transaction
 		RevertTransactionRequest revertTransaction = new RevertTransactionRequest();
-		revertTransaction.setAmount("9999"); // this is optional, will default
-												// to full amount
-		revertTransaction.setBlocking(true); // this is optional, will default
-												// to true
+		revertTransaction.setAmount("9999");
+		revertTransaction.setBlocking(true);
 
 		TransactionResponse revertResponse = null;
 		try {
-			revertResponse = paymentService.revertTransaction(nameValueHeaders,
+			revertResponse = paymentAPI.revertTransaction(nameValueHeaders,
 					transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -307,13 +295,9 @@ public class PaymentAPITest {
 	@Test
 	public void testTransactionStatus() {
 
-		String serviceUrl = this.props.getProperty("service_url");
-		String signatureKeyId = this.props.getProperty("signature_key_id");
-		String signatureSecret = this.props.getProperty("signature_secret");
-
 		// create the payment highway service
-		PaymentAPI paymentService = new PaymentAPI(serviceUrl, signatureKeyId,
-				signatureSecret);
+		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
+				this.signatureKeyId, this.signatureSecret);
 
 		List<NameValuePair> nameValueHeaders = new ArrayList<NameValuePair>();
 
@@ -328,7 +312,7 @@ public class PaymentAPITest {
 		// init transaction
 		InitTransactionResponse response = null;
 		try {
-			response = paymentService.initTransaction(nameValueHeaders);
+			response = paymentAPI.initTransaction(nameValueHeaders);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -351,8 +335,8 @@ public class PaymentAPITest {
 
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = paymentService.debitTransaction(
-					nameValueHeaders, transactionId, transaction);
+			transactionResponse = paymentAPI.debitTransaction(nameValueHeaders,
+					transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -362,14 +346,12 @@ public class PaymentAPITest {
 
 		// revert transaction
 		RevertTransactionRequest revertTransaction = new RevertTransactionRequest();
-		revertTransaction.setAmount("9950"); // this is optional, will default
-												// to full amount
-		revertTransaction.setBlocking(true); // this is optional, will default
-												// to true
+		revertTransaction.setAmount("9950");
+		revertTransaction.setBlocking(true);
 
 		TransactionResponse revertResponse = null;
 		try {
-			revertResponse = paymentService.revertTransaction(nameValueHeaders,
+			revertResponse = paymentAPI.revertTransaction(nameValueHeaders,
 					transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -381,7 +363,7 @@ public class PaymentAPITest {
 		TransactionStatusResponse statusResponse = null;
 
 		try {
-			statusResponse = paymentService.transactionStatus(nameValueHeaders,
+			statusResponse = paymentAPI.transactionStatus(nameValueHeaders,
 					transactionId);
 		} catch (IOException e) {
 			e.printStackTrace();
