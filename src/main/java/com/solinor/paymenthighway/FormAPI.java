@@ -18,7 +18,7 @@ import com.solinor.paymenthighway.connect.FormAPIConnection;
 public class FormAPI {
 
 	/*
-	 * These needs to be defined
+	 * These need to be defined
 	 * either assign directly, via constructor or use setter methods.
 	 */
 	String serviceUrl = null;
@@ -28,9 +28,6 @@ public class FormAPI {
 	/**
 	 * Constructors
 	 */
-	public FormAPI() { 
-	}	
-	
 	public FormAPI(String serviceUrl, String signatureKeyId,
 			String signatureSecret) {
 		this.serviceUrl = serviceUrl;
@@ -73,19 +70,5 @@ public class FormAPI {
 				this.signatureKeyId, this.signatureSecret);
 		return formApi.addCardAndPayRequest(nameValuePairs);
 	}
-	
-	/*
-	 * Setters
-	 */
-	public void setServiceUrl(String serviceUrl) {
-		this.serviceUrl = serviceUrl;
-	}
 
-	public void setSignatureKeyId(String signatureKeyId) {
-		this.signatureKeyId = signatureKeyId;
-	}
-
-	public void setSignatureSecret(String signatureSecret) {
-		this.signatureSecret = signatureSecret;
-	}
 }
