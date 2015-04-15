@@ -4,6 +4,7 @@
 package com.solinor.paymenthighway.connect;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -26,6 +27,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
+import com.solinor.paymenthighway.PaymentHighwayUtility;
 import com.solinor.paymenthighway.json.JsonGenerator;
 import com.solinor.paymenthighway.json.JsonParser;
 import com.solinor.paymenthighway.model.CommitTransactionRequest;
@@ -54,6 +56,8 @@ public class PaymentAPIConnection {
 	private String serviceUrl = "";
 	private String signatureKeyId = null;
 	private String signatureSecret = null;
+	private String account = null;
+	private String merchant = null;
 
 	/**
 	 * Constructor
@@ -65,20 +69,21 @@ public class PaymentAPIConnection {
 	 * @param signatureSecret
 	 */
 	public PaymentAPIConnection(String serviceUrl, String signatureKeyId,
-			String signatureSecret) {
+			String signatureSecret, String account, String merchant) {
 
 		this.serviceUrl = serviceUrl;
 		this.signatureKeyId = signatureKeyId;
 		this.signatureSecret = signatureSecret;
+		this.account = account;
+		this.merchant = merchant;
 	}
 
-	public InitTransactionResponse initTransactionHandle(
-			List<NameValuePair> nameValuePairs) throws ClientProtocolException,
-			IOException {
+	public InitTransactionResponse initTransactionHandle() 
+			throws ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
-		this.sortParameters(nameValuePairs);
+		List<NameValuePair> nameValuePairs = this.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/transaction";
 		try {
@@ -120,14 +125,13 @@ public class PaymentAPIConnection {
 		}
 	}
 
-	public TransactionResponse debitTransaction(
-			List<NameValuePair> nameValuePairs, UUID transactionId,
+	public TransactionResponse debitTransaction(UUID transactionId,
 			TransactionRequest request) throws ClientProtocolException,
 			IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-
+		
 		// sort alphabetically per key
-		this.sortParameters(nameValuePairs);
+		List<NameValuePair> nameValuePairs = this.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/debit";
@@ -153,7 +157,7 @@ public class PaymentAPIConnection {
 				public String handleResponse(final HttpResponse response)
 						throws ClientProtocolException, IOException {
 					int status = response.getStatusLine().getStatusCode();
-					if (status >= 200 && status < 300) {
+					if (status >= 200 && status < 300) { // 401 PaymentHighwayAuthException?
 						HttpEntity entity = response.getEntity();
 						return entity != null ? EntityUtils.toString(entity)
 								: null;
@@ -175,14 +179,13 @@ public class PaymentAPIConnection {
 		}
 	}
 
-	public TransactionResponse creditTransaction(
-			List<NameValuePair> nameValuePairs, UUID transactionId,
+	public TransactionResponse creditTransaction(UUID transactionId,
 			TransactionRequest request) throws ClientProtocolException,
 			IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
-		this.sortParameters(nameValuePairs);
+		List<NameValuePair> nameValuePairs = this.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/credit";
@@ -230,14 +233,13 @@ public class PaymentAPIConnection {
 		}
 	}
 
-	public TransactionResponse revertTransaction(
-			List<NameValuePair> nameValuePairs, UUID transactionId,
+	public TransactionResponse revertTransaction(UUID transactionId,
 			RevertTransactionRequest request) throws ClientProtocolException,
 			IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
-		this.sortParameters(nameValuePairs);
+		List<NameValuePair> nameValuePairs = this.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/revert";
@@ -285,14 +287,13 @@ public class PaymentAPIConnection {
 		}
 	}
 
-	public CommitTransactionResponse commitTransaction(
-			List<NameValuePair> nameValuePairs, UUID transactionId,
+	public CommitTransactionResponse commitTransaction(UUID transactionId,
 			CommitTransactionRequest request) throws ClientProtocolException,
 			IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-
+		
 		// sort alphabetically per key
-		this.sortParameters(nameValuePairs);
+		List<NameValuePair> nameValuePairs = this.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/commit";
@@ -340,13 +341,12 @@ public class PaymentAPIConnection {
 		}
 	}
 
-	public TransactionStatusResponse transactionStatus(
-			List<NameValuePair> nameValuePairs, UUID transactionId)
+	public TransactionStatusResponse transactionStatus(UUID transactionId)
 			throws ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
-		this.sortParameters(nameValuePairs);
+		List<NameValuePair> nameValuePairs = this.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/transaction/";
 
@@ -391,13 +391,12 @@ public class PaymentAPIConnection {
 		}
 	}
 
-	public TokenizationResponse tokenization(
-			List<NameValuePair> nameValuePairs, String tokenizationId)
+	public TokenizationResponse tokenization(String tokenizationId)
 			throws ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
-		this.sortParameters(nameValuePairs);
+		List<NameValuePair> nameValuePairs = this.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/tokenization/";
 
@@ -442,12 +441,12 @@ public class PaymentAPIConnection {
 		}
 	}
 
-	public String fetchReport(List<NameValuePair> nameValuePairs, String date)
+	public String fetchReport(String date)
 			throws ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
-		this.sortParameters(nameValuePairs);
+		List<NameValuePair> nameValuePairs = this.sortParameters(createNameValuePairs());
 
 		final String reportUri = "/report/batch/";
 
@@ -556,7 +555,7 @@ public class PaymentAPIConnection {
 	 * @param nameValuePairs
 	 * @return List sorted list
 	 */
-	protected void sortParameters(List<NameValuePair> nameValuePairs) {
+	protected List<NameValuePair> sortParameters(List<NameValuePair> nameValuePairs) {
 		Comparator<NameValuePair> comp = new Comparator<NameValuePair>() {
 			@Override
 			public int compare(NameValuePair p1, NameValuePair p2) {
@@ -564,6 +563,21 @@ public class PaymentAPIConnection {
 			}
 		};
 		Collections.sort(nameValuePairs, comp);
+		return nameValuePairs;
 	}
 
+	/**
+	 * Create name value pairs
+	 * @return
+	 */
+	private List<NameValuePair> createNameValuePairs() {
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("sph-account", this.account));
+		nameValuePairs.add(new BasicNameValuePair("sph-merchant", this.merchant));
+		nameValuePairs.add(new BasicNameValuePair("sph-timestamp",
+				PaymentHighwayUtility.getUtcTimestamp()));
+		nameValuePairs.add(new BasicNameValuePair("sph-request-id",
+				PaymentHighwayUtility.createRequestId()));
+		return nameValuePairs;
+	}
 }
