@@ -29,14 +29,13 @@ import com.solinor.paymenthighway.model.TransactionStatusResponse;
 public class PaymentAPI {
 
 	/*
-	 * These needs to be defined: either assign directly, via constructor or use
-	 * setter methods.
+	 * These need to be defined
 	 */
-	String serviceUrl = null;
-	String signatureKeyId = null;
-	String signatureSecret = null;
-	String account = null;
-	String merchant = null;
+	private String serviceUrl = null;
+	private String signatureKeyId = null;
+	private String signatureSecret = null;
+	private String account = null;
+	private String merchant = null;
 
 	public PaymentAPI(String serviceUrl, String signatureKeyId,
 			String signatureSecret, String account, String merchant) {
@@ -136,21 +135,6 @@ public class PaymentAPI {
 		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
 				this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		return paymentApi.tokenization(tokenizationId);
-	}
-
-	/*
-	 * Setter methods
-	 */
-	public void setServiceUrl(String serviceUrl) {
-		this.serviceUrl = serviceUrl;
-	}
-
-	public void setSignatureKeyId(String signatureKeyId) {
-		this.signatureKeyId = signatureKeyId;
-	}
-
-	public void setSignatureSecret(String signatureSecret) {
-		this.signatureSecret = signatureSecret;
 	}
 
 }
