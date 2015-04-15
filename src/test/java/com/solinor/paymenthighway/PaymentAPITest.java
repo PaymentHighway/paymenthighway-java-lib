@@ -4,13 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,9 +19,9 @@ import com.solinor.paymenthighway.model.InitTransactionResponse;
 import com.solinor.paymenthighway.model.RevertTransactionRequest;
 import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
+import com.solinor.paymenthighway.model.TransactionRequest.Card;
 import com.solinor.paymenthighway.model.TransactionResponse;
 import com.solinor.paymenthighway.model.TransactionStatusResponse;
-import com.solinor.paymenthighway.model.TransactionRequest.Card;
 
 /**
  * PaymentHighway Payment API tests
@@ -38,6 +34,8 @@ public class PaymentAPITest {
 	private String serviceUrl;
 	private String signatureKeyId;
 	private String signatureSecret;
+	private String account;
+	private String merchant;
 
 	/**
 	 * @throws java.lang.Exception
@@ -69,6 +67,8 @@ public class PaymentAPITest {
 		this.serviceUrl = this.props.getProperty("service_url");
 		this.signatureKeyId = this.props.getProperty("signature_key_id");
 		this.signatureSecret = this.props.getProperty("signature_secret");
+		this.account = this.props.getProperty("sph-account");
+		this.merchant = this.props.getProperty("sph-merchant");
 	}
 
 	/**
@@ -83,21 +83,11 @@ public class PaymentAPITest {
 
 		// create the payment highway service
 		PaymentAPI paymentAPI = new PaymentAPI(serviceUrl, signatureKeyId,
-				signatureSecret);
-
-		List<NameValuePair> nameValueHeaders = new ArrayList<NameValuePair>();
-
-		nameValueHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		nameValueHeaders.add(new BasicNameValuePair("sph-merchant",
-				"test_merchantId"));
-		nameValueHeaders.add(new BasicNameValuePair("sph-timestamp",
-				PaymentHighwayUtility.getUtcTimestamp()));
-		nameValueHeaders.add(new BasicNameValuePair("sph-request-id",
-				PaymentHighwayUtility.createRequestId()));
-
+				signatureSecret, account, merchant);
+		
 		InitTransactionResponse response = null;
 		try {
-			response = paymentAPI.initTransaction(nameValueHeaders);
+			response = paymentAPI.initTransaction();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -111,21 +101,11 @@ public class PaymentAPITest {
 
 		// create the payment highway service
 		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-				this.signatureKeyId, this.signatureSecret);
-
-		List<NameValuePair> nameValueHeaders = new ArrayList<NameValuePair>();
-
-		nameValueHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		nameValueHeaders.add(new BasicNameValuePair("sph-merchant",
-				"test_merchantId"));
-		nameValueHeaders.add(new BasicNameValuePair("sph-timestamp",
-				PaymentHighwayUtility.getUtcTimestamp()));
-		nameValueHeaders.add(new BasicNameValuePair("sph-request-id",
-				PaymentHighwayUtility.createRequestId()));
+				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 
 		InitTransactionResponse response = null;
 		try {
-			response = paymentAPI.initTransaction(nameValueHeaders);
+			response = paymentAPI.initTransaction();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -138,17 +118,18 @@ public class PaymentAPITest {
 		transaction.setBlocking(true);
 
 		Card card = new TransactionRequest.Card();
+		
+		// TODO: move to constructor
 		card.setPan("4153013999700024");
-		card.setCvc("024");
+		card.setCvc("024"); // optional
 		card.setExpiryYear("2017");
 		card.setExpiryMonth("11");
-		card.setVerification("");
+		card.setVerification(""); // TODO: remove
 		transaction.setCard(card);
 
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = paymentAPI.debitTransaction(nameValueHeaders,
-					transactionId, transaction);
+			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -161,22 +142,13 @@ public class PaymentAPITest {
 	public void testCommitTransaction() {
 
 		// create the payment highway service
-		PaymentAPI paymentService = new PaymentAPI(this.serviceUrl,
-				this.signatureKeyId, this.signatureSecret);
+		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
+				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 
-		List<NameValuePair> nameValueHeaders = new ArrayList<NameValuePair>();
-
-		nameValueHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		nameValueHeaders.add(new BasicNameValuePair("sph-merchant",
-				"test_merchantId"));
-		nameValueHeaders.add(new BasicNameValuePair("sph-timestamp",
-				PaymentHighwayUtility.getUtcTimestamp()));
-		nameValueHeaders.add(new BasicNameValuePair("sph-request-id",
-				PaymentHighwayUtility.createRequestId()));
-
+	
 		InitTransactionResponse response = null;
 		try {
-			response = paymentService.initTransaction(nameValueHeaders);
+			response = paymentAPI.initTransaction();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -198,8 +170,7 @@ public class PaymentAPITest {
 
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = paymentService.debitTransaction(
-					nameValueHeaders, transactionId, transaction);
+			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -214,8 +185,7 @@ public class PaymentAPITest {
 
 		CommitTransactionResponse commitResponse = null;
 		try {
-			commitResponse = paymentService.commitTransaction(nameValueHeaders,
-					transactionId, commitRequest);
+			commitResponse = paymentAPI.commitTransaction(transactionId, commitRequest);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -230,22 +200,12 @@ public class PaymentAPITest {
 
 		// create the payment highway service
 		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-				this.signatureKeyId, this.signatureSecret);
-
-		List<NameValuePair> nameValueHeaders = new ArrayList<NameValuePair>();
-
-		nameValueHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		nameValueHeaders.add(new BasicNameValuePair("sph-merchant",
-				"test_merchantId"));
-		nameValueHeaders.add(new BasicNameValuePair("sph-timestamp",
-				PaymentHighwayUtility.getUtcTimestamp()));
-		nameValueHeaders.add(new BasicNameValuePair("sph-request-id",
-				PaymentHighwayUtility.createRequestId()));
+				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 
 		// init transaction
 		InitTransactionResponse response = null;
 		try {
-			response = paymentAPI.initTransaction(nameValueHeaders);
+			response = paymentAPI.initTransaction();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -268,8 +228,7 @@ public class PaymentAPITest {
 
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = paymentAPI.debitTransaction(nameValueHeaders,
-					transactionId, transaction);
+			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -284,8 +243,7 @@ public class PaymentAPITest {
 
 		TransactionResponse revertResponse = null;
 		try {
-			revertResponse = paymentAPI.revertTransaction(nameValueHeaders,
-					transactionId, revertTransaction);
+			revertResponse = paymentAPI.revertTransaction(transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -298,22 +256,12 @@ public class PaymentAPITest {
 
 		// create the payment highway service
 		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-				this.signatureKeyId, this.signatureSecret);
-
-		List<NameValuePair> nameValueHeaders = new ArrayList<NameValuePair>();
-
-		nameValueHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		nameValueHeaders.add(new BasicNameValuePair("sph-merchant",
-				"test_merchantId"));
-		nameValueHeaders.add(new BasicNameValuePair("sph-timestamp",
-				PaymentHighwayUtility.getUtcTimestamp()));
-		nameValueHeaders.add(new BasicNameValuePair("sph-request-id",
-				PaymentHighwayUtility.createRequestId()));
-
+				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+ 
 		// init transaction
 		InitTransactionResponse response = null;
 		try {
-			response = paymentAPI.initTransaction(nameValueHeaders);
+			response = paymentAPI.initTransaction();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -336,8 +284,7 @@ public class PaymentAPITest {
 
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = paymentAPI.debitTransaction(nameValueHeaders,
-					transactionId, transaction);
+			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -352,8 +299,7 @@ public class PaymentAPITest {
 
 		TransactionResponse revertResponse = null;
 		try {
-			revertResponse = paymentAPI.revertTransaction(nameValueHeaders,
-					transactionId, revertTransaction);
+			revertResponse = paymentAPI.revertTransaction(transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -364,8 +310,7 @@ public class PaymentAPITest {
 		TransactionStatusResponse statusResponse = null;
 
 		try {
-			statusResponse = paymentAPI.transactionStatus(nameValueHeaders,
-					transactionId);
+			statusResponse = paymentAPI.transactionStatus(transactionId);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -379,25 +324,16 @@ public class PaymentAPITest {
 	@Test
 	public void testTokenize() {
 		
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		nameValuePairs.add(new BasicNameValuePair("sph-account", "test"));
-		nameValuePairs.add(new BasicNameValuePair("sph-merchant",
-				"test_merchantId"));
-		nameValuePairs.add(new BasicNameValuePair("sph-timestamp",
-				PaymentHighwayUtility.getUtcTimestamp()));
-		nameValuePairs.add(new BasicNameValuePair("sph-request-id",
-				PaymentHighwayUtility.createRequestId()));
-
 		// create the payment highway service
 		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-				this.signatureKeyId, this.signatureSecret);
+				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		
-		// TODO: Change this so that a fresh tokenId is read from paymenthighway
+		// TODO: Change this so that a fresh tokenId is read from payment highway
 		String tokenizationId = "08cc223a-cf93-437c-97a2-f338eaf0d860";
 		
 		TokenizationResponse tokenResponse = null;
 		try {
-			tokenResponse = paymentAPI.tokenize(nameValuePairs, tokenizationId);
+			tokenResponse = paymentAPI.tokenize(tokenizationId);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
