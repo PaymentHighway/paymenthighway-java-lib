@@ -29,6 +29,8 @@ public class FormAPITest {
 	private String serviceUrl;
 	private String signatureKeyId;
 	private String signatureSecret;
+	private String account;
+	private String merchant;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -60,6 +62,8 @@ public class FormAPITest {
 		this.serviceUrl = this.props.getProperty("service_url");
         this.signatureKeyId = this.props.getProperty("signature_key_id");
         this.signatureSecret = this.props.getProperty("signature_secret");
+        this.account = this.props.getProperty("sph-account");
+		this.merchant = this.props.getProperty("sph-merchant");
 	}
 
 	/**
@@ -87,10 +91,7 @@ public class FormAPITest {
         nameValuePairs.add(new BasicNameValuePair("language", "EN"));
         
         // create the payment highway service
-        FormAPI service = new FormAPI();
-        service.setServiceUrl(this.serviceUrl);
-        service.setSignatureKeyId(this.signatureKeyId);
-        service.setSignatureSecret(this.signatureSecret);
+        FormAPI service = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
         
         String result = null;
 		try {
@@ -119,10 +120,7 @@ public class FormAPITest {
         nameValuePairs.add(new BasicNameValuePair("description", "payment description"));
         
         // create the payment highway service
-        FormAPI service = new FormAPI();
-        service.setServiceUrl(this.serviceUrl);
-        service.setSignatureKeyId(this.signatureKeyId);
-        service.setSignatureSecret(this.signatureSecret);
+        FormAPI service = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
         
         String result = null;
 		try {
@@ -151,10 +149,7 @@ public class FormAPITest {
         nameValuePairs.add(new BasicNameValuePair("description", "payment description"));
         
         // create the payment highway service
-        FormAPI service = new FormAPI();
-        service.setServiceUrl(this.serviceUrl);
-        service.setSignatureKeyId(this.signatureKeyId);
-        service.setSignatureSecret(this.signatureSecret);
+        FormAPI service = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
         
         String result = null;
 		try {
