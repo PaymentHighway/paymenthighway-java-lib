@@ -50,4 +50,4 @@ Please tell us how we can make the API better. If you have a specific feature re
 
 # Test it
 
-You can run the test suite normally by mvn test
+You can run the test suite normally by 'mvn test'

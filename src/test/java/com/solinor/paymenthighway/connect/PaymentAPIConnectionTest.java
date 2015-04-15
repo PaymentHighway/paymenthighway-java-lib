@@ -46,6 +46,8 @@ public class PaymentAPIConnectionTest {
 	private String serviceUrl = null;
 	private String signatureKeyId = null;
 	private String signatureSecret = null;
+	private String account = null;
+	private String merchant = null;
 		
 	/**
 	 * @throws java.lang.Exception
@@ -70,6 +72,8 @@ public class PaymentAPIConnectionTest {
 		this.serviceUrl = p.getProperty("service_url");
 		this.signatureKeyId = p.getProperty("signature_key_id");
 		this.signatureSecret = p.getProperty("signature_secret");
+		this.account = p.getProperty("sph-account");
+		this.merchant = p.getProperty("sph-merchant");
 	}
 
 	/**
@@ -96,18 +100,13 @@ public class PaymentAPIConnectionTest {
 
 	@Test
 	public void testInitTransaction() {
-		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = 
+				new PaymentAPIConnection(
+						this.serviceUrl, this.signatureKeyId, 
+						this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -136,7 +135,7 @@ public class PaymentAPIConnectionTest {
 	
 		HttpPost httpPost = new HttpPost(this.serviceUrl + uri);
 		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		conn.addHeaders(httpPost, sphHeaders);
 		
 		assertTrue(httpPost.getAllHeaders().length == 7);
@@ -153,13 +152,12 @@ public class PaymentAPIConnectionTest {
         sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
         sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
   		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -173,17 +171,10 @@ public class PaymentAPIConnectionTest {
 	@Test
 	public void testDebitTransaction1() {
 		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -208,7 +199,7 @@ public class PaymentAPIConnectionTest {
 		
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = conn.debitTransaction(sphHeaders, transactionId, transaction);
+			transactionResponse = conn.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -223,17 +214,10 @@ public class PaymentAPIConnectionTest {
 	@Test
 	public void testDebitTransaction2() {
 		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -258,7 +242,7 @@ public class PaymentAPIConnectionTest {
 		
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = conn.debitTransaction(sphHeaders, transactionId, transaction);
+			transactionResponse = conn.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -272,17 +256,10 @@ public class PaymentAPIConnectionTest {
 	@Test
 	public void testDebitTransaction3() {
 		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret,this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -307,7 +284,7 @@ public class PaymentAPIConnectionTest {
 		
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = conn.debitTransaction(sphHeaders, transactionId, transaction);
+			transactionResponse = conn.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -334,17 +311,10 @@ public class PaymentAPIConnectionTest {
 	@Test
 	public void testRevertTransaction1() {
 		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -369,7 +339,7 @@ public class PaymentAPIConnectionTest {
 		
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = conn.debitTransaction(sphHeaders, transactionId, transaction);
+			transactionResponse = conn.debitTransaction( transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -385,7 +355,7 @@ public class PaymentAPIConnectionTest {
 		revertTransaction.setAmount("9999");
 		revertTransaction.setBlocking(true); // this is optional, will default to true
 		try {
-			revertResponse = conn.revertTransaction(sphHeaders, transactionId, revertTransaction);
+			revertResponse = conn.revertTransaction(transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -402,18 +372,11 @@ public class PaymentAPIConnectionTest {
 	 */
 	@Test
 	public void testRevertTransaction2() {
-		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+			
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -439,7 +402,7 @@ public class PaymentAPIConnectionTest {
 		
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = conn.debitTransaction(sphHeaders, transactionId, transaction);
+			transactionResponse = conn.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -454,7 +417,7 @@ public class PaymentAPIConnectionTest {
 		revertTransaction.setAmount("1000");
 		revertTransaction.setBlocking(true); // this is optional, will default to true
 		try {
-			revertResponse = conn.revertTransaction(sphHeaders, transactionId, revertTransaction);
+			revertResponse = conn.revertTransaction(transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -474,17 +437,10 @@ public class PaymentAPIConnectionTest {
 	@Test
 	public void testRevertTransaction3() {
 		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -509,7 +465,7 @@ public class PaymentAPIConnectionTest {
 		
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = conn.debitTransaction(sphHeaders, transactionId, transaction);
+			transactionResponse = conn.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -524,7 +480,7 @@ public class PaymentAPIConnectionTest {
 		revertTransaction.setAmount("1001");
 		// revertTransaction.setBlocking(true); // this is optional, will default to true
 		try {
-			revertResponse = conn.revertTransaction(sphHeaders, transactionId, revertTransaction);
+			revertResponse = conn.revertTransaction(transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -545,17 +501,10 @@ public class PaymentAPIConnectionTest {
 	@Test
 	public void testRevertTransaction4() {
 		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -579,7 +528,7 @@ public class PaymentAPIConnectionTest {
 		
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = conn.debitTransaction(sphHeaders, transactionId, transaction);
+			transactionResponse = conn.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -594,7 +543,7 @@ public class PaymentAPIConnectionTest {
 		// revertTransaction.setAmount("1001");
 		// revertTransaction.setBlocking(true); // this is optional, will default to true
 		try {
-			revertResponse = conn.revertTransaction(sphHeaders, transactionId, revertTransaction);
+			revertResponse = conn.revertTransaction(transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -614,18 +563,11 @@ public class PaymentAPIConnectionTest {
 	 */
 	@Test
 	public void testRevertTransaction5() {
-		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+	
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -650,7 +592,7 @@ public class PaymentAPIConnectionTest {
 		
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = conn.debitTransaction(sphHeaders, transactionId, transaction);
+			transactionResponse = conn.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -665,7 +607,7 @@ public class PaymentAPIConnectionTest {
 		revertTransaction.setAmount("500");
 		// revertTransaction.setBlocking(true); // this is optional, will default to true
 		try {
-			revertResponse = conn.revertTransaction(sphHeaders, transactionId, revertTransaction);
+			revertResponse = conn.revertTransaction( transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -675,7 +617,7 @@ public class PaymentAPIConnectionTest {
 		
 		revertTransaction.setAmount(null); // no amount set, should revert rest of the transaction
 		try {
-			revertResponse = conn.revertTransaction(sphHeaders, transactionId, revertTransaction);
+			revertResponse = conn.revertTransaction(transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -695,18 +637,11 @@ public class PaymentAPIConnectionTest {
 	 */
 	@Test
 	public void testRevertTransaction6() {
-		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+	
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -730,7 +665,7 @@ public class PaymentAPIConnectionTest {
 		
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = conn.debitTransaction(sphHeaders, transactionId, transaction);
+			transactionResponse = conn.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -745,7 +680,7 @@ public class PaymentAPIConnectionTest {
 		revertTransaction.setAmount("500");
 		// revertTransaction.setBlocking(true); // this is optional, will default to true
 		try {
-			revertResponse = conn.revertTransaction(sphHeaders, transactionId, revertTransaction);
+			revertResponse = conn.revertTransaction(transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -755,7 +690,7 @@ public class PaymentAPIConnectionTest {
 		
 		revertTransaction.setAmount("501"); // over balance
 		try {
-			revertResponse = conn.revertTransaction(sphHeaders, transactionId, revertTransaction);
+			revertResponse = conn.revertTransaction(transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -773,17 +708,11 @@ public class PaymentAPIConnectionTest {
 	@Test
 	public void testTransactionStatus1() {
 		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
 		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -808,7 +737,7 @@ public class PaymentAPIConnectionTest {
 		
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = conn.debitTransaction(sphHeaders, transactionId, transaction);
+			transactionResponse = conn.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -820,7 +749,7 @@ public class PaymentAPIConnectionTest {
 		TransactionStatusResponse statusResponse = null;
 		
 		try {
-			statusResponse = conn.transactionStatus(sphHeaders, transactionId);
+			statusResponse = conn.transactionStatus(transactionId);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -837,17 +766,10 @@ public class PaymentAPIConnectionTest {
 	@Test
 	public void testCommitTransaction1() {
 		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -872,7 +794,7 @@ public class PaymentAPIConnectionTest {
 		
 		TransactionResponse transactionResponse = null;
 		try {
-			transactionResponse = conn.debitTransaction(sphHeaders, transactionId, transaction);
+			transactionResponse = conn.debitTransaction(transactionId, transaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -887,7 +809,7 @@ public class PaymentAPIConnectionTest {
 		
 		CommitTransactionResponse commitTransactionResponse = null;
 		try {
-			commitTransactionResponse = conn.commitTransaction(sphHeaders, transactionId, commitTransaction);
+			commitTransactionResponse = conn.commitTransaction(transactionId, commitTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -901,18 +823,11 @@ public class PaymentAPIConnectionTest {
 	 */
 	@Test
 	public void testTokenization1() {
-		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+			
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		InitTransactionResponse response = null;
 		try {
-			response = conn.initTransactionHandle(sphHeaders);
+			response = conn.initTransactionHandle();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -924,7 +839,7 @@ public class PaymentAPIConnectionTest {
 		
 		TokenizationResponse tokenResponse = null;
 		try {
-			tokenResponse = conn.tokenization(sphHeaders, tokenizationId);
+			tokenResponse = conn.tokenization(tokenizationId);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -938,20 +853,13 @@ public class PaymentAPIConnectionTest {
 	@Test
 	public void testReport1() {
 		
-		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
-		
-		sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
-		sphHeaders.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        sphHeaders.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-  		
-		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		
 		// day format: <yyyyMMdd>
 		String date = "20150408";
 		String result = null;
 		try {
-			result = conn.fetchReport(sphHeaders, date);
+			result = conn.fetchReport(date);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
