@@ -871,8 +871,8 @@ public class PaymentAPIConnectionTest {
 				this.signatureKeyId, this.signatureSecret, this.account,
 				this.merchant);
 
-		// day format: <yyyyMMdd>
-		String date = "20150414";
+		String date = "20150210";
+		
 		ReportResponse result = null;
 		try {
 			result = conn.fetchReport(date);

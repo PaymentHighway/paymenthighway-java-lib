@@ -100,7 +100,6 @@ public class JsonParser {
 	}
 
 	public ReportResponse mapReportResponse(String json) {
-		System.out.println("report json:" + json);
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

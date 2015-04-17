@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -16,7 +19,9 @@ import org.junit.Test;
 import com.solinor.paymenthighway.model.CommitTransactionRequest;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
+import com.solinor.paymenthighway.model.ReportResponse;
 import com.solinor.paymenthighway.model.RevertTransactionRequest;
+import com.solinor.paymenthighway.model.Settlement;
 import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
 import com.solinor.paymenthighway.model.Card;
@@ -315,5 +320,28 @@ public class PaymentAPITest {
 		}
 		assertEquals(tokenResponse.getCard().getExpireYear(), "2017");
 		assertEquals(tokenResponse.getCardToken().toString(), "71435029-fbb6-4506-aa86-8529efb640b0");
+	}
+	@Test
+	public void testDailyBatchReport() {
+		
+		// create the payment highway service
+		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
+				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+		
+		// request batch for yesterday, today is not available
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);   
+		String date = dateFormat.format(cal.getTime());
+		
+		ReportResponse reportResponse = null;
+		try {
+			reportResponse = paymentAPI.fetchDailyReport(date);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+		assertEquals(reportResponse.getResult().getCode(), "100");
+		assertEquals(reportResponse.getResult().getMessage(), "OK");
 	}
 }
