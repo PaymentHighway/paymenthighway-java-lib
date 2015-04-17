@@ -1,6 +1,5 @@
 package com.solinor.paymenthighway.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Transaction request POJO
@@ -12,100 +11,45 @@ public class TransactionRequest {
 	String amount = null;
 	String currency = null;
 	boolean blocking = true;	
-	Card card = null; 
-	Token token;
+    Card card = null; 
+    Token token = null;
 	
-	public TransactionRequest() { 
-		
+    public TransactionRequest(String amount, String currency, boolean blocking, Card card) {
+    	this.amount = amount;
+		this.currency = currency;
+		this.blocking = blocking;
+		this.card = card;
+		this.token = null;
+    }
+    public TransactionRequest(String amount, String currency, boolean blocking, Token token) {
+    	this.amount = amount;
+		this.currency = currency;
+		this.blocking = blocking;
+		this.card = null;
+		this.token = token;
+    }
+	public TransactionRequest(String amount, String currency, boolean blocking, Card card, Token token) { 
+		this.amount = amount;
+		this.currency = currency;
+		this.blocking = blocking;
+		this.card = card;
+		this.token = token;
 	}
 	
 	public String getAmount() {
 		return amount;
 	}
-	public void setAmount(String amount) {
-		this.amount = amount;
-	}
 	public String getCurrency() {
 		return currency;
-	}
-	public void setCurrency(String currency) {
-		this.currency = currency;
 	}
 	public boolean isBlocking() {
 		return blocking;
 	}
-	public void setBlocking(boolean blocking) {
-		this.blocking = blocking;
-	}
 	public Card getCard() {
 		return card;
-	}
-	public void setCard(Card card) {
-		this.card = card;
 	}
 	public Token getToken() {
 		return token;
 	}
-	public void setToken(Token token) {
-		this.token = token;
-	}
 
-	public static class Card {
-		String pan;
-		@JsonProperty("expiry_year")
-		String expiryYear;
-		@JsonProperty("expiry_month")
-		String expiryMonth;
-		String cvc;
-		String verification;
-		
-		public String getPan() {
-			return pan;
-		}
-		public void setPan(String pan) {
-			this.pan = pan;
-		}
-		public String getExpiryYear() {
-			return expiryYear;
-		}
-		public void setExpiryYear(String expiryYear) {
-			this.expiryYear = expiryYear;
-		}
-		public String getExpiryMonth() {
-			return expiryMonth;
-		}
-		public void setExpiryMonth(String expiryMonth) {
-			this.expiryMonth = expiryMonth;
-		}
-		public String getCvc() {
-			return cvc;
-		}
-		public void setCvc(String cvc) {
-			this.cvc = cvc;
-		}
-		public String getVerification() {
-			return verification;
-		}
-		public void setVerification(String verification) {
-			this.verification = verification;
-		}
-		
-	}
-
-	public static class Token {
-		String code;
-		String message;
-		public String getCode() {
-			return code;
-		}
-		public void setCode(String code) {
-			this.code = code;
-		}
-		public String getMessage() {
-			return message;
-		}
-		public void setMessage(String message) {
-			this.message = message;
-		}
-	}
 }

@@ -3,6 +3,7 @@
  */
 package com.solinor.paymenthighway.model;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * InitTransactionResponse POJO
@@ -11,21 +12,15 @@ import java.util.Map;
  */
 public class InitTransactionResponse {
 
-	public java.util.UUID id = null;
-	public Map<String, String> result = null;
+	java.util.UUID id = null;
+	Map<String, String> result = null;
 
-	/* getters and setters */
+	/* getters */
 	public java.util.UUID getId() {
 		return id;
 	}
-	public void setId(java.util.UUID id) {
-		this.id = id;
-	}
 	public Map<String, String> getResult() {
 		return result;
-	}
-	public void setResult(Map<String, String> result) {
-		this.result = result;
 	}
 	public String getResultCode() {
 		return this.result.get("code");

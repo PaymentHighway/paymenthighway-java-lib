@@ -401,7 +401,7 @@ public class PaymentAPIConnection {
 		final String paymentUri = "/tokenization/";
 
 		String tokenUri = paymentUri + tokenizationId;
-		System.out.println("tokenUri=" + tokenUri);
+		
 		try {
 			HttpGet httpGet = new HttpGet(this.serviceUrl + tokenUri);
 

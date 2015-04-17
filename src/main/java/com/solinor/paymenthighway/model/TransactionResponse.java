@@ -9,15 +9,20 @@ import java.util.Map;
  */
 public class TransactionResponse {
 
-	/** result code and message */
-	public Map<String, String> result = null;
-
-	/* getters and setter */
-	public Map<String, String> getResult() {
+	TransactionStatusResponse.Result result = null;
+	
+	public TransactionStatusResponse.Result getResult() {
 		return result;
 	}
-	public void setResult(Map<String, String> result) {
-		this.result = result;
-	}
 
+	public static class Result {
+		String code;
+		String message;
+		public String getCode() {
+			return code;
+		}
+		public String getMessage() {
+			return message;
+		}		
+	}
 }

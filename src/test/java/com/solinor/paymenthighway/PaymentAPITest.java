@@ -19,7 +19,7 @@ import com.solinor.paymenthighway.model.InitTransactionResponse;
 import com.solinor.paymenthighway.model.RevertTransactionRequest;
 import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
-import com.solinor.paymenthighway.model.TransactionRequest.Card;
+import com.solinor.paymenthighway.model.Card;
 import com.solinor.paymenthighway.model.TransactionResponse;
 import com.solinor.paymenthighway.model.TransactionStatusResponse;
 
@@ -112,21 +112,16 @@ public class PaymentAPITest {
 
 		UUID transactionId = response.getId();
 
-		TransactionRequest transaction = new TransactionRequest();
-		transaction.setAmount("9999");
-		transaction.setCurrency("EUR");
-		transaction.setBlocking(true);
-
-		Card card = new TransactionRequest.Card();
 		
-		// TODO: move to constructor
-		card.setPan("4153013999700024");
-		card.setCvc("024"); // optional
-		card.setExpiryYear("2017");
-		card.setExpiryMonth("11");
-		card.setVerification(""); // TODO: remove
-		transaction.setCard(card);
 
+		String pan = "4153013999700024";
+		String cvc = "024";
+		String expiryYear = "2017";
+		String expiryMonth = "11";
+		String verification = "";
+		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		
 		TransactionResponse transactionResponse = null;
 		try {
 			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -134,8 +129,8 @@ public class PaymentAPITest {
 			e.printStackTrace();
 		}
 
-		assertEquals(transactionResponse.getResult().get("code"), "100");
-		assertEquals(transactionResponse.getResult().get("message"), "OK");
+		assertEquals(transactionResponse.getResult().getCode(), "100");
+		assertEquals(transactionResponse.getResult().getMessage(), "OK");
 	}
 
 	@Test
@@ -155,19 +150,15 @@ public class PaymentAPITest {
 
 		UUID transactionId = response.getId();
 
-		TransactionRequest transaction = new TransactionRequest();
-		transaction.setAmount("9999");
-		transaction.setCurrency("EUR");
-		transaction.setBlocking(true);
+		String pan = "4153013999700024";
+		String cvc = "024";
+		String expiryYear = "2017";
+		String expiryMonth = "11";
+		String verification = "";
+		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
 
-		Card card = new TransactionRequest.Card();
-		card.setPan("4153013999700024");
-		card.setCvc("024");
-		card.setExpiryYear("2017");
-		card.setExpiryMonth("11");
-		card.setVerification("");
-		transaction.setCard(card);
-
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		
 		TransactionResponse transactionResponse = null;
 		try {
 			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -175,13 +166,10 @@ public class PaymentAPITest {
 			e.printStackTrace();
 		}
 
-		assertEquals(transactionResponse.getResult().get("code"), "100");
-		assertEquals(transactionResponse.getResult().get("message"), "OK");
+		assertEquals(transactionResponse.getResult().getCode(), "100");
+		assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
-		CommitTransactionRequest commitRequest = new CommitTransactionRequest();
-		commitRequest.setAmount("9999");
-		commitRequest.setBlocking(true);
-		commitRequest.setCurrency("EUR");
+		CommitTransactionRequest commitRequest = new CommitTransactionRequest("9999", "EUR", true);
 
 		CommitTransactionResponse commitResponse = null;
 		try {
@@ -189,6 +177,7 @@ public class PaymentAPITest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		assertEquals(commitResponse.getResult().getCode(), "100");
 		assertEquals(commitResponse.getResult().getMessage(), "OK");
 		assertEquals(commitResponse.getCard().getType(), "Visa");
@@ -213,19 +202,14 @@ public class PaymentAPITest {
 		// create transaction
 		UUID transactionId = response.getId();
 
-		TransactionRequest transaction = new TransactionRequest();
-		transaction.setAmount("9999");
-		transaction.setCurrency("EUR");
-		transaction.setBlocking(true);
-
-		Card card = new TransactionRequest.Card();
-		card.setPan("4153013999700024");
-		card.setCvc("024");
-		card.setExpiryYear("2017");
-		card.setExpiryMonth("11");
-		card.setVerification("");
-		transaction.setCard(card);
-
+		String pan = "4153013999700024";
+		String cvc = "024";
+		String expiryYear = "2017";
+		String expiryMonth = "11";
+		String verification = "";
+		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
+		
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
 		TransactionResponse transactionResponse = null;
 		try {
 			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -233,22 +217,20 @@ public class PaymentAPITest {
 			e.printStackTrace();
 		}
 
-		assertEquals(transactionResponse.getResult().get("code"), "100");
-		assertEquals(transactionResponse.getResult().get("message"), "OK");
+		assertEquals(transactionResponse.getResult().getCode(), "100");
+		assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
 		// revert transaction
-		RevertTransactionRequest revertTransaction = new RevertTransactionRequest();
-		revertTransaction.setAmount("9999");
-		revertTransaction.setBlocking(true);
-
+		RevertTransactionRequest revertTransaction = new RevertTransactionRequest("9999", true);
+	
 		TransactionResponse revertResponse = null;
 		try {
 			revertResponse = paymentAPI.revertTransaction(transactionId, revertTransaction);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		assertEquals(revertResponse.getResult().get("code"), "100");
-		assertEquals(revertResponse.getResult().get("message"), "OK");
+		assertEquals(revertResponse.getResult().getCode(), "100");
+		assertEquals(revertResponse.getResult().getMessage(), "OK");
 	}
 
 	@Test
@@ -269,19 +251,15 @@ public class PaymentAPITest {
 		// create transaction
 		UUID transactionId = response.getId();
 
-		TransactionRequest transaction = new TransactionRequest();
-		transaction.setAmount("9999");
-		transaction.setCurrency("EUR");
-		transaction.setBlocking(true);
-
-		Card card = new TransactionRequest.Card();
-		card.setPan("4153013999700024");
-		card.setCvc("024");
-		card.setExpiryYear("2017");
-		card.setExpiryMonth("11");
-		card.setVerification("");
-		transaction.setCard(card);
-
+		String pan = "4153013999700024";
+		String cvc = "024";
+		String expiryYear = "2017";
+		String expiryMonth = "11";
+		String verification = "";
+		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
+		
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		
 		TransactionResponse transactionResponse = null;
 		try {
 			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -289,13 +267,11 @@ public class PaymentAPITest {
 			e.printStackTrace();
 		}
 
-		assertEquals(transactionResponse.getResult().get("code"), "100");
-		assertEquals(transactionResponse.getResult().get("message"), "OK");
+		assertEquals(transactionResponse.getResult().getCode(), "100");
+		assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
 		// revert transaction
-		RevertTransactionRequest revertTransaction = new RevertTransactionRequest();
-		revertTransaction.setAmount("9950");
-		revertTransaction.setBlocking(true);
+		RevertTransactionRequest revertTransaction = new RevertTransactionRequest("9950", true);
 
 		TransactionResponse revertResponse = null;
 		try {
@@ -303,8 +279,8 @@ public class PaymentAPITest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		assertEquals(revertResponse.getResult().get("code"), "100");
-		assertEquals(revertResponse.getResult().get("message"), "OK");
+		assertEquals(revertResponse.getResult().getCode(), "100");
+		assertEquals(revertResponse.getResult().getMessage(), "OK");
 
 		// status response test
 		TransactionStatusResponse statusResponse = null;
@@ -314,11 +290,11 @@ public class PaymentAPITest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		assertTrue(statusResponse.getResult().toString().contains("message=OK"));
-		assertTrue(statusResponse.getResult().toString().contains("code=100"));
-		assertEquals(statusResponse.getTransaction().get("current_amount"), 49);
-		assertEquals(statusResponse.getTransaction().get("id"),
-				transactionId.toString());
+	
+		assertEquals(statusResponse.getResult().getMessage(), "OK");
+		assertEquals(statusResponse.getResult().getCode(), "100");
+		assertEquals(statusResponse.getTransaction().getCurrentAmount(), "49");
+		assertEquals(statusResponse.getTransaction().getId(), transactionId);
 	}
 	
 	@Test

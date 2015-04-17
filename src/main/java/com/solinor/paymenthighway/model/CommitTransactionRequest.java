@@ -15,33 +15,24 @@ public class CommitTransactionRequest {
 	boolean blocking = true;
 
 	/**
-	 * 
+	 * If the blocking parameter is set to false, the debit 
+	 * and credit calls return immediately, without waiting
+	 * for the transaction to be fully processed.
 	 */
-	public CommitTransactionRequest() {
+	public CommitTransactionRequest(String amount, String currency, boolean blocking) {
+		this.amount = amount;
+		this.currency = currency;
+		this.blocking = blocking;
 	}
-	
 	public String getAmount() {
 		return amount;
 	}
-
-	public void setAmount(String amount) {
-		this.amount = amount;
-	}
-
 	public String getCurrency() {
 		return currency;
 	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-
 	public boolean isBlocking() {
 		return blocking;
 	}
 
-	public void setBlocking(boolean blocking) {
-		this.blocking = blocking;
-	}
-	
+
 }

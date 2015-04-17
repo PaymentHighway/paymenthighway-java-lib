@@ -301,7 +301,7 @@ public class FormAPIConnectionTest {
 		matcher.find();
 		String formUri = matcher.group();
 		
-		System.out.println("form url="+formUri);
+		// System.out.println("form url="+formUri);
 		
 		HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
 		List<NameValuePair> submitParameters = new ArrayList<NameValuePair>();

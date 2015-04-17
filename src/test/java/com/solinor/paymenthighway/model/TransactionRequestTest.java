@@ -10,8 +10,8 @@ import org.junit.Test;
 
 import com.solinor.paymenthighway.PaymentHighwayUtility;
 import com.solinor.paymenthighway.json.JsonGenerator;
-import com.solinor.paymenthighway.model.TransactionRequest.Card;
-import com.solinor.paymenthighway.model.TransactionRequest.Token;
+import com.solinor.paymenthighway.model.Card;
+import com.solinor.paymenthighway.model.Token;
 
 public class TransactionRequestTest {
 
@@ -33,22 +33,20 @@ public class TransactionRequestTest {
 
 	@Test
 	public void test() {
-		TransactionRequest transaction = new TransactionRequest();
-		transaction.amount = "9999";
-		transaction.currency = "EUR";
-		transaction.blocking = true;
+
+		String pan = "4153013999700024";
+		String cvc = "024";
+		String expiryYear = "2017";
+		String expiryMonth = "11";
+		String verification = "";
+		Card card = new Card(pan, cvc, expiryYear, expiryMonth, verification);
 		
-		Card card = new TransactionRequest.Card();
-		card.pan = "4153013999700024";
-		card.cvc = "024";
-		card.expiryYear = "2017";
-		card.expiryMonth = "11";
-		card.verification = "";
-		transaction.card = card;
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+
+		String code = PaymentHighwayUtility.createRequestId();
+		String message = "this is a token message";
+		Token token = new Token(code, message);
 		
-		Token token = new TransactionRequest.Token();
-		token.code = PaymentHighwayUtility.createRequestId();
-		token.message = "this is a token message";
 		transaction.token = token;
 		
 		JsonGenerator jsonGenerator = new JsonGenerator();
@@ -58,91 +56,88 @@ public class TransactionRequestTest {
 
 	@Test
 	public void testStaticNestedClass() {
-		TransactionRequest transaction = new TransactionRequest();
-		transaction.setAmount("9999");
-		transaction.setCurrency("EUR");
-		transaction.setBlocking(true);
 		
-		Card card = new TransactionRequest.Card();
-		card.setPan("4153013999700024");
-		card.setCvc("024");
-		card.setExpiryYear("2017");
-		card.setExpiryMonth("11");
-		card.setVerification("");
-		transaction.card = card;
+		String pan = "4153013999700024";
+		String cvc = "024";
+		String expiryYear = "2017";
+		String expiryMonth = "11";
+		String verification = "";
+		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
 		
-		Token token = new TransactionRequest.Token();
-		token.setCode(PaymentHighwayUtility.createRequestId());
-		token.setMessage("token message");
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		
+		String code = PaymentHighwayUtility.createRequestId();
+		String message = "this is a token message";
+		Token token = new Token(code, message);
+		
 		transaction.token = token;
 		
-		assertEquals(transaction.token.getMessage(), "token message");
+		assertEquals(transaction.token.getMessage(), "this is a token message");
 		
-		// change new token
-		Token token2 = new TransactionRequest.Token();
-		token2.setCode(PaymentHighwayUtility.createRequestId());
-		token2.setMessage("token message 2");
+		String code2 = PaymentHighwayUtility.createRequestId();
+		String message2 = "this is a token message 2";
+		Token token2 = new Token(code2, message2);
 		
-		assertEquals(transaction.token.getMessage(), "token message");
+		transaction.token = token;
+		
+		assertEquals(transaction.token.getMessage(), "this is a token message");
 		
 		transaction.token = token2;
 		
-		assertEquals(transaction.token.getMessage(), "token message 2");
+		assertEquals(transaction.token.getMessage(), "this is a token message 2");
 		
 	}
 	
 	@Test
 	public void testStaticNestedClass2() {
-		TransactionRequest transaction = new TransactionRequest();
-		transaction.setAmount("1111");
-		transaction.setCurrency("EUR");
-		transaction.setBlocking(true);
+
 		
-		Card card = new TransactionRequest.Card();
-		card.setPan("4153013999700024");
-		card.setCvc("024");
-		card.setExpiryYear("2017");
-		card.setExpiryMonth("11");
-		card.setVerification("");
-		transaction.card = card;
+		String pan = "4153013999700024";
+		String cvc = "024";
+		String expiryYear = "2017";
+		String expiryMonth = "11";
+		String verification = "";
+		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
 		
-		Token token = new TransactionRequest.Token();
-		token.setCode(PaymentHighwayUtility.createRequestId());
-		token.setMessage("token message");
+		TransactionRequest transaction = new TransactionRequest("1111", "EUR", true, card);
+		
+		String code = PaymentHighwayUtility.createRequestId();
+		String message = "this is a token message";
+		Token token = new Token(code, message);
+		
 		transaction.token = token;
 		
-		assertEquals(transaction.card.getPan(), "4153013999700024");
-		assertEquals(transaction.token.getMessage(), "token message");
+		assertEquals(transaction.card.pan, "4153013999700024");
+		assertEquals(transaction.token.getMessage(), "this is a token message");
 		
-		TransactionRequest transaction2 = new TransactionRequest();
-		transaction2.setAmount("2222");
-		transaction2.setCurrency("EUR");
-		transaction2.setBlocking(true);
+		String pan2 = "4153013999700025";
+		String cvc2 = "024";
+		String expiryYear2 = "2017";
+		String expiryMonth2 = "11";
+		String verification2 = "";
+		Card card2 = new Card(pan2, expiryYear2, expiryMonth2, cvc2, verification2);
+
+		TransactionRequest transaction2 = new TransactionRequest("2222", "EUR", true, card2);
 		
-		Card card2 = new TransactionRequest.Card();
-		card2.setPan("4153013999700025");
-		card2.setCvc("024");
-		card2.setExpiryYear("2017");
-		card2.setExpiryMonth("11");
-		card2.setVerification("");
-		transaction2.card = card2;
-		
-		Token token2 = new TransactionRequest.Token();
-		token2.setCode(PaymentHighwayUtility.createRequestId());
-		token2.setMessage("token message 2");
-		transaction2.token = token2;
+		String code2 = PaymentHighwayUtility.createRequestId();
+		String message2 = "this is a token message 2";
+		Token token2 = new Token(code2, message2);
+		// transaction2.token = token2;
+		transaction2 = new TransactionRequest("2222", "EUR", true, card2, token2);
 		
 		// these shouldn't change
-		assertEquals(transaction.card.getPan(), "4153013999700024");
-		assertEquals(transaction.token.getMessage(), "token message");
+		assertEquals(transaction.card.pan, "4153013999700024");
+		assertEquals(transaction.token.getMessage(), "this is a token message");
 		
-		card2.setCvc("123");
-		token2.setMessage("token message 123");
+		card2.cvc = "123";
+		token2.message = "token message 123";
 		
-		assertEquals(transaction.card.getCvc(), "024");
-		assertEquals(token.getMessage(), "token message");
-		assertEquals(transaction.token.getMessage(), "token message");
-		assertEquals(transaction2.card.getPan(), "4153013999700025");
+		assertEquals(transaction.card.cvc, "024");
+		assertEquals(token.getMessage(), "this is a token message");
+		assertEquals(transaction.token.getMessage(), "this is a token message");
+		assertEquals(transaction.card.pan, "4153013999700024");
+
+		assertEquals(transaction2.card.pan, "4153013999700025");
 		assertEquals(transaction2.token.getMessage(), "token message 123");
 		
 		transaction.token = token2;
