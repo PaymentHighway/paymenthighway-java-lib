@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
+import com.solinor.paymenthighway.model.ReportResponse;
 import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionResponse;
 import com.solinor.paymenthighway.model.TransactionStatusResponse;
@@ -30,7 +31,8 @@ public class JsonParser {
 
 	public InitTransactionResponse mapInitTransactionResponse(String json) {
 		ObjectMapper mapper = new ObjectMapper();
-		
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		InitTransactionResponse response = null;
 		try {
 			response = mapper.readValue(json, InitTransactionResponse.class);
@@ -43,7 +45,8 @@ public class JsonParser {
 	
 	public TransactionResponse mapTransactionResponse(String json) {
 		ObjectMapper mapper = new ObjectMapper();
-		
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		TransactionResponse response = null;
 		try {
 			response = mapper.readValue(json, TransactionResponse.class);
@@ -57,7 +60,7 @@ public class JsonParser {
 	public TransactionStatusResponse mapTransactionStatusResponse(String json) {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
-		// mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		TransactionStatusResponse response = null;
 		try {
 			response = mapper.readValue(json, TransactionStatusResponse.class);
@@ -71,7 +74,7 @@ public class JsonParser {
 	public CommitTransactionResponse mapCommitTransactionResponse(String json) {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
-		// mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		CommitTransactionResponse response = null;
 		try {
 			response = mapper.readValue(json, CommitTransactionResponse.class);
@@ -89,6 +92,21 @@ public class JsonParser {
 		TokenizationResponse response = null;
 		try {
 			response = mapper.readValue(json, TokenizationResponse.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return response;
+	}
+
+	public ReportResponse mapReportResponse(String json) {
+		System.out.println("report json:" + json);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(Include.NON_NULL);
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		ReportResponse response = null;
+		try {
+			response = mapper.readValue(json, ReportResponse.class);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

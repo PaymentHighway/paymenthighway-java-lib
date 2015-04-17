@@ -93,6 +93,18 @@ public class TransactionStatusResponse {
 		public String getToken() {
 			return token;
 		}
+		public Acquirer getAcquirer() {
+			return acquirer;
+		}
+		public Status getStatus() {
+			return status;
+		}
+		public PartialCard getCard() {
+			return card;
+		}
+		public Revert[] getReverts() {
+			return reverts;
+		}
 	}
 } 
 	

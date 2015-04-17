@@ -15,6 +15,7 @@ import com.solinor.paymenthighway.connect.PaymentAPIConnection;
 import com.solinor.paymenthighway.model.CommitTransactionRequest;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
+import com.solinor.paymenthighway.model.ReportResponse;
 import com.solinor.paymenthighway.model.RevertTransactionRequest;
 import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
@@ -135,6 +136,19 @@ public class PaymentAPI {
 		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
 				this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		return paymentApi.tokenization(tokenizationId);
+	}
+	
+	/**
+	 * Payment Highway Daily Report Request
+	 *
+	 * @param String format: yyyyMMdd
+	 * @return ReportResponse
+	 * @throws IOException
+	 */
+	public ReportResponse fetchDailyReport(String date) throws IOException {
+		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
+				this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+		return paymentApi.fetchReport(date);
 	}
 
 }

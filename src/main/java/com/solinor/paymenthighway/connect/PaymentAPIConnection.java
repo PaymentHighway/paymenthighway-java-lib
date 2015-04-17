@@ -33,6 +33,7 @@ import com.solinor.paymenthighway.json.JsonParser;
 import com.solinor.paymenthighway.model.CommitTransactionRequest;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
+import com.solinor.paymenthighway.model.ReportResponse;
 import com.solinor.paymenthighway.model.RevertTransactionRequest;
 import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
@@ -441,7 +442,7 @@ public class PaymentAPIConnection {
 		}
 	}
 
-	public String fetchReport(String date)
+	public ReportResponse fetchReport(String date)
 			throws ClientProtocolException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
@@ -480,8 +481,10 @@ public class PaymentAPIConnection {
 				}
 
 			};
-
-			return httpclient.execute(httpGet, responseHandler);
+			JsonParser jpar = new JsonParser();
+			return jpar.mapReportResponse(httpclient.execute(httpGet,
+					responseHandler));
+			
 		} finally {
 			httpclient.close();
 		}

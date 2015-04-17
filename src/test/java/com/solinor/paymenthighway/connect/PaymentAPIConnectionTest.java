@@ -27,7 +27,9 @@ import com.solinor.paymenthighway.PaymentHighwayUtility;
 import com.solinor.paymenthighway.model.CommitTransactionRequest;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
+import com.solinor.paymenthighway.model.ReportResponse;
 import com.solinor.paymenthighway.model.RevertTransactionRequest;
+import com.solinor.paymenthighway.model.Settlement;
 import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
 import com.solinor.paymenthighway.model.Card;
@@ -870,14 +872,15 @@ public class PaymentAPIConnectionTest {
 				this.merchant);
 
 		// day format: <yyyyMMdd>
-		String date = "20150408";
-		String result = null;
+		String date = "20150414";
+		ReportResponse result = null;
 		try {
 			result = conn.fetchReport(date);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// tests only that response is from the right function
-		assertTrue(result.contains("settlements"));
+		assertEquals(result.getResult().getCode(), "100");
+		assertEquals(result.getResult().getMessage(), "OK");
+	
 	}
 }
