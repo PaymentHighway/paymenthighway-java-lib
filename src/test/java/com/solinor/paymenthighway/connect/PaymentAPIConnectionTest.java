@@ -24,15 +24,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import com.solinor.paymenthighway.PaymentHighwayUtility;
+import com.solinor.paymenthighway.model.Card;
 import com.solinor.paymenthighway.model.CommitTransactionRequest;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
 import com.solinor.paymenthighway.model.ReportResponse;
 import com.solinor.paymenthighway.model.RevertTransactionRequest;
-import com.solinor.paymenthighway.model.Settlement;
 import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
-import com.solinor.paymenthighway.model.Card;
 import com.solinor.paymenthighway.model.TransactionResponse;
 import com.solinor.paymenthighway.model.TransactionStatusResponse;
 import com.solinor.paymenthighway.security.SecureSigner;

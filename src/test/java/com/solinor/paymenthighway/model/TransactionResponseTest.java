@@ -1,10 +1,8 @@
 package com.solinor.paymenthighway.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,7 +34,7 @@ public class TransactionResponseTest {
 		 try {
 		      method = TransactionResponse.class.getMethod("getResult");
 		    } catch (Exception e) {
-		    	System.out.print("exception e=" + e);
+		    	System.err.print("exception e=" + e);
 		    }
 		 assertEquals("getResult", method.getName());
 	}

@@ -4,9 +4,6 @@
 package com.solinor.paymenthighway.connect;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
@@ -21,6 +18,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import com.solinor.paymenthighway.PaymentHighwayUtility;
 import com.solinor.paymenthighway.security.SecureSigner;
 
 /**
@@ -65,7 +63,7 @@ public class FormAPIConnection {
             HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
             
             // sort alphabetically per key
-            this.sortParameters(nameValuePairs);
+            PaymentHighwayUtility.sortParameters(nameValuePairs);
             
             // create signature
             String signature = this.createSignature(METHOD_POST, formUri, nameValuePairs);
@@ -78,7 +76,6 @@ public class FormAPIConnection {
             
             // Create a custom response handler
             ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-            	// TODO: shall we handle responses like 401 unauthorized in some way?
                 public String handleResponse(
                         final HttpResponse response) throws ClientProtocolException, IOException {
                     int status = response.getStatusLine().getStatusCode();
@@ -113,7 +110,7 @@ public class FormAPIConnection {
             HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
             
             // sort alphabetically per key
-            this.sortParameters(nameValuePairs);
+            PaymentHighwayUtility.sortParameters(nameValuePairs);
             
             // create signature
             String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
@@ -163,7 +160,7 @@ public class FormAPIConnection {
             HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
             
             // sort alphabetically per key
-            this.sortParameters(nameValuePairs);
+            PaymentHighwayUtility.sortParameters(nameValuePairs);
             
             // create signature
             String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
@@ -207,43 +204,9 @@ public class FormAPIConnection {
 	private String createSignature(String method, String uri, 
 				List<NameValuePair> nameValuePairs) {
 		
-		nameValuePairs = this.parseParameters(nameValuePairs);
+		nameValuePairs = PaymentHighwayUtility.parseSphParameters(nameValuePairs);
 		SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
-		return ss.createSignature("POST", uri, nameValuePairs, "");
-	}
-
-	/**
-	 * Signature is formed from parameters that start with "sph-"
-	 * Therefore we remove other parameters from the signature param set.
-	 * 
-	 * @param map TreeMap that may include all params
-	 * @return TreeMap with only params starting "sph-"
-	 */
-	protected List<NameValuePair> parseParameters(
-			List<NameValuePair> map) {
-		for(Iterator<NameValuePair> it = map.iterator(); it.hasNext(); ) {
-		      NameValuePair entry = it.next();
-		      if(!entry.getName().startsWith("sph-")) {
-		        it.remove();
-		      }
-		}
-		return map;
-	}
-
-	/**
-	 * Sort alphabetically per key
-	 * @param nameValuePairs
-	 * @return List sorted list
-	 */
-	protected void sortParameters(
-			List<NameValuePair> nameValuePairs) {
-		Comparator<NameValuePair> comp = new Comparator<NameValuePair>() { 
-			@Override
-            public int compare(NameValuePair p1, NameValuePair p2) {
-              return p1.getName().compareTo(p2.getName());
-            }
-        };
-        Collections.sort(nameValuePairs, comp);
+		return ss.createSignature(method, uri, nameValuePairs, "");
 	}
 	
 	/**

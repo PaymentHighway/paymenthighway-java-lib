@@ -3,9 +3,7 @@
  */
 package com.solinor.paymenthighway.model;
 
-import static org.junit.Assert.*;
-
-import java.util.UUID;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.AfterClass;

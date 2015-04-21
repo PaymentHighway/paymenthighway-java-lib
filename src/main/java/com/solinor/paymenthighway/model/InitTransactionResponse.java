@@ -3,7 +3,6 @@
  */
 package com.solinor.paymenthighway.model;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * InitTransactionResponse POJO

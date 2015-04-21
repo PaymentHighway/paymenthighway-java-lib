@@ -29,8 +29,6 @@ public class FormAPITest {
 	private String serviceUrl;
 	private String signatureKeyId;
 	private String signatureSecret;
-	private String account;
-	private String merchant;
 	
 	/**
 	 * @throws java.lang.Exception
@@ -62,8 +60,6 @@ public class FormAPITest {
 		this.serviceUrl = this.props.getProperty("service_url");
         this.signatureKeyId = this.props.getProperty("signature_key_id");
         this.signatureSecret = this.props.getProperty("signature_secret");
-        this.account = this.props.getProperty("sph-account");
-		this.merchant = this.props.getProperty("sph-merchant");
 	}
 
 	/**

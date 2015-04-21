@@ -1,7 +1,6 @@
 package com.solinor.paymenthighway;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -16,15 +15,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.solinor.paymenthighway.model.Card;
 import com.solinor.paymenthighway.model.CommitTransactionRequest;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
 import com.solinor.paymenthighway.model.ReportResponse;
 import com.solinor.paymenthighway.model.RevertTransactionRequest;
-import com.solinor.paymenthighway.model.Settlement;
 import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
-import com.solinor.paymenthighway.model.Card;
 import com.solinor.paymenthighway.model.TransactionResponse;
 import com.solinor.paymenthighway.model.TransactionStatusResponse;
 

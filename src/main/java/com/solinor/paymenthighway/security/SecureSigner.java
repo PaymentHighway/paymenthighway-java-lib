@@ -6,6 +6,7 @@ package com.solinor.paymenthighway.security;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,7 +14,12 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
+import com.solinor.paymenthighway.PaymentHighwayUtility;
 
 /**
  * Creates a signature for PaymentHighway messages
@@ -128,5 +134,43 @@ public class SecureSigner {
 				keyValuesString.length() - 1);
 
 		return result;
+	}
+	
+	/**
+	 * Authenticate response by checking the response signature
+	 * @param response
+	 * @return boolean true if signatures match
+	 */
+	public boolean authenticate(String method, String uri, HttpResponse response, String content) {
+		
+		List<NameValuePair> nameValuePairs = this.getHeadersAsNameValuePairs(response.getAllHeaders());
+		
+		String receivedSignature = "";
+		Iterator<NameValuePair> iterator = nameValuePairs.iterator();
+		while( iterator.hasNext()) {
+			NameValuePair entry = iterator.next();
+			if (entry.getName().equalsIgnoreCase("Signature")) {
+				receivedSignature = entry.getValue();
+				break;
+			}
+		}
+		PaymentHighwayUtility.sortParameters(PaymentHighwayUtility.parseSphParameters(nameValuePairs));
+
+		String createdSignature = this.createSignature(method, uri, nameValuePairs, content);
+
+		if (receivedSignature.equals(createdSignature)) {
+			return true;
+		}
+		return false;
+	}
+	
+	private List<NameValuePair> getHeadersAsNameValuePairs(Header[] headers) {
+		ArrayList<NameValuePair> list = new ArrayList<NameValuePair>();
+		for (int i = 0; i < headers.length; i++) {
+	        NameValuePair nameValuePair = 
+	        		new BasicNameValuePair(headers[i].getName(), headers[i].getValue());
+	        list.add(nameValuePair);
+		}
+		return list;
 	}
 }

@@ -16,7 +16,7 @@ import com.solinor.paymenthighway.model.TransactionResponse;
 import com.solinor.paymenthighway.model.TransactionStatusResponse;
 
 /**
-  * Generates Objects from JSON
+ * Generates Objects from JSON
  * 
  * @author Tero Kallio <tero.kallio@solinor.com>
  */

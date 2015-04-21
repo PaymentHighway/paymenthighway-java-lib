@@ -1,11 +1,10 @@
 package com.solinor.paymenthighway.connect;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;

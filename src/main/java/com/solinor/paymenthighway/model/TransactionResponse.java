@@ -1,7 +1,5 @@
 package com.solinor.paymenthighway.model;
 
-import java.util.Map;
-
 /**
  * Transaction Response POJO
  * 

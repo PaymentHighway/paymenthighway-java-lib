@@ -3,7 +3,6 @@
  */
 package com.solinor.paymenthighway.connect;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -33,8 +32,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.solinor.paymenthighway.PaymentHighwayUtility;
-import com.solinor.paymenthighway.model.CommitTransactionRequest;
-import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.security.SecureSigner;
 
 /**
@@ -105,54 +102,7 @@ public class FormAPIConnectionTest {
 		assertTrue(sig.contains("SPH1"));
 		
 	}
-	@Test
-	public void testParseParameters() {
-		
-		List<NameValuePair> formParameters = new ArrayList<NameValuePair>();
-        
-		formParameters.add(new BasicNameValuePair("sph-account", "test"));
-        formParameters.add(new BasicNameValuePair("sph-amount", "990"));
-        formParameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        formParameters.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com"));
-        formParameters.add(new BasicNameValuePair("sph-currency", "EUR"));
-        formParameters.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
-        formParameters.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        formParameters.add(new BasicNameValuePair("sph-order", "1000123A"));
-        formParameters.add(new BasicNameValuePair("sph-request-id", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
-        formParameters.add(new BasicNameValuePair("sph-success-url", "https://www.solinor.com"));
-        formParameters.add(new BasicNameValuePair("this should be removed", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
-        
-        FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
-        
-        List<NameValuePair> map = conn.parseParameters(formParameters);
-        assertEquals(new BasicNameValuePair("sph-account", "test"), map.get(0));
-        assertEquals(new BasicNameValuePair("sph-success-url", "https://www.solinor.com"), map.get(map.size()-1));
-        assertTrue(!formParameters.contains("this should be removed"));
-        
-	}
-	@Test
-	public void testSortParameters() {
-		
-		List<NameValuePair> formParameters = new ArrayList<NameValuePair>();
-        
-        formParameters.add(new BasicNameValuePair("sph-amount", "990"));
-        formParameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        formParameters.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com"));
-        formParameters.add(new BasicNameValuePair("sph-currency", "EUR"));
-		formParameters.add(new BasicNameValuePair("sph-account", "test"));
-        formParameters.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
-        formParameters.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
-        formParameters.add(new BasicNameValuePair("sph-order", "1000123A"));
-        formParameters.add(new BasicNameValuePair("sph-request-id", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
-        formParameters.add(new BasicNameValuePair("sph-success-url", "https://www.solinor.com"));
-        formParameters.add(new BasicNameValuePair("language", "EN"));
-
-        FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
-        conn.sortParameters(formParameters);
-        assertEquals(new BasicNameValuePair("sph-account", "test"), formParameters.get(1)); // first
-        assertTrue(formParameters.get(formParameters.size()-1).toString().startsWith("sph-timestamp")); // last
-        
-	}
+	
 	@Test
 	public void testPaymenthighwayAddCard() {
 		
@@ -227,7 +177,7 @@ public class FormAPIConnectionTest {
         nameValuePairs.add(new BasicNameValuePair("sph-failure-url", "https://www.paymenthighway.fi/"));
         nameValuePairs.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
         nameValuePairs.add(new BasicNameValuePair("sph-order", "1000123A"));
-        nameValuePairs.add(new BasicNameValuePair("sph-request-id", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
+        nameValuePairs.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
         nameValuePairs.add(new BasicNameValuePair("sph-success-url", "https://www.solinor.com"));
         nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
         nameValuePairs.add(new BasicNameValuePair("language", "EN"));
