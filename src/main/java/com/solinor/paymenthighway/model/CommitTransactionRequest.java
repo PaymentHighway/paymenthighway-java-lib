@@ -14,6 +14,10 @@ public class CommitTransactionRequest {
 	String currency;
 	boolean blocking = true;
 
+	public CommitTransactionRequest(String amount, String currency) {
+		this.amount = amount;
+		this.currency = currency;
+	}
 	/**
 	 * If the blocking parameter is set to false, 
 	 * call will return immediately, without waiting
