@@ -8,20 +8,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class Token {
-	@JsonProperty("code")
-	String code;
-	@JsonProperty("message")
-	String message;
+	@JsonProperty("id")
+	String id;
+	@JsonProperty("cvc")
+	String cvc;
 	
-	public Token (String code, String message) {
-		this.code = code;
-		this.message = message;
+	public Token (String id, String cvc) {
+		this.id = id;
+		this.cvc = cvc;
 	}
-	public String getCode() {
-		return code;
+	public String getId() {
+		return id;
 	}
-	public String getMessage() {
-		return message;
+	public String getCvc() {
+		return cvc;
 	}
 
 }
