@@ -74,11 +74,11 @@ Initializing the Payment API
 	PaymentAPI paymentAPI = new PaymentAPI("serviceUrl",
 		"signatureKeyId", "signatureSecret", "account", "merchant");
 
-Example Init transaction call
+Example Init transaction request
 
 	InitTransactionResponse initResponse = paymentAPI.initTransaction();
 	
-Example Debit with Token transaction call
+Example Debit with Token transaction request
 
 	Token token = new Token("id", "cvc");
 	TransactionRequest transaction = 
@@ -86,7 +86,7 @@ Example Debit with Token transaction call
 	TransactionResponse response = 
 		paymentAPI.debitTransaction(initResponse.getId(), transaction);
 
-Example Debit with Card transaction call
+Example Debit with Card transaction request
 
 	Card card = new Card("pan", "expiryYear", "expiryMonth", "cvc", "verification");
 	TransactionRequest transaction = 
@@ -94,25 +94,25 @@ Example Debit with Card transaction call
 	TransactionResponse response = 
 		paymentAPI.debitTransaction(initResponse.getId(), transaction);
 
-Example Commit transaction call
+Example Commit transaction request
 
 	CommitTransactionRequest commitRequest = 
 		new CommitTransactionRequest("amount", "currency", true);
 	CommitTransactionResponse response = 
 		paymentAPI.commitTransaction(initResponse.getId(), commitRequest);
 	
-Example Revert transaction call
+Example Revert transaction request
 
 	RevertTransactionRequest revertRequest = 
 		new RevertTransactionRequest("amount", true);
 	TransactionResponse response = 
 		paymentAPI.revertTransaction(initResponse.getId(), revertRequest);
 
-Example Transaction Status call
+Example Transaction Status request
 
 	TransactionStatusResponse status = paymentAPI.transactionStatus("transactionId");
 	
-Example Daily Batch Report call
+Example Daily Batch Report request
 
 	ReportResponse report = paymentAPI.fetchDailyReport("yyyyMMdd");
 	
