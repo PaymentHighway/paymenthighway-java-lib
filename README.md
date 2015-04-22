@@ -85,13 +85,25 @@ Example Init transaction
 
 	InitTransactionResponse initResponse = paymentAPI.initTransaction();
 	
+Example Tokenize (get the actual card token by using token id)
+
+	TokenizationResponse tokenResponse = 
+		paymentAPI.tokenize(tokenizationId);
+	
+Example Commit
+
+	CommitTransactionRequest commitRequest = 
+		new CommitTransactionRequest("amount", "currency", true);
+	CommitTransactionResponse response = 
+		paymentAPI.commitTransaction("transactionId", commitRequest);
+		
 Example Debit with Token
 
 	Token token = new Token("id", "cvc");
 	TransactionRequest transaction = 
 		new TransactionRequest("amount", "currency", true, token);
 	TransactionResponse response = 
-		paymentAPI.debitTransaction(initResponse.getId(), transaction);
+		paymentAPI.debitTransaction("transactionId", transaction);
 
 Example Debit with Card
 
@@ -99,26 +111,14 @@ Example Debit with Card
 	TransactionRequest transaction = 
 		new TransactionRequest("amount", "currency", true, card);
 	TransactionResponse response = 
-		paymentAPI.debitTransaction(initResponse.getId(), transaction);
+		paymentAPI.debitTransaction("transactionId", transaction);
 		
-Example Tokenize (get the actual card token by using token id)
-
-	TokenizationResponse tokenResponse = 
-		paymentAPI.tokenize(tokenizationId);
-
-Example Commit
-
-	CommitTransactionRequest commitRequest = 
-		new CommitTransactionRequest("amount", "currency", true);
-	CommitTransactionResponse response = 
-		paymentAPI.commitTransaction(initResponse.getId(), commitRequest);
-	
 Example Revert
 
 	RevertTransactionRequest revertRequest = 
 		new RevertTransactionRequest("amount", true);
 	TransactionResponse response = 
-		paymentAPI.revertTransaction(initResponse.getId(), revertRequest);
+		paymentAPI.revertTransaction("transactionId, revertRequest);
 
 Example Transaction Status
 
