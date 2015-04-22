@@ -75,7 +75,6 @@ In order to do safe transactions, an execution model is used where the first cal
 
 In order to be sure that a tokenized card is valid and is able to process payment transactions the corresponding tokenization id must used to get the actual card token. 
 
-
 Initializing the Payment API
 
 	PaymentAPI paymentAPI = new PaymentAPI("serviceUrl",
@@ -93,7 +92,7 @@ Example Tokenize (get the actual card token by using token id)
 Example Commit
 
 	CommitTransactionRequest commitRequest = 
-		new CommitTransactionRequest("amount", "currency", true);
+		new CommitTransactionRequest("amount", "currency");
 	CommitTransactionResponse response = 
 		paymentAPI.commitTransaction("transactionId", commitRequest);
 		
@@ -101,7 +100,7 @@ Example Debit with Token
 
 	Token token = new Token("id", "cvc");
 	TransactionRequest transaction = 
-		new TransactionRequest("amount", "currency", true, token);
+		new TransactionRequest("amount", "currency", token);
 	TransactionResponse response = 
 		paymentAPI.debitTransaction("transactionId", transaction);
 
@@ -109,14 +108,14 @@ Example Debit with Card
 
 	Card card = new Card("pan", "expiryYear", "expiryMonth", "cvc", "verification");
 	TransactionRequest transaction = 
-		new TransactionRequest("amount", "currency", true, card);
+		new TransactionRequest("amount", "currency", card);
 	TransactionResponse response = 
 		paymentAPI.debitTransaction("transactionId", transaction);
 		
 Example Revert
 
 	RevertTransactionRequest revertRequest = 
-		new RevertTransactionRequest("amount", true);
+		new RevertTransactionRequest("amount");
 	TransactionResponse response = 
 		paymentAPI.revertTransaction("transactionId", revertRequest);
 
