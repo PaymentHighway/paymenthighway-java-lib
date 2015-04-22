@@ -33,9 +33,9 @@ Contains classes that take care of keys and signatures.
 
 # Overview
 
-Start with building the form parameters by using the FormParameterBuilder. 
+Start with building the HTTP form parameters by using the FormParameterBuilder. 
 
-- 'FormParameterBuilder'
+- `FormParameterBuilder`
 
 Create an instance of the builder with your signature id and signature secret, then use the getAddCardParameters, getPaymentParameters, and getAddCardAndPayment methods to receive a list of parameters for each API call.
 
@@ -67,7 +67,7 @@ Example getGetAddCardAndPaymentParameters
 
 Each method returns a List of NameValuePairs that must be used in the HTML form as hidden fields to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, and are included in the returned list.
 
-- Payment API
+- `PaymentApi`
 
 Initializing the Payment API
 
@@ -86,7 +86,9 @@ Example Debit with Card transaction call
 	
 Example Debit with Token transaction call
 
-
+	Token token = new Token("id", "cvc");
+	TransactionRequest transaction = new TransactionRequest("amount", "currency", true, token);
+	TransactionResponse = paymentAPI.debitTransaction(initResponse.getId(), transaction);
 	
 Example Commit transaction call
 
