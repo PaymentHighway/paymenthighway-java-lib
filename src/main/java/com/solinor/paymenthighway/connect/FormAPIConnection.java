@@ -154,7 +154,7 @@ public class FormAPIConnection {
 			List<NameValuePair> nameValuePairs) throws IOException {
 		
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		String formPaymentUri = "/form/view/add_and_pay_with_card";
+		final String formPaymentUri = "/form/view/add_and_pay_with_card";
 		
         try {
             HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
@@ -194,7 +194,7 @@ public class FormAPIConnection {
 	}	
 
 	/** 
-	 * Create secure signature
+	 * Create a secure signature
 	 * 
 	 * @param method
 	 * @param uri

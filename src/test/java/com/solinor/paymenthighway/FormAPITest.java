@@ -87,11 +87,11 @@ public class FormAPITest {
         nameValuePairs.add(new BasicNameValuePair("language", "EN"));
         
         // create the payment highway service
-        FormAPI service = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+        FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
         
         String result = null;
 		try {
-			result = service.addCard(nameValuePairs);
+			result = formApi.addCard(nameValuePairs);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -116,11 +116,11 @@ public class FormAPITest {
         nameValuePairs.add(new BasicNameValuePair("description", "payment description"));
         
         // create the payment highway service
-        FormAPI service = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+        FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
         
         String result = null;
 		try {
-			result = service.payWithCard(nameValuePairs);
+			result = formApi.payWithCard(nameValuePairs);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -145,11 +145,11 @@ public class FormAPITest {
         nameValuePairs.add(new BasicNameValuePair("description", "payment description"));
         
         // create the payment highway service
-        FormAPI service = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+        FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
         
         String result = null;
 		try {
-			result = service.addCardAndPay(nameValuePairs);
+			result = formApi.addCardAndPay(nameValuePairs);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
