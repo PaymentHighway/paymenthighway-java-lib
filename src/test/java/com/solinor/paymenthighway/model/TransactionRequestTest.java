@@ -51,6 +51,7 @@ public class TransactionRequestTest {
 		
 		JsonGenerator jsonGenerator = new JsonGenerator();
 		String json = jsonGenerator.createTransactionJson(transaction);
+		
 		assertTrue(json.contains("pan"));
 	}
 
@@ -66,25 +67,25 @@ public class TransactionRequestTest {
 		
 		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
 		
-		String code = PaymentHighwayUtility.createRequestId();
-		String message = "this is a token message";
-		Token token = new Token(code, message);
+		String id = PaymentHighwayUtility.createRequestId();
+		
+		Token token = new Token(id, cvc);
 		
 		transaction.token = token;
 		
-		assertEquals(transaction.token.getMessage(), "this is a token message");
+		assertEquals(transaction.token.getCvc(), cvc);
 		
-		String code2 = PaymentHighwayUtility.createRequestId();
-		String message2 = "this is a token message 2";
-		Token token2 = new Token(code2, message2);
+		String id2 = PaymentHighwayUtility.createRequestId();
+		String cvc2 = "this is a token cvc 2";
+		Token token2 = new Token(id2, cvc2);
 		
 		transaction.token = token;
 		
-		assertEquals(transaction.token.getMessage(), "this is a token message");
+		assertEquals(transaction.token.getCvc(), cvc);
 		
 		transaction.token = token2;
 		
-		assertEquals(transaction.token.getMessage(), "this is a token message 2");
+		assertEquals(transaction.token.getCvc(), "this is a token cvc 2");
 		
 	}
 	
@@ -101,17 +102,17 @@ public class TransactionRequestTest {
 		
 		TransactionRequest transaction = new TransactionRequest("1111", "EUR", true, card);
 		
-		String code = PaymentHighwayUtility.createRequestId();
-		String message = "this is a token message";
-		Token token = new Token(code, message);
+		String id = PaymentHighwayUtility.createRequestId();
+		
+		Token token = new Token(id, cvc);
 		
 		transaction.token = token;
 		
 		assertEquals(transaction.card.pan, "4153013999700024");
-		assertEquals(transaction.token.getMessage(), "this is a token message");
+		assertEquals(transaction.token.getCvc(), cvc);
 		
 		String pan2 = "4153013999700025";
-		String cvc2 = "024";
+		String cvc2 = "025";
 		String expiryYear2 = "2017";
 		String expiryMonth2 = "11";
 		String verification2 = "";
@@ -119,29 +120,30 @@ public class TransactionRequestTest {
 
 		TransactionRequest transaction2 = new TransactionRequest("2222", "EUR", true, card2);
 		
-		String code2 = PaymentHighwayUtility.createRequestId();
-		String message2 = "this is a token message 2";
-		Token token2 = new Token(code2, message2);
-		// transaction2.token = token2;
+		String id2 = PaymentHighwayUtility.createRequestId();
+		
+		Token token2 = new Token(id2, cvc2);
+	
 		transaction2 = new TransactionRequest("2222", "EUR", true, card2, token2);
 		
 		// these shouldn't change
 		assertEquals(transaction.card.pan, "4153013999700024");
-		assertEquals(transaction.token.getMessage(), "this is a token message");
+		assertEquals(transaction.token.getCvc(), "024");
+		assertEquals(transaction2.token.getCvc(), "025");
 		
 		card2.cvc = "123";
-		token2.message = "token message 123";
+		token2.cvc = "026";
 		
 		assertEquals(transaction.card.cvc, "024");
-		assertEquals(token.getMessage(), "this is a token message");
-		assertEquals(transaction.token.getMessage(), "this is a token message");
+		assertEquals(token.getCvc(), "024");
+		assertEquals(transaction.token.getCvc(), "024");
 		assertEquals(transaction.card.pan, "4153013999700024");
 
 		assertEquals(transaction2.card.pan, "4153013999700025");
-		assertEquals(transaction2.token.getMessage(), "token message 123");
+		assertEquals(transaction2.token.getCvc(), "026");
 		
 		transaction.token = token2;
 		
-		assertEquals(transaction.token.getMessage(), "token message 123");
+		assertEquals(transaction.token.getCvc(), "026");
 	}
 }
