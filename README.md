@@ -67,7 +67,14 @@ Example getGetAddCardAndPaymentParameters
 
 Each method returns a List of NameValuePairs that must be used in the HTML form as hidden fields to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, and are included in the returned list.
 
+In order to charge a card given in the Form API, the corresponding transaction id must be committed by using Payment API.
+
 - `PaymentApi`
+
+In order to do safe transactions, an execution model is used where the first call to InitTransaction acquires a financial transaction handle, (InitTransactionResponse.getId()) which ensures the transaction is executed exactly once. Afterwards it is possible to execute a debit transaction by calling PaymentAPI.debitTransaction() by using the received id handle. If the execution fails, the command can be repeated in order to confirm the transaction with the particular id has been processed. After executing the command, the status of the transaction can be checked by executing the PaymentAPI.transactionStatus("id") request. 
+
+In order to be sure that a tokenized card is valid and is able to process payment transactions the corresponding tokenization id must used to get the actual card token. 
+
 
 Initializing the Payment API
 
@@ -93,6 +100,11 @@ Example Debit with Card
 		new TransactionRequest("amount", "currency", true, card);
 	TransactionResponse response = 
 		paymentAPI.debitTransaction(initResponse.getId(), transaction);
+		
+Example Tokenize (get the actual card token by using token id)
+
+	TokenizationResponse tokenResponse = 
+		paymentAPI.tokenize(tokenizationId);
 
 Example Commit
 
