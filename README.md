@@ -73,7 +73,7 @@ In order to charge a card given in the Form API, the corresponding transaction i
 
 In order to do safe transactions, an execution model is used where the first call to InitTransaction acquires a financial transaction handle, (InitTransactionResponse.getId()) which ensures the transaction is executed exactly once. Afterwards it is possible to execute a debit transaction by calling PaymentAPI.debitTransaction() by using the received id handle. If the execution fails, the command can be repeated in order to confirm the transaction with the particular id has been processed. After executing the command, the status of the transaction can be checked by executing the PaymentAPI.transactionStatus("id") request. 
 
-In order to be sure that a tokenized card is valid and is able to process payment transactions the corresponding tokenization id must used to get the actual card token. 
+In order to be sure that a tokenized card is valid and is able to process payment transactions the corresponding tokenization id must be used to get the actual card token. 
 
 Initializing the Payment API
 
@@ -91,10 +91,8 @@ Example Tokenize (get the actual card token by using token id)
 	
 Example Commit
 
-	CommitTransactionRequest commitRequest = 
-		new CommitTransactionRequest("amount", "currency");
 	CommitTransactionResponse response = 
-		paymentAPI.commitTransaction("transactionId", commitRequest);
+		paymentAPI.commitTransaction("transactionId", "amount", "currency");
 		
 Example Debit with Token
 
@@ -114,10 +112,8 @@ Example Debit with Card
 		
 Example Revert
 
-	RevertTransactionRequest revertRequest = 
-		new RevertTransactionRequest("amount");
 	TransactionResponse response = 
-		paymentAPI.revertTransaction("transactionId", revertRequest);
+		paymentAPI.revertTransaction("transactionId", "amount");
 
 Example Transaction Status
 
