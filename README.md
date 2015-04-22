@@ -78,27 +78,35 @@ Example Init transaction call
 
 	InitTransactionResponse initResponse = paymentAPI.initTransaction();
 	
-Example Debit with Card transaction call
-
-	Card card = new Card("pan", "expiryYear", "expiryMonth", "cvc", "verification");
-	TransactionRequest transaction = new TransactionRequest("amount", "currency", true, card);
-	TransactionResponse = paymentAPI.debitTransaction(initResponse.getId(), transaction);
-	
 Example Debit with Token transaction call
 
 	Token token = new Token("id", "cvc");
-	TransactionRequest transaction = new TransactionRequest("amount", "currency", true, token);
-	TransactionResponse = paymentAPI.debitTransaction(initResponse.getId(), transaction);
-	
+	TransactionRequest transaction = 
+		new TransactionRequest("amount", "currency", true, token);
+	TransactionResponse response = 
+		paymentAPI.debitTransaction(initResponse.getId(), transaction);
+
+Example Debit with Card transaction call
+
+	Card card = new Card("pan", "expiryYear", "expiryMonth", "cvc", "verification");
+	TransactionRequest transaction = 
+		new TransactionRequest("amount", "currency", true, card);
+	TransactionResponse response = 
+		paymentAPI.debitTransaction(initResponse.getId(), transaction);
+
 Example Commit transaction call
 
-	CommitTransactionRequest commitRequest = new CommitTransactionRequest("amount", "currency", true);
-	CommitTransactionResponse = paymentAPI.commitTransaction(initResponse.getId(), commitRequest);
+	CommitTransactionRequest commitRequest = 
+		new CommitTransactionRequest("amount", "currency", true);
+	CommitTransactionResponse response = 
+		paymentAPI.commitTransaction(initResponse.getId(), commitRequest);
 	
 Example Revert transaction call
 
-	RevertTransactionRequest revertRequest = new RevertTransactionRequest("amount", true);
-	TransactionResponse revert = paymentAPI.revertTransaction(initResponse.getId(), revertRequest);
+	RevertTransactionRequest revertRequest = 
+		new RevertTransactionRequest("amount", true);
+	TransactionResponse revert = 
+		paymentAPI.revertTransaction(initResponse.getId(), revertRequest);
 
 Example Transaction Status call
 
