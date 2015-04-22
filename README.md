@@ -11,23 +11,23 @@ The Java Client is a Maven project built so that it will work on Java 1.7 and Ja
 
 # Structure 
 
-* com.solinor.paymenthighway
+* `com.solinor.paymenthighway`
 
 Contains API classes. Use these to create Payment Highway API requests.
 
-* com.solinor.paymenthighway.connect
+* `com.solinor.paymenthighway.connect`
 
 Contains the actual classes that are responsible of the communication with Payment Highway.
 
-* com.solinor.paymenthighway.json
+* `com.solinor.paymenthighway.json`
 
 Contains classes that serialize and deserialize objects to and from JSON.
 
-* com.solinor.paymenthighway.model
+* `com.solinor.paymenthighway.model`
 
 Data structures that will be serialized and deserialized
 
-* com.solinor.paymenthighway.security
+* `com.solinor.paymenthighway.security`
 
 Contains classes that take care of keys and signatures.
 
