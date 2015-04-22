@@ -31,6 +31,82 @@ Data structures that will be serialized and deserialized
 
 Contains classes that take care of keys and signatures.
 
+# Overview
+
+Start with building the form parameters by using the FormParameterBuilder. 
+
+- 'FormParameterBuilder'
+
+Create an instance of the builder with your signature id and signature secret, then use the getAddCardParameters, getPaymentParameters, and getAddCardAndPayment methods to receive a list of parameters for each API call.
+
+Initializing the builder
+
+	FormParameterBuilder formBuilder = 
+    	new FormParameterBuilder("signatureKeyId", "signatureSecret");
+
+Example getAddCardParameters
+
+	List<NameValuePair> nameValuePairs = 
+		formBuilder.getAddCardParameters("account", "merchant", "amount",
+	    	"currency", "orderId", "successUrl", "failureUrl", "cancelUrl", 
+        	"language");
+
+Example getPaymentParameters 
+
+	List<NameValuePair> nameValuePairs = 
+		formBuilder.getPaymentParameters("account", "merchant", "amount",
+	    	"currency", "orderId", "successUrl", "failureUrl", "cancelUrl", 
+        	"language", "description");
+        	
+Example getGetAddCardAndPaymentParameters
+
+	List<NameValuePair> nameValuePairs = 
+		formBuilder.getAddCardAndPaymentParameters("account", "merchant", "amount",
+	    	"currency", "orderId", "successUrl", "failureUrl", "cancelUrl", 
+        	"language", "description");	
+
+Each method returns a List of NameValuePairs that must be used in the HTML form as hidden fields to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, and are included in the returned list.
+
+- Payment API
+
+Initializing the Payment API
+
+	PaymentAPI paymentAPI = new PaymentAPI("serviceUrl",
+		"signatureKeyId", "signatureSecret", "account", "merchant");
+
+Example Init transaction call
+
+	InitTransactionResponse initResponse = paymentAPI.initTransaction();
+	
+Example Debit with Card transaction call
+
+	Card card = new Card("pan", "expiryYear", "expiryMonth", "cvc", "verification");
+	TransactionRequest transaction = new TransactionRequest("amount", "currency", true, card);
+	TransactionResponse = paymentAPI.debitTransaction(initResponse.getId(), transaction);
+	
+Example Debit with Token transaction call
+
+
+	
+Example Commit transaction call
+
+	CommitTransactionRequest commitRequest = new CommitTransactionRequest("amount", "currency", true);
+	CommitTransactionResponse = paymentAPI.commitTransaction(initResponse.getId(), commitRequest);
+	
+Example Revert transaction call
+
+	RevertTransactionRequest revertRequest = new RevertTransactionRequest("amount", true);
+	TransactionResponse revert = paymentAPI.revertTransaction(initResponse.getId(), revertRequest);
+
+Example Transaction Status call
+
+	TransactionStatusResponse status = paymentAPI.transactionStatus("transactionId");
+	
+Example Daily Batch Report call
+
+	ReportResponse report = paymentAPI.fetchDailyReport("yyyyMMdd");
+	
+
 # Help us make it better
 
 Please tell us how we can make the API better. If you have a specific feature request or if you found a bug, please use GitHub issues. Fork these docs and send a pull request with improvements.
