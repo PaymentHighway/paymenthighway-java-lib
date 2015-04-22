@@ -31,19 +31,6 @@ Data structures that will be serialized and deserialized
 
 Contains classes that take care of keys and signatures.
 
-# TODO
-
-- [ ] Test Form API submit form (get redirect and token)
-- [ ] Test debit transaction with token.
-- [ ] JSON model coherence check
-- [x] daily batch report might be empty? note: only for today. reports available from previous day.
-- [x] Form API probably doesn't need merchant and account data everywhere. remove. 
-- [ ] should we do init transaction on behalf of customer when doing transactions?
-- [ ] daily batch report response model is not done. 
-- [ ] response authentication
-- [ ] response handling design
-- [ ] write documents ( https://paymenthighway.fi/dev/ )
-
 # Help us make it better
 
 Please tell us how we can make the API better. If you have a specific feature request or if you found a bug, please use GitHub issues. Fork these docs and send a pull request with improvements.
