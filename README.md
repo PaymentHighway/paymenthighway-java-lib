@@ -105,7 +105,7 @@ Example Revert transaction call
 
 	RevertTransactionRequest revertRequest = 
 		new RevertTransactionRequest("amount", true);
-	TransactionResponse revert = 
+	TransactionResponse response = 
 		paymentAPI.revertTransaction(initResponse.getId(), revertRequest);
 
 Example Transaction Status call
