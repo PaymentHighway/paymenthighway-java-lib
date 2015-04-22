@@ -172,11 +172,9 @@ public class PaymentAPITest {
 		assertEquals(transactionResponse.getResult().getCode(), "100");
 		assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
-		CommitTransactionRequest commitRequest = new CommitTransactionRequest("9999", "EUR", true);
-
 		CommitTransactionResponse commitResponse = null;
 		try {
-			commitResponse = paymentAPI.commitTransaction(transactionId, commitRequest);
+			commitResponse = paymentAPI.commitTransaction(transactionId, "9999", "EUR");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -224,11 +222,9 @@ public class PaymentAPITest {
 		assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
 		// revert transaction
-		RevertTransactionRequest revertTransaction = new RevertTransactionRequest("9999", true);
-	
 		TransactionResponse revertResponse = null;
 		try {
-			revertResponse = paymentAPI.revertTransaction(transactionId, revertTransaction);
+			revertResponse = paymentAPI.revertTransaction(transactionId, "9999");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -273,12 +269,9 @@ public class PaymentAPITest {
 		assertEquals(transactionResponse.getResult().getCode(), "100");
 		assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
-		// revert transaction
-		RevertTransactionRequest revertTransaction = new RevertTransactionRequest("9950", true);
-
 		TransactionResponse revertResponse = null;
 		try {
-			revertResponse = paymentAPI.revertTransaction(transactionId, revertTransaction);
+			revertResponse = paymentAPI.revertTransaction(transactionId, "9950");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

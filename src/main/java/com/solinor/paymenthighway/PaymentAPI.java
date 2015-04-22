@@ -83,10 +83,12 @@ public class PaymentAPI {
 	 * @throws IOException
 	 */
 	public TransactionResponse revertTransaction(UUID transactionId,
-			RevertTransactionRequest request) throws IOException {
+			String amount) throws IOException {
+		RevertTransactionRequest revertRequest = 
+				new RevertTransactionRequest(amount);
 		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
 				this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
-		return paymentApi.revertTransaction(transactionId, request);
+		return paymentApi.revertTransaction(transactionId, revertRequest);
 	}
 
 	/**
@@ -113,10 +115,12 @@ public class PaymentAPI {
 	 * @throws IOException
 	 */
 	public CommitTransactionResponse commitTransaction(UUID transactionId,
-			CommitTransactionRequest request) throws IOException {
+			String amount, String currency) throws IOException {
+		CommitTransactionRequest commitRequest = 
+				new CommitTransactionRequest(amount, currency);
 		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
 				this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
-		return paymentApi.commitTransaction(transactionId, request);
+		return paymentApi.commitTransaction(transactionId, commitRequest);
 	}
 
 	/**
