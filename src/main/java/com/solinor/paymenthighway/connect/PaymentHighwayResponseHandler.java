@@ -8,6 +8,7 @@ import java.io.IOException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
 
@@ -32,7 +33,7 @@ public class PaymentHighwayResponseHandler implements ResponseHandler<String> {
 	
 	@Override
 	public String handleResponse(final HttpResponse response)
-			throws ClientProtocolException, IOException {
+			throws ClientProtocolException, IOException, HttpResponseException {
 
 		String content = EntityUtils.toString(response.getEntity());
 		int status = response.getStatusLine().getStatusCode();
@@ -40,17 +41,27 @@ public class PaymentHighwayResponseHandler implements ResponseHandler<String> {
 		if (status >= 200 && status < 300) {
 			boolean authenticated = ss.authenticate(this.method, this.uri, response, content);
 			if (!authenticated) {
-				System.out.println("Message authentication failed. content:" + content);
+				// signals a failure to authenticate incoming message signature
+				System.err.println("Message authentication failed, status:"+status+", reason:" + 
+						response.getStatusLine().getReasonPhrase() + ":" + content);
 				throw new ClientProtocolException(
-						"Message authentication failed. content:" + content);
+						"Message authentication failed, status:"+status+", reason:" + 
+							response.getStatusLine().getReasonPhrase() + ":" + content);
 			}
 			HttpEntity entity = response.getEntity();
 			return entity != null ? content
 					: null;
-		} else {
-			System.err.println("response=" + response.toString());
-			throw new ClientProtocolException(
-					"Unexpected response status: " + status);
+		} else if (status == 401) {
+			// signals an authentication failure in Payment Highway
+			throw new HttpResponseException(status, " Authentication failure: " +
+					response.getStatusLine().getReasonPhrase() + ":"+ content);
+		}
+		else {
+			// Signals a non 2xx HTTP response.
+			System.err.println("status:"+status+", reason:" + 
+					response.getStatusLine().getReasonPhrase() + ":" + content);
+			throw new HttpResponseException(status, " reason:" +
+					response.getStatusLine().getReasonPhrase() + ":"+ content);
 		}
 	}
 }
