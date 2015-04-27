@@ -123,6 +123,18 @@ public class PaymentAPIConnectionTest {
 	}
 
 	@Test
+	public void testFailedAuthenticationInit() {
+		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl,
+				this.signatureKeyId, "wrongsecret", this.account,
+				this.merchant);
+		try {
+			conn.initTransactionHandle();
+		} catch (IOException e) {
+			assertTrue(e.getMessage().contains("Authentication HMAC mismatch")); 
+		}
+	}
+	
+	@Test
 	public void testAddHeaders() {
 
 		List<NameValuePair> sphHeaders = new ArrayList<NameValuePair>();
