@@ -112,7 +112,7 @@ public class FormParameterBuilderTest {
 		String currency = "EUR";
 		String orderId = "1000123A";
 		String successUrl = "https://www.paymenthighway.fi/";
-		String failureUrl = "http://www.fsf.org";
+		String failureUrl = "http://www.solinor.com";
 		String cancelUrl = "https://solinor.fi";
 		String language = "EN";
 		
@@ -181,7 +181,7 @@ public class FormParameterBuilderTest {
 		String currency = "EUR";
 		String orderId = "1000123A";
 		String successUrl = "https://www.paymenthighway.fi/";
-		String failureUrl = "http://www.fsf.org";
+		String failureUrl = "http://www.solinor.com";
 		String cancelUrl = "https://solinor.fi";
 		String language = "EN";
 		String description = "this is payment description";
@@ -251,7 +251,7 @@ public class FormParameterBuilderTest {
 		String currency = "EUR";
 		String orderId = "1000123A";
 		String successUrl = "https://www.paymenthighway.fi/";
-		String failureUrl = "http://www.fsf.org";
+		String failureUrl = "http://www.solinor.com";
 		String cancelUrl = "https://solinor.fi";
 		String language = "EN";
 		String description = "this is payment description";

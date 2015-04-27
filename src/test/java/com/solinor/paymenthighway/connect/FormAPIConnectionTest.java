@@ -32,6 +32,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.solinor.paymenthighway.PaymentHighwayUtility;
+import com.solinor.paymenthighway.model.CommitTransactionRequest;
+import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.security.SecureSigner;
 
 /**
@@ -227,31 +229,28 @@ public class FormAPIConnectionTest {
 		List<NameValuePair> formParameters = new ArrayList<NameValuePair>();
         formParameters.add(new BasicNameValuePair("sph-amount", "990"));
         formParameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-        formParameters.add(new BasicNameValuePair("sph-cancel-url", "http://www.apple.com/"));
+        formParameters.add(new BasicNameValuePair("sph-cancel-url", "http://www.solinor.com/"));
         formParameters.add(new BasicNameValuePair("sph-currency", "EUR"));
 		formParameters.add(new BasicNameValuePair("sph-account", "test"));
-        formParameters.add(new BasicNameValuePair("sph-failure-url", "http://www.apple.com/"));
+        formParameters.add(new BasicNameValuePair("sph-failure-url", "http://www.solinor.com/"));
         formParameters.add(new BasicNameValuePair("sph-merchant", "test_merchantId"));
         formParameters.add(new BasicNameValuePair("sph-order", "1000123A"));
         formParameters.add(new BasicNameValuePair("sph-request-id", requestId.toString()));
-        // formParameters.add(new BasicNameValuePair("sph-request-id", "f47ac10b-58cc-4372-a567-0e02b2c3d479"));
         formParameters.add(new BasicNameValuePair("sph-success-url", "https://www.paymenthighway.fi"));
         formParameters.add(new BasicNameValuePair("language", "EN"));
         
         FormAPIConnection conn = new FormAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
 		String response = null;
 		try {
-			response = conn.addCardRequest(formParameters);
+			response = conn.addCardAndPayRequest(formParameters);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// System.out.println("response="+ response);// parse tokenization id from response. regex look behind pattern
 		// this is a bit of a hack, faking a browser, parsing url
-		Matcher matcher = Pattern.compile("(?<=form action=\").{51}").matcher(response);
+		Matcher matcher = Pattern.compile("(?<=form action=\").{50}").matcher(response);
 		matcher.find();
 		String formUri = matcher.group();
 		
-		// System.out.println("form url="+formUri);
 		
 		HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
 		List<NameValuePair> submitParameters = new ArrayList<NameValuePair>();
@@ -286,29 +285,12 @@ public class FormAPIConnectionTest {
 
 	        };
 			submitResponse = httpclient.execute(httpPost, responseHandler);
-			// System.out.println("submitResponse="+ submitResponse);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		// test that response is from success url
 		assertTrue(submitResponse.contains("Payment Highway"));
-		
-//		// test commit transaction
-//		PaymentAPIConnection paymentAPIConnection = 
-//				new PaymentAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
-//		CommitTransactionRequest commitTransaction = new CommitTransactionRequest();
-//		commitTransaction.setAmount("990");
-//		commitTransaction.setCurrency("EUR");
-//		CommitTransactionResponse commitResponse = null;
-//		try {
-//			commitResponse = paymentAPIConnection.commitTransaction(formParameters, requestId, commitTransaction);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		System.out.println("commitResponse result code="+ commitResponse.getResult().getCode());
-//		System.out.println("commitResponse Token UUID="+ commitResponse.getCardToken());
-		
+
 	}
 	
 }

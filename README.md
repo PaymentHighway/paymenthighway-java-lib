@@ -87,7 +87,7 @@ Example Init transaction
 Example Tokenize (get the actual card token by using token id)
 
 	TokenizationResponse tokenResponse = 
-		paymentAPI.tokenize(tokenizationId);
+		paymentAPI.tokenize("tokenizationId");
 	
 Example Commit
 

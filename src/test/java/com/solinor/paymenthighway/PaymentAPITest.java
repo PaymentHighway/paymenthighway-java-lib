@@ -1,14 +1,30 @@
 package com.solinor.paymenthighway;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HttpCoreContext;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -16,11 +32,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.solinor.paymenthighway.model.Card;
-import com.solinor.paymenthighway.model.CommitTransactionRequest;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
 import com.solinor.paymenthighway.model.ReportResponse;
-import com.solinor.paymenthighway.model.RevertTransactionRequest;
+import com.solinor.paymenthighway.model.Token;
 import com.solinor.paymenthighway.model.TokenizationResponse;
 import com.solinor.paymenthighway.model.TransactionRequest;
 import com.solinor.paymenthighway.model.TransactionResponse;
@@ -114,8 +129,6 @@ public class PaymentAPITest {
 		}
 
 		UUID transactionId = response.getId();
-
-		
 
 		String pan = "4153013999700024";
 		String cvc = "024";
@@ -294,23 +307,261 @@ public class PaymentAPITest {
 	}
 	
 	@Test
+	public void testCommit() {
+		
+		// create the payment highway service
+		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
+				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+		
+		FormParameterBuilder builder = 
+				new FormParameterBuilder(this.signatureKeyId, this.signatureSecret);
+		
+		List<NameValuePair> nameValuePairs = builder.getPaymentParameters(
+				account, merchant, "9999", "EUR", "1", 
+				"http://www.paymenthighway.fi", "http://www.solinor.com/", 
+				"http://www.solinor.fi", "EN", "test payment");
+		
+		FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		String result = null;
+		try {
+			result = formApi.addCardAndPay(nameValuePairs);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		Matcher matcher = Pattern.compile("(?<=form action=\").{50}").matcher(result);
+		matcher.find();
+		String formUri = matcher.group();
+		
+		// submit form (fake a browser)
+		HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
+		List<NameValuePair> submitParameters = new ArrayList<NameValuePair>();
+		submitParameters.add(new BasicNameValuePair("card_number_formatted", "4153 0139 9970 0024"));
+		submitParameters.add(new BasicNameValuePair("card_number", "4153013999700024"));
+		submitParameters.add(new BasicNameValuePair("expiration_month", "11"));
+		submitParameters.add(new BasicNameValuePair("expiration_year", "2017"));
+		submitParameters.add(new BasicNameValuePair("expiry", "11 / 17"));
+		submitParameters.add(new BasicNameValuePair("cvv", "024"));
+		
+		httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+		httpPost.addHeader("User-Agent", "PaymentHighway Java Lib");
+        
+		
+		HttpClientContext context = HttpClientContext.create();
+		try {
+			
+			httpPost.setEntity(new UrlEncodedFormEntity(submitParameters));
+			CloseableHttpClient httpclient = HttpClients.createDefault();
+			
+			httpclient.execute(httpPost, context);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// read redirect uri and GET params from it.
+		HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute( 
+				HttpCoreContext.HTTP_REQUEST);
+		
+        List<NameValuePair> params = null;
+        params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
+		
+        // get sph-transaction-id
+        String transactionId = null;
+        for (NameValuePair param : params) {
+        	if (param.getName().equalsIgnoreCase("sph-transaction-id")) {
+        		transactionId = param.getValue();
+        	}
+        }
+     
+		CommitTransactionResponse commitResponse = null;
+		
+		try {
+			commitResponse = paymentAPI.commitTransaction(UUID.fromString(transactionId), "9999", "EUR");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		assertEquals(commitResponse.getResult().getMessage(), "OK");
+		assertTrue(commitResponse.getCardToken().toString().length() == 36);
+		assertEquals(commitResponse.getCard().getPartialPan(), "0024");
+		assertEquals(commitResponse.getCard().getExpireYear(), "2017");
+		
+	}
+	@Test
 	public void testTokenize() {
 		
 		// create the payment highway service
 		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
 				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		
-		// TODO: Change this so that a fresh tokenId is read from payment highway
-		String tokenizationId = "08cc223a-cf93-437c-97a2-f338eaf0d860";
+		FormParameterBuilder builder = 
+				new FormParameterBuilder(this.signatureKeyId, this.signatureSecret);
 		
+		List<NameValuePair> nameValuePairs = builder.getAddCardParameters(
+				account, merchant, "9900", "EUR", "123", 
+				"http://www.paymenthighway.fi", "http://www.solinor.com/", 
+				"http://www.solinor.com", "EN");
+		
+		FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		String result = null;
+		try {
+			result = formApi.addCard(nameValuePairs);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		Matcher matcher = Pattern.compile("(?<=form action=\").{51}").matcher(result);
+		matcher.find();
+		String formUri = matcher.group();
+		
+		// submit form (fake a browser)
+		HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
+		List<NameValuePair> submitParameters = new ArrayList<NameValuePair>();
+		submitParameters.add(new BasicNameValuePair("card_number_formatted", "4153 0139 9970 0024"));
+		submitParameters.add(new BasicNameValuePair("card_number", "4153013999700024"));
+		submitParameters.add(new BasicNameValuePair("expiration_month", "11"));
+		submitParameters.add(new BasicNameValuePair("expiration_year", "2017"));
+		submitParameters.add(new BasicNameValuePair("expiry", "11 / 17"));
+		submitParameters.add(new BasicNameValuePair("cvv", "024"));
+		
+		httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+		httpPost.addHeader("User-Agent", "PaymentHighway Java Lib");
+        
+		HttpClientContext context = HttpClientContext.create();
+		try {
+			
+			httpPost.setEntity(new UrlEncodedFormEntity(submitParameters));
+			CloseableHttpClient httpclient = HttpClients.createDefault();
+			
+			httpclient.execute(httpPost, context);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// read redirect uri and GET params from it.
+		HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute( 
+				HttpCoreContext.HTTP_REQUEST);
+		
+        List<NameValuePair> params = null;
+        params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
+		
+        // get sph-tokenization-id
+        String tokenizationId = null;
+        for (NameValuePair param : params) {
+        	if (param.getName().equalsIgnoreCase("sph-tokenization-id")) {
+        		tokenizationId = param.getValue();
+        	}
+        }
+     
 		TokenizationResponse tokenResponse = null;
 		try {
 			tokenResponse = paymentAPI.tokenize(tokenizationId);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		assertEquals(tokenResponse.getCard().getExpireYear(), "2017");
-		assertEquals(tokenResponse.getCardToken().toString(), "71435029-fbb6-4506-aa86-8529efb640b0");
+		assertTrue(tokenResponse.getCardToken().toString().length() == 36);
+		assertEquals(tokenResponse.getResult().getMessage(), "OK");
+
+	}
+	@Test
+	public void testDebitWithToken() {
+		
+		// create the payment highway service
+		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
+				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+		
+		FormParameterBuilder builder = 
+				new FormParameterBuilder(this.signatureKeyId, this.signatureSecret);
+		
+		List<NameValuePair> nameValuePairs = builder.getAddCardParameters(
+				account, merchant, "1111", "EUR", "A12", 
+				"http://www.paymenthighway.fi", "http://www.solinor.com/", 
+				"http://www.solinor.com", "EN");
+		
+		FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+		String result = null;
+		try {
+			result = formApi.addCard(nameValuePairs);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		Matcher matcher = Pattern.compile("(?<=form action=\").{51}").matcher(result);
+		matcher.find();
+		String formUri = matcher.group();
+		
+		// submit form (fake a browser)
+		HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
+		List<NameValuePair> submitParameters = new ArrayList<NameValuePair>();
+		submitParameters.add(new BasicNameValuePair("card_number_formatted", "4153 0139 9970 0024"));
+		submitParameters.add(new BasicNameValuePair("card_number", "4153013999700024"));
+		submitParameters.add(new BasicNameValuePair("expiration_month", "11"));
+		submitParameters.add(new BasicNameValuePair("expiration_year", "2017"));
+		submitParameters.add(new BasicNameValuePair("expiry", "11 / 17"));
+		submitParameters.add(new BasicNameValuePair("cvv", "024"));
+		
+		httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
+		httpPost.addHeader("User-Agent", "PaymentHighway Java Lib");
+        
+		HttpClientContext context = HttpClientContext.create();
+		try {
+			
+			httpPost.setEntity(new UrlEncodedFormEntity(submitParameters));
+			CloseableHttpClient httpclient = HttpClients.createDefault();
+			
+			httpclient.execute(httpPost, context);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		// read redirect uri and GET params from it.
+		HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute( 
+				HttpCoreContext.HTTP_REQUEST);
+		
+        List<NameValuePair> params = null;
+        params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
+		
+        // get sph-tokenization-id
+        String tokenizationId = null;
+        for (NameValuePair param : params) {
+        	if (param.getName().equalsIgnoreCase("sph-tokenization-id")) {
+        		tokenizationId = param.getValue();
+        	}
+        }
+     
+		TokenizationResponse tokenResponse = null;
+		try {
+			tokenResponse = paymentAPI.tokenize(tokenizationId);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		assertEquals(tokenResponse.getCard().getExpireYear(), "2017");
+		assertTrue(tokenResponse.getCardToken().toString().length() == 36);
+		assertEquals(tokenResponse.getResult().getMessage(), "OK");
+
+		// debit with token
+		InitTransactionResponse initResponse = null;
+		try {
+			initResponse = paymentAPI.initTransaction();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		Token token = new Token(tokenResponse.getCardToken().toString(), "024");
+		TransactionRequest transaction = 
+			    new TransactionRequest("1111", "EUR", token);
+
+		TransactionResponse debitResponse = null;
+		try {
+			debitResponse = 
+					paymentAPI.debitTransaction(initResponse.getId(), transaction);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		assertEquals(debitResponse.getResult().getCode(), "100");
+		assertEquals(debitResponse.getResult().getMessage(), "OK");
+		
 	}
 	@Test
 	public void testDailyBatchReport() {
