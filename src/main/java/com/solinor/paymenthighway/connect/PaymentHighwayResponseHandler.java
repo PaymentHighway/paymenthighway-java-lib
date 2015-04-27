@@ -5,7 +5,6 @@ package com.solinor.paymenthighway.connect;
 
 import java.io.IOException;
 
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
