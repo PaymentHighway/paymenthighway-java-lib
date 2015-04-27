@@ -538,7 +538,7 @@ public class PaymentAPITest {
 		assertTrue(tokenResponse.getCardToken().toString().length() == 36);
 		assertEquals(tokenResponse.getResult().getMessage(), "OK");
 
-		// debit with token
+		// debit with token (success)
 		InitTransactionResponse initResponse = null;
 		try {
 			initResponse = paymentAPI.initTransaction();
@@ -561,6 +561,27 @@ public class PaymentAPITest {
 		
 		assertEquals(debitResponse.getResult().getCode(), "100");
 		assertEquals(debitResponse.getResult().getMessage(), "OK");
+		
+		// test wrong ccv as parameter, should give unauthorized error message
+		InitTransactionResponse initResponse2 = null;
+		try {
+			initResponse2 = paymentAPI.initTransaction();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		Token token2 = new Token(tokenResponse.getCardToken().toString(), "025");
+		TransactionRequest transaction2 = 
+			    new TransactionRequest("1111", "EUR", token2);
+
+		TransactionResponse debitResponse2 = null;
+		try {
+			debitResponse2 = 
+					paymentAPI.debitTransaction(initResponse2.getId(), transaction2);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		assertEquals(debitResponse2.getResult().getCode(), "200");
+		assertEquals(debitResponse2.getResult().getMessage(), "Authorization failed");
 		
 	}
 	@Test
