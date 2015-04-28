@@ -12,6 +12,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
 
+import com.solinor.paymenthighway.exception.AuthenticationException;
 import com.solinor.paymenthighway.security.SecureSigner;
 
 /**
@@ -33,7 +34,7 @@ public class PaymentHighwayResponseHandler implements ResponseHandler<String> {
 	
 	@Override
 	public String handleResponse(final HttpResponse response)
-			throws ClientProtocolException, IOException, HttpResponseException {
+			throws AuthenticationException, HttpResponseException, IOException {
 
 		String content = EntityUtils.toString(response.getEntity());
 		int status = response.getStatusLine().getStatusCode();
@@ -44,7 +45,7 @@ public class PaymentHighwayResponseHandler implements ResponseHandler<String> {
 				// signals a failure to authenticate incoming message signature
 				System.err.println("Message authentication failed, status:"+status+", reason:" + 
 						response.getStatusLine().getReasonPhrase() + ":" + content);
-				throw new ClientProtocolException(
+				throw new AuthenticationException(
 						"Message authentication failed, status:"+status+", reason:" + 
 							response.getStatusLine().getReasonPhrase() + ":" + content);
 			}
@@ -53,6 +54,7 @@ public class PaymentHighwayResponseHandler implements ResponseHandler<String> {
 					: null;
 		} else if (status == 401) {
 			// signals an authentication failure in Payment Highway
+			// Payment Highway couldn't authenticate signature from the given parameters
 			throw new HttpResponseException(status, " Authentication failure: " +
 					response.getStatusLine().getReasonPhrase() + ":"+ content);
 		}
