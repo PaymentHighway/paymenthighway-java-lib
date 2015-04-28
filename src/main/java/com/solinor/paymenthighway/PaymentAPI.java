@@ -6,7 +6,10 @@ package com.solinor.paymenthighway;
 import java.io.IOException;
 import java.util.UUID;
 
+import org.apache.http.client.HttpResponseException;
+
 import com.solinor.paymenthighway.connect.PaymentAPIConnection;
+import com.solinor.paymenthighway.exception.AuthenticationException;
 import com.solinor.paymenthighway.model.CommitTransactionRequest;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
@@ -47,13 +50,16 @@ public class PaymentAPI {
 	 * 
 	 * @param nameValuePairs
 	 * @return InitTransactionResponse from Payment Highway
+	 * @throws HttpResponseException 
+	 * @throws AuthenticationException 
 	 * @throws IOException
 	 */
-	public InitTransactionResponse initTransaction() throws IOException {
+	public InitTransactionResponse initTransaction()
+			throws AuthenticationException, HttpResponseException, IOException {
 		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
 				this.serviceUrl, this.signatureKeyId, this.signatureSecret,
 				this.account, this.merchant);
-		
+
 		return paymentApi.initTransactionHandle();
 	}
 
@@ -64,12 +70,16 @@ public class PaymentAPI {
 	 * @param transactionId
 	 * @param request
 	 * @return TransactionResponse
+	 * @throws HttpResponseException 
+	 * @throws AuthenticationException 
 	 * @throws IOException
 	 */
 	public TransactionResponse debitTransaction(UUID transactionId,
-			TransactionRequest request) throws IOException {
+			TransactionRequest request) throws AuthenticationException,
+			HttpResponseException, IOException {
 		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
-				this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+				this.serviceUrl, this.signatureKeyId, this.signatureSecret,
+				this.account, this.merchant);
 		return paymentApi.debitTransaction(transactionId, request);
 	}
 
@@ -80,14 +90,18 @@ public class PaymentAPI {
 	 * @param transactionId
 	 * @param request
 	 * @return TransactionResponse
+	 * @throws HttpResponseException 
+	 * @throws AuthenticationException 
 	 * @throws IOException
 	 */
 	public TransactionResponse revertTransaction(UUID transactionId,
-			String amount) throws IOException {
-		RevertTransactionRequest revertRequest = 
-				new RevertTransactionRequest(amount);
+			String amount) throws AuthenticationException,
+			HttpResponseException, IOException {
+		RevertTransactionRequest revertRequest = new RevertTransactionRequest(
+				amount);
 		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
-				this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+				this.serviceUrl, this.signatureKeyId, this.signatureSecret,
+				this.account, this.merchant);
 		return paymentApi.revertTransaction(transactionId, revertRequest);
 	}
 
@@ -97,12 +111,15 @@ public class PaymentAPI {
 	 * @param nameValuePairs
 	 * @param transactionId
 	 * @return TransactionStatusResponse
+	 * @throws HttpResponseException 
+	 * @throws AuthenticationException 
 	 * @throws IOException
 	 */
 	public TransactionStatusResponse transactionStatus(UUID transactionId)
-			throws IOException {
+			throws AuthenticationException, HttpResponseException, IOException {
 		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
-				this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+				this.serviceUrl, this.signatureKeyId, this.signatureSecret,
+				this.account, this.merchant);
 		return paymentApi.transactionStatus(transactionId);
 	}
 
@@ -112,14 +129,18 @@ public class PaymentAPI {
 	 * @param nameValuePairs
 	 * @param transactionId
 	 * @return CommitTransactionResponse
+	 * @throws HttpResponseException 
+	 * @throws AuthenticationException 
 	 * @throws IOException
 	 */
 	public CommitTransactionResponse commitTransaction(UUID transactionId,
-			String amount, String currency) throws IOException {
-		CommitTransactionRequest commitRequest = 
-				new CommitTransactionRequest(amount, currency);
+			String amount, String currency) throws AuthenticationException,
+			HttpResponseException, IOException {
+		CommitTransactionRequest commitRequest = new CommitTransactionRequest(
+				amount, currency);
 		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
-				this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+				this.serviceUrl, this.signatureKeyId, this.signatureSecret,
+				this.account, this.merchant);
 		return paymentApi.commitTransaction(transactionId, commitRequest);
 	}
 
@@ -129,11 +150,15 @@ public class PaymentAPI {
 	 * @param nameValuePairs
 	 * @param transactionId
 	 * @return TokenizationResponse
+	 * @throws HttpResponseException 
+	 * @throws AuthenticationException 
 	 * @throws IOException
 	 */
-	public TokenizationResponse tokenize(String tokenizationId) throws IOException {
+	public TokenizationResponse tokenize(String tokenizationId)
+			throws AuthenticationException, HttpResponseException, IOException {
 		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
-				this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+				this.serviceUrl, this.signatureKeyId, this.signatureSecret,
+				this.account, this.merchant);
 		return paymentApi.tokenization(tokenizationId);
 	}
 	
@@ -142,12 +167,15 @@ public class PaymentAPI {
 	 *
 	 * @param String format: yyyyMMdd
 	 * @return ReportResponse
+	 * @throws HttpResponseException 
+	 * @throws AuthenticationException 
 	 * @throws IOException
 	 */
-	public ReportResponse fetchDailyReport(String date) throws IOException {
+	public ReportResponse fetchDailyReport(String date)
+			throws AuthenticationException, HttpResponseException, IOException {
 		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
-				this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+				this.serviceUrl, this.signatureKeyId, this.signatureSecret,
+				this.account, this.merchant);
 		return paymentApi.fetchReport(date);
 	}
-
 }
