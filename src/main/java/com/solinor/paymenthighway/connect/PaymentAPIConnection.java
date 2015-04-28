@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -22,6 +23,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
 import com.solinor.paymenthighway.PaymentHighwayUtility;
+import com.solinor.paymenthighway.exception.AuthenticationException;
 import com.solinor.paymenthighway.json.JsonGenerator;
 import com.solinor.paymenthighway.json.JsonParser;
 import com.solinor.paymenthighway.model.CommitTransactionRequest;
@@ -73,8 +75,8 @@ public class PaymentAPIConnection {
 		this.merchant = merchant;
 	}
 
-	public InitTransactionResponse initTransactionHandle() 
-			throws ClientProtocolException, IOException {
+	public InitTransactionResponse initTransactionHandle()
+			throws AuthenticationException, HttpResponseException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
@@ -110,10 +112,10 @@ public class PaymentAPIConnection {
 	}
 
 	public TransactionResponse debitTransaction(UUID transactionId,
-			TransactionRequest request) throws ClientProtocolException,
-			IOException {
+			TransactionRequest request) throws AuthenticationException,
+			HttpResponseException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
+
 		// sort alphabetically per key
 		List<NameValuePair> nameValuePairs = 
 				PaymentHighwayUtility.sortParameters(createNameValuePairs());
@@ -153,8 +155,8 @@ public class PaymentAPIConnection {
 	}
 
 	public TransactionResponse creditTransaction(UUID transactionId,
-			TransactionRequest request) throws ClientProtocolException,
-			IOException {
+			TransactionRequest request) throws AuthenticationException,
+			HttpResponseException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
@@ -196,8 +198,8 @@ public class PaymentAPIConnection {
 	}
 
 	public TransactionResponse revertTransaction(UUID transactionId,
-			RevertTransactionRequest request) throws ClientProtocolException,
-			IOException {
+			RevertTransactionRequest request) throws AuthenticationException,
+			HttpResponseException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
@@ -239,10 +241,10 @@ public class PaymentAPIConnection {
 	}
 
 	public CommitTransactionResponse commitTransaction(UUID transactionId,
-			CommitTransactionRequest request) throws ClientProtocolException,
-			IOException {
+			CommitTransactionRequest request) throws AuthenticationException,
+			HttpResponseException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
-		
+
 		// sort alphabetically per key
 		List<NameValuePair> nameValuePairs = 
 				PaymentHighwayUtility.sortParameters(createNameValuePairs());
@@ -282,7 +284,7 @@ public class PaymentAPIConnection {
 	}
 
 	public TransactionStatusResponse transactionStatus(UUID transactionId)
-			throws ClientProtocolException, IOException {
+			throws AuthenticationException, HttpResponseException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
@@ -321,7 +323,7 @@ public class PaymentAPIConnection {
 	}
 
 	public TokenizationResponse tokenization(String tokenizationId)
-			throws ClientProtocolException, IOException {
+			throws AuthenticationException, HttpResponseException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
@@ -360,7 +362,7 @@ public class PaymentAPIConnection {
 	}
 
 	public ReportResponse fetchReport(String date)
-			throws ClientProtocolException, IOException {
+			throws AuthenticationException, HttpResponseException, IOException {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// sort alphabetically per key
@@ -448,6 +450,4 @@ public class PaymentAPIConnection {
 				PaymentHighwayUtility.createRequestId()));
 		return nameValuePairs;
 	}
-	
-
 }
