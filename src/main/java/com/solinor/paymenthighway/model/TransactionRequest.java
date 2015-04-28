@@ -9,23 +9,9 @@ public class TransactionRequest {
 
 	String amount = null;
 	String currency = null;
-	boolean blocking = true;
-	Card card = null;
 	Token token = null;
-
-	public TransactionRequest(String amount, String currency, Card card) {
-		this.amount = amount;
-		this.currency = currency;
-		this.card = card;
-	}
-
-	public TransactionRequest(String amount, String currency, boolean blocking,
-			Card card) {
-		this.amount = amount;
-		this.currency = currency;
-		this.blocking = blocking;
-		this.card = card;
-	}
+	Card card = null;
+	boolean blocking = true;
 
 	public TransactionRequest(String amount, String currency, Token token) {
 		this.amount = amount;
@@ -33,21 +19,26 @@ public class TransactionRequest {
 		this.token = token;
 	}
 
-	public TransactionRequest(String amount, String currency, boolean blocking,
-			Token token) {
+	public TransactionRequest(String amount, String currency, Token token,
+			boolean blocking) {
 		this.amount = amount;
 		this.currency = currency;
 		this.blocking = blocking;
 		this.token = token;
 	}
+	
+	public TransactionRequest(String amount, String currency, Card card) {
+		this.amount = amount;
+		this.currency = currency;
+		this.card = card;
+	}
 
-	public TransactionRequest(String amount, String currency, boolean blocking,
-			Card card, Token token) {
+	public TransactionRequest(String amount, String currency, Card card,
+			boolean blocking) {
 		this.amount = amount;
 		this.currency = currency;
 		this.blocking = blocking;
 		this.card = card;
-		this.token = token;
 	}
 
 	public String getAmount() {
@@ -69,5 +60,4 @@ public class TransactionRequest {
 	public Token getToken() {
 		return token;
 	}
-
 }

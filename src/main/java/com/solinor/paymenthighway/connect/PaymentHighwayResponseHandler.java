@@ -61,8 +61,7 @@ public class PaymentHighwayResponseHandler implements ResponseHandler<String> {
 			System.err.println("status:"+status+", reason:" + 
 					response.getStatusLine().getReasonPhrase() + ":" + content);
 			throw new HttpResponseException(status, " reason:" +
-					response.getStatusLine().getReasonPhrase() + ":"+ content);
+					response.getStatusLine().getReasonPhrase() + ":" + content);
 		}
 	}
 }
-

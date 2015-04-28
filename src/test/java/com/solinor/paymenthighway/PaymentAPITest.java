@@ -136,7 +136,7 @@ public class PaymentAPITest {
 		String expiryMonth = "11";
 		String verification = "";
 		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 		
 		TransactionResponse transactionResponse = null;
 		try {
@@ -173,7 +173,7 @@ public class PaymentAPITest {
 		String verification = "";
 		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
 
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 		
 		TransactionResponse transactionResponse = null;
 		try {
@@ -223,7 +223,7 @@ public class PaymentAPITest {
 		String verification = "";
 		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 		TransactionResponse transactionResponse = null;
 		try {
 			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -270,7 +270,7 @@ public class PaymentAPITest {
 		String verification = "";
 		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 		
 		TransactionResponse transactionResponse = null;
 		try {

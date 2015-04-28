@@ -41,7 +41,7 @@ public class TransactionRequestTest {
 		String verification = "";
 		Card card = new Card(pan, cvc, expiryYear, expiryMonth, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 
 		String code = PaymentHighwayUtility.createRequestId();
 		String message = "this is a token message";
@@ -65,7 +65,7 @@ public class TransactionRequestTest {
 		String verification = "";
 		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 		
 		String id = PaymentHighwayUtility.createRequestId();
 		
@@ -100,7 +100,7 @@ public class TransactionRequestTest {
 		String verification = "";
 		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("1111", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("1111", "EUR", card, true);
 		
 		String id = PaymentHighwayUtility.createRequestId();
 		
@@ -118,13 +118,13 @@ public class TransactionRequestTest {
 		String verification2 = "";
 		Card card2 = new Card(pan2, expiryYear2, expiryMonth2, cvc2, verification2);
 
-		TransactionRequest transaction2 = new TransactionRequest("2222", "EUR", true, card2);
+		TransactionRequest transaction2 = new TransactionRequest("2222", "EUR", card2, true);
 		
 		String id2 = PaymentHighwayUtility.createRequestId();
 		
 		Token token2 = new Token(id2, cvc2);
 	
-		transaction2 = new TransactionRequest("2222", "EUR", true, card2, token2);
+		transaction2 = new TransactionRequest("2222", "EUR", token2);
 		
 		// these shouldn't change
 		assertEquals(transaction.card.pan, "4153013999700024");
@@ -139,7 +139,6 @@ public class TransactionRequestTest {
 		assertEquals(transaction.token.getCvc(), "024");
 		assertEquals(transaction.card.pan, "4153013999700024");
 
-		assertEquals(transaction2.card.pan, "4153013999700025");
 		assertEquals(transaction2.token.getCvc(), "026");
 		
 		transaction.token = token2;

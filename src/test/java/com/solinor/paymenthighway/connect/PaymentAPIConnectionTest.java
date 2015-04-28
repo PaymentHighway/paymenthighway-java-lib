@@ -220,7 +220,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 		
 		TransactionResponse transactionResponse = null;
 		try {
@@ -264,7 +264,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("99900", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("99900", "EUR", card, true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -307,7 +307,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 			
-		TransactionRequest transaction = new TransactionRequest("99900", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("99900", "EUR", card, true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -361,7 +361,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -421,7 +421,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -483,7 +483,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("1000", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("1000", "EUR", card, true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -547,7 +547,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 
-		TransactionRequest transaction = new TransactionRequest("1000", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("1000", "EUR", card, true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -610,7 +610,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("1000", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("1000", "EUR", card);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -682,7 +682,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("1000", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("1000", "EUR", card, true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -754,7 +754,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -812,7 +812,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", true, card);
+		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 
 		TransactionResponse transactionResponse = null;
 		try {
