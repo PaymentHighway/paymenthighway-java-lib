@@ -8,7 +8,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -347,7 +350,7 @@ public class PaymentAPIConnectionTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
 		assertEquals("100", response.getResultCode());
 		assertEquals("OK", response.getResultMessage());
 
@@ -881,8 +884,11 @@ public class PaymentAPIConnectionTest {
 		PaymentAPIConnection conn = new PaymentAPIConnection(this.serviceUrl,
 				this.signatureKeyId, this.signatureSecret, this.account,
 				this.merchant);
-
-		String date = "20150210";
+		// request batch for yesterday, today is not available
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, -1);   
+		String date = dateFormat.format(cal.getTime());
 		
 		ReportResponse result = null;
 		try {
