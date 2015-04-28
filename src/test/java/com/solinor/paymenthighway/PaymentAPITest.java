@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -31,6 +32,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.solinor.paymenthighway.exception.AuthenticationException;
 import com.solinor.paymenthighway.model.Card;
 import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.model.InitTransactionResponse;
@@ -104,14 +106,20 @@ public class PaymentAPITest {
 				signatureSecret, account, merchant);
 		
 		InitTransactionResponse response = null;
+	
 		try {
 			response = paymentAPI.initTransaction();
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (HttpResponseException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		assertEquals(response.getResultCode(), "100");
 		assertEquals(response.getResultMessage(), "OK");
+		assertEquals(response.getId().toString().length(), 36);
 	}
 
 	@Test
@@ -122,12 +130,20 @@ public class PaymentAPITest {
 				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 
 		InitTransactionResponse response = null;
+	
 		try {
 			response = paymentAPI.initTransaction();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (AuthenticationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (HttpResponseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-
+	
 		UUID transactionId = response.getId();
 
 		String pan = "4153013999700024";
@@ -139,12 +155,17 @@ public class PaymentAPITest {
 		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 		
 		TransactionResponse transactionResponse = null;
+	
 		try {
 			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (HttpResponseException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+	
 		assertEquals(transactionResponse.getResult().getCode(), "100");
 		assertEquals(transactionResponse.getResult().getMessage(), "OK");
 	}
@@ -156,14 +177,18 @@ public class PaymentAPITest {
 		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
 				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 
-	
 		InitTransactionResponse response = null;
+	
 		try {
 			response = paymentAPI.initTransaction();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (HttpResponseException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
-
+	
 		UUID transactionId = response.getId();
 
 		String pan = "4153013999700024";
@@ -176,18 +201,28 @@ public class PaymentAPITest {
 		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 		
 		TransactionResponse transactionResponse = null;
+		
 		try {
 			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (HttpResponseException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
-
+		
 		assertEquals(transactionResponse.getResult().getCode(), "100");
 		assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
 		CommitTransactionResponse commitResponse = null;
+		
 		try {
 			commitResponse = paymentAPI.commitTransaction(transactionId, "9999", "EUR");
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (HttpResponseException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -207,10 +242,15 @@ public class PaymentAPITest {
 
 		// init transaction
 		InitTransactionResponse response = null;
+	
 		try {
 			response = paymentAPI.initTransaction();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (HttpResponseException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 
 		// create transaction
@@ -225,12 +265,17 @@ public class PaymentAPITest {
 		
 		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 		TransactionResponse transactionResponse = null;
+	
 		try {
 			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (HttpResponseException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
-
+		
 		assertEquals(transactionResponse.getResult().getCode(), "100");
 		assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
@@ -238,9 +283,14 @@ public class PaymentAPITest {
 		TransactionResponse revertResponse = null;
 		try {
 			revertResponse = paymentAPI.revertTransaction(transactionId, "9999");
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (HttpResponseException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	
 		assertEquals(revertResponse.getResult().getCode(), "100");
 		assertEquals(revertResponse.getResult().getMessage(), "OK");
 	}
@@ -254,10 +304,15 @@ public class PaymentAPITest {
  
 		// init transaction
 		InitTransactionResponse response = null;
+		
 		try {
 			response = paymentAPI.initTransaction();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (HttpResponseException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 
 		// create transaction
@@ -273,21 +328,32 @@ public class PaymentAPITest {
 		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
 		
 		TransactionResponse transactionResponse = null;
+		
 		try {
 			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (HttpResponseException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 
 		assertEquals(transactionResponse.getResult().getCode(), "100");
 		assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
 		TransactionResponse revertResponse = null;
+
 		try {
 			revertResponse = paymentAPI.revertTransaction(transactionId, "9950");
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (HttpResponseException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
+		
 		assertEquals(revertResponse.getResult().getCode(), "100");
 		assertEquals(revertResponse.getResult().getMessage(), "OK");
 
@@ -296,10 +362,14 @@ public class PaymentAPITest {
 
 		try {
 			statusResponse = paymentAPI.transactionStatus(transactionId);
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (HttpResponseException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	
+		
 		assertEquals(statusResponse.getResult().getMessage(), "OK");
 		assertEquals(statusResponse.getResult().getCode(), "100");
 		assertEquals(statusResponse.getTransaction().getCurrentAmount(), "49");
@@ -323,11 +393,13 @@ public class PaymentAPITest {
 		
 		FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
 		String result = null;
+		
 		try {
 			result = formApi.addCardAndPay(nameValuePairs);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		
 		Matcher matcher = Pattern.compile("(?<=form action=\").{50}").matcher(result);
 		matcher.find();
 		String formUri = matcher.group();
@@ -345,7 +417,6 @@ public class PaymentAPITest {
 		httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 		httpPost.addHeader("User-Agent", "PaymentHighway Java Lib");
         
-		
 		HttpClientContext context = HttpClientContext.create();
 		try {
 			
@@ -376,9 +447,14 @@ public class PaymentAPITest {
 		
 		try {
 			commitResponse = paymentAPI.commitTransaction(UUID.fromString(transactionId), "9999", "EUR");
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (HttpResponseException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		assertEquals(commitResponse.getResult().getMessage(), "OK");
 		assertTrue(commitResponse.getCardToken().toString().length() == 36);
 		assertEquals(commitResponse.getCard().getPartialPan(), "0024");
@@ -407,6 +483,7 @@ public class PaymentAPITest {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+	
 		Matcher matcher = Pattern.compile("(?<=form action=\").{51}").matcher(result);
 		matcher.find();
 		String formUri = matcher.group();
@@ -451,12 +528,17 @@ public class PaymentAPITest {
         }
      
 		TokenizationResponse tokenResponse = null;
+		
 		try {
 			tokenResponse = paymentAPI.tokenize(tokenizationId);
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (HttpResponseException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
 		assertEquals(tokenResponse.getCard().getExpireYear(), "2017");
 		assertTrue(tokenResponse.getCardToken().toString().length() == 36);
 		assertEquals(tokenResponse.getResult().getMessage(), "OK");
@@ -528,35 +610,49 @@ public class PaymentAPITest {
         }
      
 		TokenizationResponse tokenResponse = null;
+		
 		try {
 			tokenResponse = paymentAPI.tokenize(tokenizationId);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (AuthenticationException e2) {
+			e2.printStackTrace();
+		} catch (HttpResponseException e2) {
+			e2.printStackTrace();
+		} catch (IOException e2) {
+			e2.printStackTrace();
 		}
-
+	
 		assertEquals(tokenResponse.getCard().getExpireYear(), "2017");
 		assertTrue(tokenResponse.getCardToken().toString().length() == 36);
 		assertEquals(tokenResponse.getResult().getMessage(), "OK");
 
 		// debit with token (success)
 		InitTransactionResponse initResponse = null;
+		
 		try {
 			initResponse = paymentAPI.initTransaction();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		} catch (AuthenticationException e2) {
+			e2.printStackTrace();
+		} catch (HttpResponseException e2) {
+			e2.printStackTrace();
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		}	
 		
 		Token token = new Token(tokenResponse.getCardToken().toString(), "024");
 		TransactionRequest transaction = 
 			    new TransactionRequest("1111", "EUR", token);
 
 		TransactionResponse debitResponse = null;
+		
 		try {
 			debitResponse = 
 					paymentAPI.debitTransaction(initResponse.getId(), transaction);
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (AuthenticationException e2) {
+			e2.printStackTrace();
+		} catch (HttpResponseException e2) {
+			e2.printStackTrace();
+		} catch (IOException e2) {
+			e2.printStackTrace();
 		}
 		
 		assertEquals(debitResponse.getResult().getCode(), "100");
@@ -564,11 +660,17 @@ public class PaymentAPITest {
 		
 		// test wrong ccv as parameter, should give unauthorized error message
 		InitTransactionResponse initResponse2 = null;
+		
 		try {
 			initResponse2 = paymentAPI.initTransaction();
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (HttpResponseException e1) {
+			e1.printStackTrace();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		
 		Token token2 = new Token(tokenResponse.getCardToken().toString(), "025");
 		TransactionRequest transaction2 = 
 			    new TransactionRequest("1111", "EUR", token2);
@@ -577,9 +679,14 @@ public class PaymentAPITest {
 		try {
 			debitResponse2 = 
 					paymentAPI.debitTransaction(initResponse2.getId(), transaction2);
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (HttpResponseException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		assertEquals(debitResponse2.getResult().getCode(), "200");
 		assertEquals(debitResponse2.getResult().getMessage(), "Authorization failed");
 		
@@ -598,8 +705,13 @@ public class PaymentAPITest {
 		String date = dateFormat.format(cal.getTime());
 		
 		ReportResponse reportResponse = null;
+		
 		try {
 			reportResponse = paymentAPI.fetchDailyReport(date);
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (HttpResponseException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
