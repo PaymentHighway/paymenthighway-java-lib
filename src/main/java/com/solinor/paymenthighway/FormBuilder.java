@@ -82,15 +82,16 @@ public class FormBuilder {
 		nameValuePairs.add(new BasicNameValuePair(SPH_SUCCESS_URL, this.successUrl));
 		nameValuePairs.add(new BasicNameValuePair(SPH_TIMESTAMP,
 				PaymentHighwayUtility.getUtcTimestamp()));
-		nameValuePairs.add(new BasicNameValuePair(LANGUAGE, this.language));
-
+		
 		// sort alphabetically per key
 		PaymentHighwayUtility.sortParameters(nameValuePairs);
 
 		// create signature
 		String signature = this.createSignature(this.addCardUri, nameValuePairs);
+		
+		nameValuePairs.add(new BasicNameValuePair(LANGUAGE, this.language));
 		nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
-
+		
 		return new FormContainer(this.method, this.baseUrl, this.addCardUri,
 				nameValuePairs);
 	}
@@ -120,14 +121,16 @@ public class FormBuilder {
 		nameValuePairs.add(new BasicNameValuePair(SPH_SUCCESS_URL, successUrl));
 		nameValuePairs.add(new BasicNameValuePair(SPH_TIMESTAMP,
 				PaymentHighwayUtility.getUtcTimestamp()));
-		nameValuePairs.add(new BasicNameValuePair(LANGUAGE, language));
-		nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
+		
 
 		// sort alphabetically per key
 		PaymentHighwayUtility.sortParameters(nameValuePairs);
 
 		// create signature
 		String signature = this.createSignature(this.payWithCardUri, nameValuePairs);
+		
+		nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
+		nameValuePairs.add(new BasicNameValuePair(LANGUAGE, language));
 		nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
 
 		return new FormContainer(this.method, this.baseUrl,
@@ -159,14 +162,15 @@ public class FormBuilder {
 		nameValuePairs.add(new BasicNameValuePair(SPH_SUCCESS_URL, successUrl));
 		nameValuePairs.add(new BasicNameValuePair(SPH_TIMESTAMP,
 				PaymentHighwayUtility.getUtcTimestamp()));
-		nameValuePairs.add(new BasicNameValuePair(LANGUAGE, language));
-		nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-
+		
 		// sort alphabetically per key
 		PaymentHighwayUtility.sortParameters(nameValuePairs);
 
 		// create signature
 		String signature = this.createSignature(this.addCardAndPayUri, nameValuePairs);
+		
+		nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
+		nameValuePairs.add(new BasicNameValuePair(LANGUAGE, language));
 		nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
 
 		return new FormContainer(method, this.baseUrl, this.addCardAndPayUri, nameValuePairs);
