@@ -1,5 +1,7 @@
 package com.solinor.paymenthighway.model;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -9,19 +11,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class Token {
 	@JsonProperty("id")
-	String id;
-	@JsonProperty("cvc")
-	String cvc;
+	UUID id;
 	
-	public Token (String id, String cvc) {
+	public Token (String id) {
+		this.id = UUID.fromString(id);
+	}
+	public Token (UUID id) {
 		this.id = id;
-		this.cvc = cvc;
 	}
 	public String getId() {
-		return id;
-	}
-	public String getCvc() {
-		return cvc;
+		return id.toString();
 	}
 
 }
