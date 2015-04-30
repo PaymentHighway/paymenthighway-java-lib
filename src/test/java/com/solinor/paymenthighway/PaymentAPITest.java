@@ -8,7 +8,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -123,7 +122,7 @@ public class PaymentAPITest {
 	}
 
 	@Test
-	public void testDebitTransaction() {
+	public void testDebitWithCard() {
 
 		// create the payment highway service
 		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
@@ -134,13 +133,10 @@ public class PaymentAPITest {
 		try {
 			response = paymentAPI.initTransaction();
 		} catch (AuthenticationException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (HttpResponseException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	
@@ -152,7 +148,7 @@ public class PaymentAPITest {
 		String expiryMonth = "11";
 		String verification = "";
 		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
 		
 		TransactionResponse transactionResponse = null;
 	
@@ -171,7 +167,7 @@ public class PaymentAPITest {
 	}
 
 	@Test
-	public void testCommitTransaction() {
+	public void testCommitWithCardTransaction() {
 
 		// create the payment highway service
 		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
@@ -198,7 +194,7 @@ public class PaymentAPITest {
 		String verification = "";
 		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
 
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
 		
 		TransactionResponse transactionResponse = null;
 		
@@ -263,7 +259,7 @@ public class PaymentAPITest {
 		String verification = "";
 		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
 		TransactionResponse transactionResponse = null;
 	
 		try {
@@ -293,6 +289,85 @@ public class PaymentAPITest {
 	
 		assertEquals(revertResponse.getResult().getCode(), "100");
 		assertEquals(revertResponse.getResult().getMessage(), "OK");
+	}
+	@Test
+	public void testRevertFullAmountTransaction() {
+
+		// create the payment highway service
+		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
+				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+
+		// init transaction
+		InitTransactionResponse response = null;
+	
+		try {
+			response = paymentAPI.initTransaction();
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (HttpResponseException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		// create transaction
+		UUID transactionId = response.getId();
+
+		String pan = "4153013999700024";
+		String cvc = "024";
+		String expiryYear = "2017";
+		String expiryMonth = "11";
+		String verification = "";
+		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
+		
+		TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
+		TransactionResponse transactionResponse = null;
+	
+		try {
+			transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
+		} catch (AuthenticationException e1) {
+			e1.printStackTrace();
+		} catch (HttpResponseException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		assertEquals(transactionResponse.getResult().getCode(), "100");
+		assertEquals(transactionResponse.getResult().getMessage(), "OK");
+
+		// revert transaction
+		TransactionResponse revertResponse = null;
+		try {
+			revertResponse = paymentAPI.revertTransaction(transactionId);
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (HttpResponseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+		assertEquals(revertResponse.getResult().getCode(), "100");
+		assertEquals(revertResponse.getResult().getMessage(), "OK");
+		
+		// check status
+		TransactionStatusResponse statusResponse = null;
+
+		try {
+			statusResponse = paymentAPI.transactionStatus(transactionId);
+		} catch (AuthenticationException e) {
+			e.printStackTrace();
+		} catch (HttpResponseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		assertEquals(statusResponse.getResult().getMessage(), "OK");
+		assertEquals(statusResponse.getResult().getCode(), "100");
+		assertEquals(statusResponse.getTransaction().getCurrentAmount(), "0");
+		assertEquals(statusResponse.getTransaction().getId(), transactionId);
 	}
 
 	@Test
@@ -325,7 +400,7 @@ public class PaymentAPITest {
 		String verification = "";
 		Card card = new Card(pan, expiryYear, expiryMonth, cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
 		
 		TransactionResponse transactionResponse = null;
 		
@@ -383,19 +458,21 @@ public class PaymentAPITest {
 		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
 				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		
-		FormParameterBuilder builder = 
-				new FormParameterBuilder(this.signatureKeyId, this.signatureSecret);
-		
-		List<NameValuePair> nameValuePairs = builder.getPaymentParameters(
-				account, merchant, "9999", "EUR", "1", 
-				"http://www.paymenthighway.fi", "http://www.solinor.com/", 
-				"http://www.solinor.fi", "EN", "test payment");
-		
+		// create the payment highway request parameters
+		FormBuilder formBuilder = new FormBuilder(
+				"POST", this.signatureKeyId, this.signatureSecret,
+				this.account, this.merchant, this.serviceUrl,
+				"http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN");
+
+		FormContainer formContainer = formBuilder
+				.generateAddCardAndPaymentParameters("9999", "EUR", "1",
+						"test payment");
+
 		FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
 		String result = null;
 		
 		try {
-			result = formApi.addCardAndPay(nameValuePairs);
+			result = formApi.addCardAndPay(formContainer.nameValuePairs());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -468,18 +545,20 @@ public class PaymentAPITest {
 		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
 				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		
-		FormParameterBuilder builder = 
-				new FormParameterBuilder(this.signatureKeyId, this.signatureSecret);
-		
-		List<NameValuePair> nameValuePairs = builder.getAddCardParameters(
-				account, merchant, "9900", "EUR", "123", 
-				"http://www.paymenthighway.fi", "http://www.solinor.com/", 
-				"http://www.solinor.com", "EN");
-		
+		// create the payment highway request parameters
+		FormBuilder formBuilder = new FormBuilder(
+				"POST", this.signatureKeyId, this.signatureSecret,
+				this.account, this.merchant, this.serviceUrl,
+				"http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN");
+
+		FormContainer formContainer = formBuilder
+				.generateAddCardAndPaymentParameters("9900", "EUR", "123",
+						"test payment");
+
 		FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
 		String result = null;
 		try {
-			result = formApi.addCard(nameValuePairs);
+			result = formApi.addCard(formContainer.nameValuePairs());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -551,18 +630,19 @@ public class PaymentAPITest {
 		PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
 				this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
 		
-		FormParameterBuilder builder = 
-				new FormParameterBuilder(this.signatureKeyId, this.signatureSecret);
-		
-		List<NameValuePair> nameValuePairs = builder.getAddCardParameters(
-				account, merchant, "1111", "EUR", "A12", 
-				"http://www.paymenthighway.fi", "http://www.solinor.com/", 
-				"http://www.solinor.com", "EN");
-		
+		// create the payment highway request parameters
+		FormBuilder formBuilder = new FormBuilder(
+				"POST", this.signatureKeyId, this.signatureSecret,
+				this.account, this.merchant, this.serviceUrl,
+				"http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN");
+
+		FormContainer formContainer = formBuilder
+				.generateAddCardParameters();
+
 		FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
 		String result = null;
 		try {
-			result = formApi.addCard(nameValuePairs);
+			result = formApi.addCard(formContainer.nameValuePairs());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -638,9 +718,9 @@ public class PaymentAPITest {
 			e2.printStackTrace();
 		}	
 		
-		Token token = new Token(tokenResponse.getCardToken().toString(), "024");
+		Token token = new Token(tokenResponse.getCardToken().toString());
 		TransactionRequest transaction = 
-			    new TransactionRequest("1111", "EUR", token);
+			    new TransactionRequest(token, "1111", "EUR");
 
 		TransactionResponse debitResponse = null;
 		
@@ -657,38 +737,6 @@ public class PaymentAPITest {
 		
 		assertEquals(debitResponse.getResult().getCode(), "100");
 		assertEquals(debitResponse.getResult().getMessage(), "OK");
-		
-		// test wrong ccv as parameter, should give unauthorized error message
-		InitTransactionResponse initResponse2 = null;
-		
-		try {
-			initResponse2 = paymentAPI.initTransaction();
-		} catch (AuthenticationException e1) {
-			e1.printStackTrace();
-		} catch (HttpResponseException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		
-		Token token2 = new Token(tokenResponse.getCardToken().toString(), "025");
-		TransactionRequest transaction2 = 
-			    new TransactionRequest("1111", "EUR", token2);
-
-		TransactionResponse debitResponse2 = null;
-		try {
-			debitResponse2 = 
-					paymentAPI.debitTransaction(initResponse2.getId(), transaction2);
-		} catch (AuthenticationException e) {
-			e.printStackTrace();
-		} catch (HttpResponseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		assertEquals(debitResponse2.getResult().getCode(), "200");
-		assertEquals(debitResponse2.getResult().getMessage(), "Authorization failed");
 		
 	}
 	@Test
