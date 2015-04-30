@@ -396,7 +396,6 @@ public class PaymentAPIConnection {
 		} finally {
 			httpclient.close();
 		}
-
 	}
 
 	protected void addHeaders(HttpRequestBase httpPost,
