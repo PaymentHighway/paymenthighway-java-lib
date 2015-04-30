@@ -37,7 +37,7 @@ Start with building the HTTP form parameters by using the FormParameterBuilder.
 
 - `FormBuilder`
 
-Create an instance of the builder with your signature id and signature secret, then use the getAddCardParameters, getPaymentParameters, and getAddCardAndPayment methods to receive a list of parameters for each API call.
+Create an instance of the builder with your signature id and signature secret, then use the generate methods to receive a list of parameters for each API call.
 
 Initializing the builder
 
@@ -58,7 +58,7 @@ Initializing the builder
         cancelUrl, language);
 
 
-Example getAddCardParameters
+Example generateAddCardParameters
 
 	FormContainer formContainer = 
         formBuilder.generateAddCardParameters();
@@ -73,7 +73,7 @@ Example getAddCardParameters
         field.getValue();
     }
 
-Example getPaymentParameters 
+Example generatePaymentParameters 
 
 	String amount = "1990";
     String currency = "EUR";
@@ -94,7 +94,7 @@ Example getPaymentParameters
         field.getValue();
     }
         	
-Example getGetAddCardAndPaymentParameters
+Example generateGetAddCardAndPaymentParameters
 
 	String amount = "1990";
     String currency = "EUR";
@@ -115,13 +115,13 @@ Example getGetAddCardAndPaymentParameters
         field.getValue();
     }
 
-Each method returns a List of NameValuePairs that must be used in the HTML form as hidden fields to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, and are included in the returned list.
+Each method returns a FormContainer object that can be used in the HTML form as hidden fields to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, and are included in the FormContainer fields.
 
 In order to charge a card given in the Form API, the corresponding transaction id must be committed by using Payment API.
 
 - `PaymentApi`
 
-In order to do safe transactions, an execution model is used where the first call to InitTransaction acquires a financial transaction handle, (InitTransactionResponse.getId()) which ensures the transaction is executed exactly once. Afterwards it is possible to execute a debit transaction by calling PaymentAPI.debitTransaction() by using the received id handle. If the execution fails, the command can be repeated in order to confirm the transaction with the particular id has been processed. After executing the command, the status of the transaction can be checked by executing the PaymentAPI.transactionStatus("id") request. 
+In order to do safe transactions, an execution model is used where the first call to /transaction acquires a financial transaction handle, later referred as “ID”, which ensures the transaction is executed exactly once. Afterwards it is possible to execute a debit transaction by using the received id handle. If the execution fails, the command can be repeated in order to confirm the transaction with the particular id has been processed. After executing the command, the status of the transaction can be checked by executing the PaymentAPI.transactionStatus("id") request. 
 
 In order to be sure that a tokenized card is valid and is able to process payment transactions the corresponding tokenization id must be used to get the actual card token. 
 
