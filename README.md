@@ -19,6 +19,10 @@ Contains API classes. Use these to create Payment Highway API requests.
 
 Contains the actual classes that are responsible of the communication with Payment Highway.
 
+* `com.solinor.paymenthighway.exception`
+
+Contains a custom authentication exception.
+
 * `com.solinor.paymenthighway.json`
 
 Contains classes that serialize and deserialize objects to and from JSON.
