@@ -87,7 +87,7 @@ public class FormBuilderTest {
 
 		FormContainer formContainer = formBuilder.generateAddCardParameters();
 
-		List<NameValuePair> nameValuePairs = formContainer.nameValuePairs();
+		List<NameValuePair> nameValuePairs = formContainer.getFields();
 
 		// test that the result has a signature
 		Iterator<NameValuePair> it = nameValuePairs.iterator();
@@ -128,7 +128,7 @@ public class FormBuilderTest {
 
 		String response = null;
 		try {
-			response = formApi.addCardRequest(formContainer.nameValuePairs());
+			response = formApi.addCardRequest(formContainer.getFields());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -161,7 +161,7 @@ public class FormBuilderTest {
 				amount, currency, orderId, description);
 
 		// test that the result has a signature
-		Iterator<NameValuePair> it = formContainer.nameValuePairs().iterator();
+		Iterator<NameValuePair> it = formContainer.getFields().iterator();
 		String signature = null;
 		while (it.hasNext()) {
 			NameValuePair nameValuePair = it.next();
@@ -204,7 +204,7 @@ public class FormBuilderTest {
 
 		String response = null;
 		try {
-			response = formApi.paymentRequest(formContainer.nameValuePairs());
+			response = formApi.paymentRequest(formContainer.getFields());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -236,7 +236,7 @@ public class FormBuilderTest {
 						description);
 
 		// test that the result has a signature
-		Iterator<NameValuePair> it = formContainer.nameValuePairs().iterator();
+		Iterator<NameValuePair> it = formContainer.getFields().iterator();
 		String signature = null;
 		while (it.hasNext()) {
 			NameValuePair nameValuePair = it.next();
@@ -281,7 +281,7 @@ public class FormBuilderTest {
 		String response = null;
 		try {
 			response = formApi.addCardAndPayRequest(formContainer
-					.nameValuePairs());
+					.getFields());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

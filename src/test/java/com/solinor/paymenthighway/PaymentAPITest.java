@@ -472,7 +472,7 @@ public class PaymentAPITest {
 		String result = null;
 		
 		try {
-			result = formApi.addCardAndPay(formContainer.nameValuePairs());
+			result = formApi.addCardAndPay(formContainer.getFields());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -558,7 +558,7 @@ public class PaymentAPITest {
 		FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
 		String result = null;
 		try {
-			result = formApi.addCard(formContainer.nameValuePairs());
+			result = formApi.addCard(formContainer.getFields());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -642,7 +642,7 @@ public class PaymentAPITest {
 		FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
 		String result = null;
 		try {
-			result = formApi.addCard(formContainer.nameValuePairs());
+			result = formApi.addCard(formContainer.getFields());
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

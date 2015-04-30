@@ -27,23 +27,15 @@ public class FormContainer {
 		this.nameValuePairs = nameValuePairs;
 	}
 
-	public String method() {
+	public String getMethod() {
 		return this.method;
 	}
 
-	public String baseUrl() {
-		return this.baseUrl;
-	}
-
-	public String actionUrl() {
-		return this.actionUrl;
-	}
-
-	public String fullUrl() {
+	public String getAction() {
 		return this.baseUrl + this.actionUrl;
 	}
 
-	public List<NameValuePair> nameValuePairs() {
+	public List<NameValuePair> getFields() {
 		return nameValuePairs;
 	}
 }
