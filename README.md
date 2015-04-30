@@ -200,6 +200,3 @@ It is recommended to gracefully handle exceptions from the API.
 
 Please tell us how we can make the API better. If you have a specific feature request or if you found a bug, please use GitHub issues. Fork these docs and send a pull request with improvements.
 
-# Test it
-
-You can run the test suite normally by 'mvn test'
