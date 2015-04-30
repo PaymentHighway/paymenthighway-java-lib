@@ -84,11 +84,29 @@ public class PaymentAPI {
 	}
 
 	/**
-	 * Payment Highway Revert Transaction
+	 * Payment Highway Revert Transaction with amount
 	 * 
-	 * @param nameValuePairs
 	 * @param transactionId
-	 * @param request
+	 * @param amount
+	 * @return TransactionResponse
+	 * @throws HttpResponseException 
+	 * @throws AuthenticationException 
+	 * @throws IOException
+	 */
+	public TransactionResponse revertTransaction(UUID transactionId) 
+			throws AuthenticationException, HttpResponseException, IOException {
+		RevertTransactionRequest revertRequest = new RevertTransactionRequest();
+		PaymentAPIConnection paymentApi = new PaymentAPIConnection(
+				this.serviceUrl, this.signatureKeyId, this.signatureSecret,
+				this.account, this.merchant);
+		return paymentApi.revertTransaction(transactionId, revertRequest);
+	}
+	
+	/**
+	 * Payment Highway Revert Transaction with amount
+	 * 
+	 * @param transactionId
+	 * @param amount
 	 * @return TransactionResponse
 	 * @throws HttpResponseException 
 	 * @throws AuthenticationException 
@@ -108,7 +126,6 @@ public class PaymentAPI {
 	/**
 	 * Payment Highway Transaction Status Request
 	 * 
-	 * @param nameValuePairs
 	 * @param transactionId
 	 * @return TransactionStatusResponse
 	 * @throws HttpResponseException 
@@ -147,7 +164,6 @@ public class PaymentAPI {
 	/**
 	 * Payment Highway Tokenize Request
 	 * 
-	 * @param nameValuePairs
 	 * @param transactionId
 	 * @return TokenizationResponse
 	 * @throws HttpResponseException 
