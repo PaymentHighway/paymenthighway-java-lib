@@ -223,7 +223,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
 		
 		TransactionResponse transactionResponse = null;
 		try {
@@ -267,7 +267,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("99900", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "99900", "EUR", true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -310,7 +310,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 			
-		TransactionRequest transaction = new TransactionRequest("99900", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "99900", "EUR", true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -364,7 +364,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -424,7 +424,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card);
+		TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -486,7 +486,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("1000", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR", true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -550,7 +550,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 
-		TransactionRequest transaction = new TransactionRequest("1000", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR", true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -613,7 +613,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("1000", "EUR", card);
+		TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR");
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -685,7 +685,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("1000", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR", true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -757,7 +757,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -815,7 +815,7 @@ public class PaymentAPIConnectionTest {
 		Card card = new Card(pan, expiryYear, expiryMonth,
 				cvc, verification);
 		
-		TransactionRequest transaction = new TransactionRequest("9999", "EUR", card, true);
+		TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
 
 		TransactionResponse transactionResponse = null;
 		try {
@@ -861,7 +861,7 @@ public class PaymentAPIConnectionTest {
 
 		assertEquals("100", response.getResultCode());
 		assertEquals("OK", response.getResultMessage());
-
+		// TODO: fetch this from Form API get parameters
 		String tokenizationId = "08cc223a-cf93-437c-97a2-f338eaf0d860";
 
 		TokenizationResponse tokenResponse = null;
