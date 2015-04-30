@@ -35,35 +35,85 @@ Contains classes that take care of keys and signatures.
 
 Start with building the HTTP form parameters by using the FormParameterBuilder. 
 
-- `FormParameterBuilder`
+- `FormBuilder`
 
 Create an instance of the builder with your signature id and signature secret, then use the getAddCardParameters, getPaymentParameters, and getAddCardAndPayment methods to receive a list of parameters for each API call.
 
 Initializing the builder
 
-	FormParameterBuilder formBuilder = 
-    	new FormParameterBuilder("signatureKeyId", "signatureSecret");
+	String method = "POST";
+    String signatureKeyId = "testKey";
+    String signatureSecret = "testSecret";
+    String account = "test";
+    String merchant = "test_merchantId";
+    String serviceUrl = "https://v1-hub-staging.sph-test-solinor.com";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "https://paymenthighway.fi/dev/";
+    String cancelUrl = "https://solinor.com/";
+    String language = "EN";
+
+    FormBuilder formBuilder = 
+        new FormBuilder(method, signatureKeyId, signatureSecret, 
+        account, merchant, serviceUrl, successUrl, failureUrl, 
+        cancelUrl, language);
+
 
 Example getAddCardParameters
 
-	List<NameValuePair> nameValuePairs = 
-		formBuilder.getAddCardParameters("account", "merchant", "amount",
-	    	"currency", "orderId", "successUrl", "failureUrl", "cancelUrl", 
-        	"language");
+	FormContainer formContainer = 
+        formBuilder.generateAddCardParameters();
+
+    // read form parameters
+    String httpMethod = formContainer.getMethod();
+    String actionUrl = formContainer.getAction();
+    List<NameValuePair> fields = formContainer.getFields();
+
+    for(NameValuePair field : fields) {
+        field.getName();
+        field.getValue();
+    }
 
 Example getPaymentParameters 
 
-	List<NameValuePair> nameValuePairs = 
-		formBuilder.getPaymentParameters("account", "merchant", "amount",
-	    	"currency", "orderId", "successUrl", "failureUrl", "cancelUrl", 
-        	"language", "description");
+	String amount = "1990";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String description = "A Box of Dreams. 19,90€";
+
+    FormContainer formContainer = 
+        formBuilder.generatePaymentParameters
+            (amount, currency, orderId, description);
+
+    // read form parameters
+    String httpMethod = formContainer.getMethod();
+    String actionUrl = formContainer.getAction();
+    List<NameValuePair> fields = formContainer.getFields();
+
+    for(NameValuePair field : fields) {
+        field.getName();
+        field.getValue();
+    }
         	
 Example getGetAddCardAndPaymentParameters
 
-	List<NameValuePair> nameValuePairs = 
-		formBuilder.getAddCardAndPaymentParameters("account", "merchant", "amount",
-	    	"currency", "orderId", "successUrl", "failureUrl", "cancelUrl", 
-        	"language", "description");	
+	String amount = "1990";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String description = "A Box of Dreams. 19,90€";
+
+    FormContainer formContainer = formBuilder
+        .generateAddCardAndPaymentParameters
+            (amount, currency, orderId, description);
+
+    // read form parameters
+    String httpMethod = formContainer.getMethod();
+    String actionUrl = formContainer.getAction();
+    List<NameValuePair> fields = formContainer.getFields();
+
+    for(NameValuePair field : fields) {
+        field.getName();
+        field.getValue();
+    }
 
 Each method returns a List of NameValuePairs that must be used in the HTML form as hidden fields to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, and are included in the returned list.
 
@@ -77,8 +127,22 @@ In order to be sure that a tokenized card is valid and is able to process paymen
 
 Initializing the Payment API
 
-	PaymentAPI paymentAPI = new PaymentAPI("serviceUrl",
-		"signatureKeyId", "signatureSecret", "account", "merchant");
+	String serviceUrl = "https://v1-hub-staging.sph-test-solinor.com";
+    String signatureKeyId = "testKey";
+    String signatureSecret = "testSecret";
+    String account = "test";
+    String merchant = "test_merchantId";
+
+    PaymentAPI paymentAPI = new PaymentAPI(serviceUrl,
+        signatureKeyId, signatureSecret, account, merchant);
+        
+Example Commit Form Transaction
+
+	String transactionId = ""; // get sph-transaction-id as a GET parameter
+    String amount = "1999";
+    String currency = "EUR";
+    CommitTransactionResponse response = 
+        paymentAPI.commitTransaction(transactionId, amount, currency);
 
 Example Init transaction
 
@@ -88,25 +152,12 @@ Example Tokenize (get the actual card token by using token id)
 
 	TokenizationResponse tokenResponse = 
 		paymentAPI.tokenize("tokenizationId");
-	
-Example Commit
-
-	CommitTransactionResponse response = 
-		paymentAPI.commitTransaction("transactionId", "amount", "currency");
-		
+			
 Example Debit with Token
 
-	Token token = new Token("id", "cvc");
+	Token token = new Token("id");
 	TransactionRequest transaction = 
-		new TransactionRequest("amount", "currency", token);
-	TransactionResponse response = 
-		paymentAPI.debitTransaction("transactionId", transaction);
-
-Example Debit with Card
-
-	Card card = new Card("pan", "expiryYear", "expiryMonth", "cvc", "verification");
-	TransactionRequest transaction = 
-		new TransactionRequest("amount", "currency", card);
+		new TransactionRequest(token, "amount", "currency");
 	TransactionResponse response = 
 		paymentAPI.debitTransaction("transactionId", transaction);
 		
@@ -123,6 +174,28 @@ Example Daily Batch Report
 
 	ReportResponse report = paymentAPI.fetchDailyReport("yyyyMMdd");
 	
+
+# ERRORS
+
+Payment Highway API can raise exceptions for several reasons. Payment Highway authenticates each request and if there is invalid parameters or a signature mismatch, a HttpResponseException is raised.
+
+The Payment Highway Java client also authenticates response messages, and in case of signature mismatch an AuthenticationException will be raised.
+
+try {
+  // Use Payment Highway's bindings...
+} catch (AuthenticationException e) {
+  // signals a failure to authenticate Payment Highway response
+} catch (HttpResponseException e) {
+  // Signals a non 2xx HTTP response.
+  // Invalid parameters were supplied to Payment Highway's API
+} catch (IOException e) {
+  // Signals that an I/O exception of some sort has occurred
+} catch (Exception e) {
+  // Something else happened
+}
+
+
+It is recommended to gracefully handle exceptions from the API.
 
 # Help us make it better
 
