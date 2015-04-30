@@ -175,25 +175,24 @@ Example Daily Batch Report
 	ReportResponse report = paymentAPI.fetchDailyReport("yyyyMMdd");
 	
 
-# ERRORS
+# Errors
 
 Payment Highway API can raise exceptions for several reasons. Payment Highway authenticates each request and if there is invalid parameters or a signature mismatch, a HttpResponseException is raised.
 
 The Payment Highway Java client also authenticates response messages, and in case of signature mismatch an AuthenticationException will be raised.
 
-try {
-  // Use Payment Highway's bindings...
-} catch (AuthenticationException e) {
-  // signals a failure to authenticate Payment Highway response
-} catch (HttpResponseException e) {
-  // Signals a non 2xx HTTP response.
-  // Invalid parameters were supplied to Payment Highway's API
-} catch (IOException e) {
-  // Signals that an I/O exception of some sort has occurred
-} catch (Exception e) {
-  // Something else happened
-}
-
+	try {
+ 		// Use Payment Highway's bindings...
+	} catch (AuthenticationException e) {
+ 		// signals a failure to authenticate Payment Highway response
+	} catch (HttpResponseException e) {
+  		// Signals a non 2xx HTTP response.
+  		// Invalid parameters were supplied to Payment Highway's API
+	} catch (IOException e) {
+  		// Signals that an I/O exception of some sort has occurred
+	} catch (Exception e) {
+  		// Something else happened
+	}
 
 It is recommended to gracefully handle exceptions from the API.
 
