@@ -13,32 +13,33 @@ public class TransactionRequest {
 	Card card = null;
 	boolean blocking = true;
 
-	public TransactionRequest(String amount, String currency, Token token) {
+	public TransactionRequest(Token token, String amount, String currency) {
+		this.token = token;
 		this.amount = amount;
 		this.currency = currency;
-		this.token = token;
 	}
 
-	public TransactionRequest(String amount, String currency, Token token,
+	public TransactionRequest(Token token, String amount, String currency,
 			boolean blocking) {
+		this.token = token;
 		this.amount = amount;
 		this.currency = currency;
 		this.blocking = blocking;
-		this.token = token;
-	}
-	
-	public TransactionRequest(String amount, String currency, Card card) {
-		this.amount = amount;
-		this.currency = currency;
-		this.card = card;
 	}
 
-	public TransactionRequest(String amount, String currency, Card card,
+	public TransactionRequest(Card card, String amount, String currency) {
+		this.card = card;
+		this.amount = amount;
+		this.currency = currency;
+	}
+
+	public TransactionRequest(Card card, String amount, String currency,
 			boolean blocking) {
+		this.card = card;
 		this.amount = amount;
 		this.currency = currency;
 		this.blocking = blocking;
-		this.card = card;
+		
 	}
 
 	public String getAmount() {
