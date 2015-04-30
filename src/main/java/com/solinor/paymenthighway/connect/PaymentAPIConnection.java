@@ -100,8 +100,6 @@ public class PaymentAPIConnection {
 			ResponseHandler<String> responseHandler = 
 					new PaymentHighwayResponseHandler(ss, METHOD_POST, paymentUri); 
 			
-			httpclient.execute(httpPost, responseHandler); 
-			
 			JsonParser parser = new JsonParser();
 			return parser.mapInitTransactionResponse(httpclient.execute(
 					httpPost, responseHandler));
