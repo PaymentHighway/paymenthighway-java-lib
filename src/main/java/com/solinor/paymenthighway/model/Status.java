@@ -2,8 +2,6 @@ package com.solinor.paymenthighway.model;
 
 /**
  * Status POJO
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class Status {
 	String state;

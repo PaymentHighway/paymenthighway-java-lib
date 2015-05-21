@@ -1,33 +1,19 @@
-/**
- * 
- */
 package com.solinor.paymenthighway;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.SimpleTimeZone;
 
 import org.apache.http.NameValuePair;
 
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 /**
  * General helper methods.
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class PaymentHighwayUtility {
 
 	/**
 	 * Cryptographically strong pseudo random number generator.
+	 *
 	 * @return String UUID.
 	 */
 	public static String createRequestId() {
@@ -36,6 +22,7 @@ public class PaymentHighwayUtility {
 	
 	/**
 	 * Request timestamp in ISO 8601 combined date and time in UTC.
+	 *
 	 * @return String timestamp Example: 2014-09-18T10:32:59Z
 	 */
 	public static String getUtcTimestamp() {
@@ -47,7 +34,7 @@ public class PaymentHighwayUtility {
 	/**
 	 * Sort alphabetically per key
 	 * 
-	 * @param List<NameValuePair> nameValuePairs
+	 * @param nameValuePairs
 	 * @return List<NameValuePair> sorted list
 	 */
 	public static List<NameValuePair> sortParameters(List<NameValuePair> nameValuePairs) {
@@ -65,7 +52,7 @@ public class PaymentHighwayUtility {
 	 * Signature is formed from parameters that start with "sph-" Therefore we
 	 * remove other parameters from the signature param set.
 	 * 
-	 * @param List<NameValuePair> map that may include all params           
+	 * @param map that may include all params
 	 * @return List<NameValuePair> with only params starting "sph-"
 	 */
 	public static List<NameValuePair> parseSphParameters(List<NameValuePair> map) {
@@ -97,7 +84,7 @@ public class PaymentHighwayUtility {
             // so lets try to find the file from resources
             InputStream file = ClassLoader.getSystemResourceAsStream(propFilename);
             try {
-                    br = new BufferedReader(new InputStreamReader(file, "UTF-8"));
+				br = new BufferedReader(new InputStreamReader(file, "UTF-8"));
             } catch (Exception e) {
             	System.err.println("Could not find property File.");
             	e.printStackTrace();

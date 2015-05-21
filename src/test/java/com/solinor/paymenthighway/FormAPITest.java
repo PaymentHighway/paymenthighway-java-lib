@@ -20,8 +20,6 @@ import org.junit.Test;
 
 /**
  * PaymentHighway Form API tests
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class FormAPITest {
 
@@ -95,7 +93,8 @@ public class FormAPITest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        assertTrue(result.contains("Payment Card Information"));
+		assert result != null;
+		assertTrue(result.contains("Payment Card Information"));
 	}
 	@Test
 	public void testPayWithCard() {
@@ -124,7 +123,8 @@ public class FormAPITest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        assertTrue(result.contains("card_number_formatted"));
+		assert result != null;
+		assertTrue(result.contains("card_number_formatted"));
 	}
 	@Test
 	public void testAddCardAndPay() {
@@ -153,7 +153,8 @@ public class FormAPITest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        assertTrue(result.contains("Test customer"));
+		assert result != null;
+		assertTrue(result.contains("Test customer"));
         assertTrue(result.contains("sph-card-form"));
 	}
 }

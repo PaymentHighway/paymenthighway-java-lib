@@ -36,6 +36,7 @@ public class TransactionResponseTest {
 		    } catch (Exception e) {
 		    	System.err.print("exception e=" + e);
 		    }
-		 assertEquals("getResult", method.getName());
+		assert method != null;
+		assertEquals("getResult", method.getName());
 	}
 }

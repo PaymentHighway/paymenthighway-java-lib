@@ -2,8 +2,6 @@ package com.solinor.paymenthighway.model;
 
 /**
  * Transaction request POJO
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class TransactionRequest {
 

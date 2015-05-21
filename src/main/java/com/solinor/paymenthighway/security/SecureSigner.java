@@ -3,28 +3,23 @@
  */
 package com.solinor.paymenthighway.security;
 
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-
+import com.solinor.paymenthighway.PaymentHighwayUtility;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
-import com.solinor.paymenthighway.PaymentHighwayUtility;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Creates a signature for PaymentHighway messages
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class SecureSigner {
 
@@ -57,12 +52,10 @@ public class SecureSigner {
 		if (this.signer == null) {
 			SecretKeySpec keySpec;
 			try {
-				keySpec = new SecretKeySpec(this.secretKey.getBytes("UTF-8"),
-						Algorithm);
+				keySpec = new SecretKeySpec(this.secretKey.getBytes("UTF-8"), Algorithm);
 				signer = Mac.getInstance(Algorithm);
 				signer.init(keySpec);
-			} catch (UnsupportedEncodingException | NoSuchAlgorithmException
-					| InvalidKeyException e) {
+			} catch (UnsupportedEncodingException | NoSuchAlgorithmException | InvalidKeyException e) {
 				e.printStackTrace();
 			}
 		}
@@ -75,18 +68,13 @@ public class SecureSigner {
 	 * 
 	 * @param method
 	 * @param uri
-	 * @param sphKeyValues
 	 * @param body
 	 * @return String eg:
 	 *         "SPH1 testKey 51dcbaf5a9323daed24c0cdc5bb5d344f321aa84435b64e5da3d8f6c49370532"
 	 */
-	public String createSignature(String method, String uri,
-			List<NameValuePair> keyValues, String body) {
+	public String createSignature(String method, String uri, List<NameValuePair> keyValues, String body) {
 
-		String signedString = String.format("%s %s %s", SignatureScheme,
-				secretKeyId, sign(method, uri, keyValues, body));
-
-		return signedString;
+		return String.format("%s %s %s", SignatureScheme, secretKeyId, sign(method, uri, keyValues, body));
 	}
 
 	/**
@@ -94,16 +82,12 @@ public class SecureSigner {
 	 * 
 	 * @param method
 	 * @param uri
-	 * @param sphKeyValues
 	 * @param body
 	 * @return String signature
 	 */
-	private String sign(String method, String uri,
-			List<NameValuePair> keyValues, String body) {
-		String stringToSign = String.format("%s\n%s\n%s\n%s", method, uri,
-				concatenateKeyValues(keyValues), body.trim());
+	private String sign(String method, String uri, List<NameValuePair> keyValues, String body) {
+		String stringToSign = String.format("%s\n%s\n%s\n%s", method, uri, concatenateKeyValues(keyValues), body.trim());
 
-		// System.out.println("String to Sign:\n" + stringToSign);
 		byte[] signature = null;
 		try {
 			signature = this.signer.doFinal(stringToSign.getBytes("UTF-8"));
@@ -124,16 +108,11 @@ public class SecureSigner {
 
 		String keyValuesString = "";
 
-		for (Iterator<NameValuePair> it = keyValues.iterator(); it.hasNext();) {
-			NameValuePair entry = it.next();
-			keyValuesString += entry.getName().toLowerCase() + ":"
-					+ entry.getValue() + "\n";
+		for (NameValuePair entry : keyValues) {
+			keyValuesString += entry.getName().toLowerCase() + ":" + entry.getValue() + "\n";
 		}
 
-		String result = keyValuesString.substring(0,
-				keyValuesString.length() - 1);
-
-		return result;
+		return keyValuesString.substring(0, keyValuesString.length() - 1);
 	}
 	
 	/**
@@ -146,9 +125,7 @@ public class SecureSigner {
 		List<NameValuePair> nameValuePairs = this.getHeadersAsNameValuePairs(response.getAllHeaders());
 		
 		String receivedSignature = "";
-		Iterator<NameValuePair> iterator = nameValuePairs.iterator();
-		while( iterator.hasNext()) {
-			NameValuePair entry = iterator.next();
+		for (NameValuePair entry : nameValuePairs) {
 			if (entry.getName().equalsIgnoreCase("Signature")) {
 				receivedSignature = entry.getValue();
 				break;
@@ -158,18 +135,14 @@ public class SecureSigner {
 
 		String createdSignature = this.createSignature(method, uri, nameValuePairs, content);
 
-		if (receivedSignature.equals(createdSignature)) {
-			return true;
-		}
-		return false;
+		return receivedSignature.equals(createdSignature);
 	}
 	
 	private List<NameValuePair> getHeadersAsNameValuePairs(Header[] headers) {
 		ArrayList<NameValuePair> list = new ArrayList<NameValuePair>();
-		for (int i = 0; i < headers.length; i++) {
-	        NameValuePair nameValuePair = 
-	        		new BasicNameValuePair(headers[i].getName(), headers[i].getValue());
-	        list.add(nameValuePair);
+		for (Header header : headers) {
+			NameValuePair nameValuePair = new BasicNameValuePair(header.getName(), header.getValue());
+			list.add(nameValuePair);
 		}
 		return list;
 	}

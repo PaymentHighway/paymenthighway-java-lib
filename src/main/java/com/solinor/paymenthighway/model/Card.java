@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Card POJO
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class Card {
 	
@@ -17,15 +15,12 @@ public class Card {
 	String expiryMonth;
 	@JsonProperty("cvc")
 	String cvc;
-	@JsonProperty("verification")
-	String verification;
-	
-	public Card(String pan, String expiryYear, String expiryMonth, String cvc, String verification) { 
+
+	public Card(String pan, String expiryYear, String expiryMonth, String cvc) {
 		this.pan = pan;
 		this.expiryYear = expiryYear;
 		this.expiryMonth = expiryMonth;
 		this.cvc = cvc;
-		this.verification = verification;
 	}
 	
 	public String getPan() {
@@ -39,8 +34,5 @@ public class Card {
 	}
 	public String getCvc() {
 		return cvc;
-	}
-	public String getVerification() {
-		return verification;
 	}
 }

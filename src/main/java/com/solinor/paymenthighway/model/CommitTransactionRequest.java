@@ -1,12 +1,7 @@
-/**
- * 
- */
 package com.solinor.paymenthighway.model;
 
 /**
  * Commit transaction request POJO
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class CommitTransactionRequest {
 	
@@ -37,6 +32,4 @@ public class CommitTransactionRequest {
 	public boolean isBlocking() {
 		return blocking;
 	}
-
-
 }

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.solinor.paymenthighway.exception;
 
 import org.apache.http.client.ClientProtocolException;
@@ -9,8 +6,6 @@ import org.apache.http.client.ClientProtocolException;
  * Payment Highway Authentication Exception
  * 
  * Raised when message signature from Payment Highway doesn't match
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class AuthenticationException extends ClientProtocolException {
 

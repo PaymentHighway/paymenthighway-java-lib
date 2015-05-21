@@ -20,8 +20,6 @@ import org.junit.Test;
 import com.solinor.paymenthighway.connect.FormAPIConnection;
 
 /**
- * @author tero.kallio
- *
  */
 public class FormBuilderTest {
 
@@ -132,7 +130,8 @@ public class FormBuilderTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
+		assert response != null;
 		assertTrue(response.contains("card_number_formatted"));
 		assertTrue(response.contains("Payment Highway"));
 	}
@@ -208,6 +207,7 @@ public class FormBuilderTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		assert response != null;
 		assertTrue(response.contains("card_number_formatted"));
 	}
 
@@ -285,6 +285,7 @@ public class FormBuilderTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		assert response != null;
 		assertTrue(response.contains("card_number_formatted"));
 	}
 }

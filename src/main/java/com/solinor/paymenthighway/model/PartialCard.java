@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Card POJO (with partial pan)
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class PartialCard {
 	

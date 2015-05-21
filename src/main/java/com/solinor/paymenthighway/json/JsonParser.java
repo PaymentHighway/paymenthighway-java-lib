@@ -1,24 +1,14 @@
-/**
- * 
- */
 package com.solinor.paymenthighway.json;
-
-import java.io.IOException;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.solinor.paymenthighway.model.CommitTransactionResponse;
-import com.solinor.paymenthighway.model.InitTransactionResponse;
-import com.solinor.paymenthighway.model.ReportResponse;
-import com.solinor.paymenthighway.model.TokenizationResponse;
-import com.solinor.paymenthighway.model.TransactionResponse;
-import com.solinor.paymenthighway.model.TransactionStatusResponse;
+import com.solinor.paymenthighway.model.*;
+
+import java.io.IOException;
 
 /**
  * Generates Objects from JSON
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class JsonParser {
 

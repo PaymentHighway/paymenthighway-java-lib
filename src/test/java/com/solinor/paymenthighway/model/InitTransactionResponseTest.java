@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.solinor.paymenthighway.model;
 
 import static org.junit.Assert.assertEquals;
@@ -14,7 +11,6 @@ import org.junit.Test;
 import com.solinor.paymenthighway.json.JsonParser;
 
 /**
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class InitTransactionResponseTest {
 

@@ -2,14 +2,12 @@ package com.solinor.paymenthighway.model;
 
 /**
  * Transaction Response POJO
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class TransactionResponse {
 
-	TransactionStatusResponse.Result result = null;
+	TransactionResponse.Result result = null;
 	
-	public TransactionStatusResponse.Result getResult() {
+	public TransactionResponse.Result getResult() {
 		return result;
 	}
 

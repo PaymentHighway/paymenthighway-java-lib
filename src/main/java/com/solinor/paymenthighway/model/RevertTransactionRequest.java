@@ -1,12 +1,7 @@
-/**
- * 
- */
 package com.solinor.paymenthighway.model;
 
 /**
  * Revert Transaction request POJO
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class RevertTransactionRequest {
 

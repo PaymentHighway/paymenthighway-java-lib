@@ -3,14 +3,12 @@
  */
 package com.solinor.paymenthighway;
 
-import java.util.List;
-
 import org.apache.http.NameValuePair;
+
+import java.util.List;
 
 /**
  * Everything you need for a form
- *
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class FormContainer {
 
@@ -19,8 +17,7 @@ public class FormContainer {
 	private String actionUrl;
 	private List<NameValuePair> nameValuePairs;;
 	
-	public FormContainer(String method, String baseUrl, String actionUrl,
-			List<NameValuePair> nameValuePairs) {
+	public FormContainer(String method, String baseUrl, String actionUrl, List<NameValuePair> nameValuePairs) {
 		this.method = method;
 		this.baseUrl = baseUrl;
 		this.actionUrl = actionUrl;

@@ -1,13 +1,9 @@
-/**
- * 
- */
 package com.solinor.paymenthighway.model;
+
 import java.util.Map;
 
 /**
  * InitTransactionResponse POJO
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class InitTransactionResponse {
 

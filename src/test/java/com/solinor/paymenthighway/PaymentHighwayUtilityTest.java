@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.solinor.paymenthighway;
 
 import static org.junit.Assert.assertEquals;
@@ -21,8 +18,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @author tero.kallio
- *
  */
 public class PaymentHighwayUtilityTest {
 	
@@ -67,7 +62,8 @@ public class PaymentHighwayUtilityTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		assertEquals(5, p.size());	
+		assert p != null;
+		assertEquals(5, p.size());
 		assertTrue(p.containsKey("service_url"));
 		assertTrue(p.containsKey("sph-account"));
 		assertTrue(p.containsKey("sph-merchant"));

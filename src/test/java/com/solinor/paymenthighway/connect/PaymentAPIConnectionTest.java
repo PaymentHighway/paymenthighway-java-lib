@@ -3,46 +3,23 @@
  */
 package com.solinor.paymenthighway.connect;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import com.solinor.paymenthighway.PaymentHighwayUtility;
+import com.solinor.paymenthighway.model.*;
+import com.solinor.paymenthighway.security.SecureSigner;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.junit.*;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.solinor.paymenthighway.PaymentHighwayUtility;
-import com.solinor.paymenthighway.model.Card;
-import com.solinor.paymenthighway.model.CommitTransactionRequest;
-import com.solinor.paymenthighway.model.CommitTransactionResponse;
-import com.solinor.paymenthighway.model.InitTransactionResponse;
-import com.solinor.paymenthighway.model.ReportResponse;
-import com.solinor.paymenthighway.model.RevertTransactionRequest;
-import com.solinor.paymenthighway.model.TokenizationResponse;
-import com.solinor.paymenthighway.model.TransactionRequest;
-import com.solinor.paymenthighway.model.TransactionResponse;
-import com.solinor.paymenthighway.model.TransactionStatusResponse;
-import com.solinor.paymenthighway.security.SecureSigner;
+import static org.junit.Assert.*;
 
 /**
  * PaymentAPIConnection test class
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class PaymentAPIConnectionTest {
 

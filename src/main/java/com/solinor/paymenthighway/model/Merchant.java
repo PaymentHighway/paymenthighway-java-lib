@@ -2,8 +2,6 @@ package com.solinor.paymenthighway.model;
 
 /**
  * Merchant POJO
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class Merchant {
 	String id;

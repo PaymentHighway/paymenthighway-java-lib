@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.solinor.paymenthighway;
 
 import java.io.IOException;
@@ -12,8 +9,6 @@ import com.solinor.paymenthighway.connect.FormAPIConnection;
 
 /**
  * Payment Highway Form API Service.
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class FormAPI {
 

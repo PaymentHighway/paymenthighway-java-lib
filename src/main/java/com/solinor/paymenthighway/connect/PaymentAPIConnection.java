@@ -1,13 +1,7 @@
-/**
- * 
- */
 package com.solinor.paymenthighway.connect;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.UUID;
+import java.util.*;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpResponseException;
@@ -38,9 +32,6 @@ import com.solinor.paymenthighway.security.SecureSigner;
 
 /**
  * PaymentHighway Payment API Connections
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
- *
  */
 public class PaymentAPIConnection {
 
@@ -64,8 +55,7 @@ public class PaymentAPIConnection {
 	 * @param signatureKeyId
 	 * @param signatureSecret
 	 */
-	public PaymentAPIConnection(String serviceUrl, String signatureKeyId,
-			String signatureSecret, String account, String merchant) {
+	public PaymentAPIConnection(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant) {
 
 		this.serviceUrl = serviceUrl;
 		this.signatureKeyId = signatureKeyId;
@@ -74,339 +64,178 @@ public class PaymentAPIConnection {
 		this.merchant = merchant;
 	}
 
-	public InitTransactionResponse initTransactionHandle()
-			throws AuthenticationException, HttpResponseException, IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+	public InitTransactionResponse initTransactionHandle() throws IOException {
 
 		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = 
-				PaymentHighwayUtility.sortParameters(createNameValuePairs());
+		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 		final String paymentUri = "/transaction";
-		try {
-			HttpPost httpPost = new HttpPost(this.serviceUrl + paymentUri);
 
-			SecureSigner ss = new SecureSigner(this.signatureKeyId,
-					this.signatureSecret);
-			
-			String signature = this.createSignature(ss, METHOD_POST, paymentUri,
-					nameValuePairs, null);
-			nameValuePairs.add(new BasicNameValuePair("signature", signature));
+		String response = executePost(paymentUri, nameValuePairs);
 
-			// add request headers
-			this.addHeaders(httpPost, nameValuePairs);
-
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = 
-					new PaymentHighwayResponseHandler(ss, METHOD_POST, paymentUri); 
-			
-			JsonParser parser = new JsonParser();
-			return parser.mapInitTransactionResponse(httpclient.execute(
-					httpPost, responseHandler));
-
-		} finally {
-			httpclient.close();
-		}
+		JsonParser jpar = new JsonParser();
+		return jpar.mapInitTransactionResponse(response);
 	}
 
-	public TransactionResponse debitTransaction(UUID transactionId,
-			TransactionRequest request) throws AuthenticationException,
-			HttpResponseException, IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+	public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
 		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = 
-				PaymentHighwayUtility.sortParameters(createNameValuePairs());
+		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/debit";
 		String debitUri = paymentUri + transactionId + actionUri;
 
-		try {
-			HttpPost httpPost = new HttpPost(this.serviceUrl + debitUri);
+		String response = executePost(debitUri, nameValuePairs, request);
 
-			SecureSigner ss = new SecureSigner(this.signatureKeyId,
-					this.signatureSecret);
-			
-			// create signature
-			String signature = this.createSignature(ss, METHOD_POST, debitUri,
-					nameValuePairs, request);
-			nameValuePairs.add(new BasicNameValuePair("signature", signature));
-
-			// add request headers
-			this.addHeaders(httpPost, nameValuePairs);
-
-			// add request body
-			this.addBody(httpPost, request);
-
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(
-					ss, METHOD_POST, debitUri);
-
-			JsonParser jpar = new JsonParser();
-			return jpar.mapTransactionResponse(httpclient.execute(httpPost,
-					responseHandler));
-
-		} finally {
-			httpclient.close();
-		}
+		JsonParser jpar = new JsonParser();
+		return jpar.mapTransactionResponse(response);
 	}
 
-	public TransactionResponse creditTransaction(UUID transactionId,
-			TransactionRequest request) throws AuthenticationException,
-			HttpResponseException, IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+	public TransactionResponse creditTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
 		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = 
-				PaymentHighwayUtility.sortParameters(createNameValuePairs());
+		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/credit";
 		String creditUri = paymentUri + transactionId + actionUri;
 
-		try {
-			HttpPost httpPost = new HttpPost(this.serviceUrl + creditUri);
+		String response = executePost(creditUri, nameValuePairs, request);
 
-			SecureSigner ss = new SecureSigner(this.signatureKeyId,
-					this.signatureSecret);
-			
-			// create signature
-			String signature = this.createSignature(ss, METHOD_POST, creditUri,
-					nameValuePairs, request);
-			nameValuePairs.add(new BasicNameValuePair("signature", signature));
-
-			// add request headers
-			this.addHeaders(httpPost, nameValuePairs);
-
-			// add request body
-			this.addBody(httpPost, request);
-
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(
-					ss, METHOD_POST, creditUri);
-
-			JsonParser jpar = new JsonParser();
-			return jpar.mapTransactionResponse(httpclient.execute(httpPost,
-					responseHandler));
-
-		} finally {
-			httpclient.close();
-		}
+		JsonParser jpar = new JsonParser();
+		return jpar.mapTransactionResponse(response);
 	}
 
-	public TransactionResponse revertTransaction(UUID transactionId,
-			RevertTransactionRequest request) throws AuthenticationException,
-			HttpResponseException, IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+	public TransactionResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
 
 		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = 
-				PaymentHighwayUtility.sortParameters(createNameValuePairs());
+		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/revert";
 		String revertUri = paymentUri + transactionId + actionUri;
 
-		try {
-			HttpPost httpPost = new HttpPost(this.serviceUrl + revertUri);
+		String response = executePost(revertUri, nameValuePairs, request);
 
-			SecureSigner ss = new SecureSigner(this.signatureKeyId,
-					this.signatureSecret);
-			
-			// create signature
-			String signature = this.createSignature(ss, METHOD_POST, revertUri,
-					nameValuePairs, request);
-			nameValuePairs.add(new BasicNameValuePair("signature", signature));
-
-			// add request headers
-			this.addHeaders(httpPost, nameValuePairs);
-
-			// add request body
-			this.addBody(httpPost, request);
-
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(
-					ss, METHOD_POST, revertUri);
-
-			JsonParser jpar = new JsonParser();
-			return jpar.mapTransactionResponse(httpclient.execute(httpPost,
-					responseHandler));
-
-		} finally {
-			httpclient.close();
-		}
+		JsonParser jpar = new JsonParser();
+		return jpar.mapTransactionResponse(response);
 	}
 
-	public CommitTransactionResponse commitTransaction(UUID transactionId,
-			CommitTransactionRequest request) throws AuthenticationException,
-			HttpResponseException, IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+	public CommitTransactionResponse commitTransaction(UUID transactionId, CommitTransactionRequest request) throws IOException {
 
 		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = 
-				PaymentHighwayUtility.sortParameters(createNameValuePairs());
+		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/transaction/";
 		final String actionUri = "/commit";
 		String commitUri = paymentUri + transactionId + actionUri;
 
-		try {
-			HttpPost httpPost = new HttpPost(this.serviceUrl + commitUri);
+		String response = executePost(commitUri, nameValuePairs, request);
 
-			SecureSigner ss = new SecureSigner(this.signatureKeyId,
-					this.signatureSecret);
-			
-			// create signature
-			String signature = this.createSignature(ss, METHOD_POST, commitUri,
-					nameValuePairs, request);
-			nameValuePairs.add(new BasicNameValuePair("signature", signature));
-
-			// add request headers
-			this.addHeaders(httpPost, nameValuePairs);
-
-			// add request body
-			this.addBody(httpPost, request);
-
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(
-					ss, METHOD_POST, commitUri);
-
-			JsonParser jpar = new JsonParser();
-			return jpar.mapCommitTransactionResponse(httpclient.execute(
-					httpPost, responseHandler));
-
-		} finally {
-			httpclient.close();
-		}
+		JsonParser jpar = new JsonParser();
+		return jpar.mapCommitTransactionResponse(response);
 	}
 
-	public TransactionStatusResponse transactionStatus(UUID transactionId)
-			throws AuthenticationException, HttpResponseException, IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+	public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
 
 		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = 
-				PaymentHighwayUtility.sortParameters(createNameValuePairs());
+		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/transaction/";
 
 		String statusUri = paymentUri + transactionId;
 
-		try {
-			HttpGet httpGet = new HttpGet(this.serviceUrl + statusUri);
+		String response = executeGet(statusUri, nameValuePairs);
 
-			SecureSigner ss = new SecureSigner(this.signatureKeyId,
-					this.signatureSecret);
-			
-			// create signature
-			String signature = this.createSignature(ss, METHOD_GET, statusUri,
-					nameValuePairs, null);
-			nameValuePairs.add(new BasicNameValuePair("signature", signature));
-
-			// add request headers
-			this.addHeaders(httpGet, nameValuePairs);
-
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(
-					ss, METHOD_GET, statusUri);
-
-			JsonParser jpar = new JsonParser();
-			return jpar.mapTransactionStatusResponse(httpclient.execute(
-					httpGet, responseHandler));
-
-		} finally {
-			httpclient.close();
-		}
+		JsonParser jpar = new JsonParser();
+		return jpar.mapTransactionStatusResponse(response);
 	}
 
-	public TokenizationResponse tokenization(String tokenizationId)
-			throws AuthenticationException, HttpResponseException, IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+	public TokenizationResponse tokenization(String tokenizationId) throws IOException {
 
 		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = 
-				PaymentHighwayUtility.sortParameters(createNameValuePairs());
+		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
 		final String paymentUri = "/tokenization/";
 
 		String tokenUri = paymentUri + tokenizationId;
-		
-		try {
-			HttpGet httpGet = new HttpGet(this.serviceUrl + tokenUri);
-			
-			SecureSigner ss = new SecureSigner(this.signatureKeyId,
-					this.signatureSecret);
-			
-			// create signature
-			String signature = this.createSignature(ss, METHOD_GET, tokenUri,
-					nameValuePairs, null);
-			nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-			// add request headers
-			this.addHeaders(httpGet, nameValuePairs);
+		String response = executeGet(tokenUri, nameValuePairs);
 
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(
-					ss, METHOD_GET, tokenUri);
-
-			JsonParser jpar = new JsonParser();
-			return jpar.mapTokenizationResponse(httpclient.execute(httpGet,
-					responseHandler));
-
-		} finally {
-			httpclient.close();
-		}
+		JsonParser jpar = new JsonParser();
+		return jpar.mapTokenizationResponse(response);
 	}
 
-	public ReportResponse fetchReport(String date)
-			throws AuthenticationException, HttpResponseException, IOException {
-		CloseableHttpClient httpclient = HttpClients.createDefault();
+	public ReportResponse fetchReport(String date) throws IOException {
 
 		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = 
-				PaymentHighwayUtility.sortParameters(createNameValuePairs());
+		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
 		final String reportUri = "/report/batch/";
 
 		String fetchUri = reportUri + date;
 
-		try {
-			HttpGet httpGet = new HttpGet(this.serviceUrl + fetchUri);
+		String response = executeGet(fetchUri, nameValuePairs);
 
-			SecureSigner ss = new SecureSigner(this.signatureKeyId,
-					this.signatureSecret);
-			
+		JsonParser jpar = new JsonParser();
+		return jpar.mapReportResponse(response);
+	}
+
+	private String executeGet(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {
+		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+			SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
+
+			HttpRequestBase httpRequest = new HttpGet(this.serviceUrl + requestUri);
+
 			// create signature
-			String signature = this.createSignature(ss, METHOD_GET, fetchUri,
-					nameValuePairs, null);
+			String signature = this.createSignature(ss, METHOD_GET, requestUri, nameValuePairs, null);
 			nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
 			// add request headers
-			this.addHeaders(httpGet, nameValuePairs);
+			this.addHeaders(httpRequest, nameValuePairs);
 
 			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(
-					ss, METHOD_GET, fetchUri);
+			ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_GET, requestUri);
 
-			JsonParser jpar = new JsonParser();
-			return jpar.mapReportResponse(httpclient.execute(httpGet,
-					responseHandler));
-			
-		} finally {
-			httpclient.close();
+			return httpclient.execute(httpRequest, responseHandler);
 		}
 	}
 
-	protected void addHeaders(HttpRequestBase httpPost,
-			List<NameValuePair> nameValuePairs) {
+	private String executePost(String requestUri, List<NameValuePair> nameValuePairs, Object requestBody) throws IOException {
+		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+			SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
+
+			HttpPost httpRequest = new HttpPost(this.serviceUrl + requestUri);
+
+			// create signature
+			String signature = this.createSignature(ss, METHOD_POST, requestUri, nameValuePairs, requestBody);
+			nameValuePairs.add(new BasicNameValuePair("signature", signature));
+
+			// add request headers
+			this.addHeaders(httpRequest, nameValuePairs);
+
+			// add request body
+			if (requestBody != null) {
+				this.addBody(httpRequest, requestBody);
+			}
+
+			// Create a custom response handler
+			ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_POST, requestUri);
+
+			return httpclient.execute(httpRequest, responseHandler);
+		}
+	}
+
+	private String executePost(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {
+		return executePost(requestUri, nameValuePairs, null);
+	}
+
+	protected void addHeaders(HttpRequestBase httpPost, List<NameValuePair> nameValuePairs) {
 
 		httpPost.addHeader(HTTP.USER_AGENT, USER_AGENT);
 		httpPost.addHeader(HTTP.CONTENT_TYPE, "application/json; charset=utf-8");
 
-		ListIterator<NameValuePair> li = nameValuePairs.listIterator();
-
-		while (li.hasNext()) {
-			NameValuePair param = li.next();
+		for (NameValuePair param : nameValuePairs) {
 			httpPost.addHeader(param.getName(), param.getValue());
 		}
 	}
@@ -419,8 +248,7 @@ public class PaymentAPIConnection {
 		httpPost.setEntity(requestEntity);
 	}
 
-	private String createSignature(SecureSigner ss, String method, String uri,
-			List<NameValuePair> nameValuePairs, Object request) {
+	private String createSignature(SecureSigner ss, String method, String uri, List<NameValuePair> nameValuePairs, Object request) {
 
 		nameValuePairs = PaymentHighwayUtility.parseSphParameters(nameValuePairs);
 		
@@ -440,10 +268,8 @@ public class PaymentAPIConnection {
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		nameValuePairs.add(new BasicNameValuePair("sph-account", this.account));
 		nameValuePairs.add(new BasicNameValuePair("sph-merchant", this.merchant));
-		nameValuePairs.add(new BasicNameValuePair("sph-timestamp",
-				PaymentHighwayUtility.getUtcTimestamp()));
-		nameValuePairs.add(new BasicNameValuePair("sph-request-id",
-				PaymentHighwayUtility.createRequestId()));
+		nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
+		nameValuePairs.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
 		return nameValuePairs;
 	}
 }

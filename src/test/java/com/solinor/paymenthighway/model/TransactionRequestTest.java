@@ -44,10 +44,8 @@ public class TransactionRequestTest {
 		TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
 
 		String tokenId = PaymentHighwayUtility.createRequestId();
-		
-		Token token = new Token(tokenId);
-		
-		transaction.token = token;
+
+		transaction.token = new Token(tokenId);
 		
 		JsonGenerator jsonGenerator = new JsonGenerator();
 		String json = jsonGenerator.createTransactionJson(transaction);

@@ -2,8 +2,6 @@ package com.solinor.paymenthighway.model;
 
 /**
  * Acquirer POJO
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class Acquirer {
 	String id;

@@ -1,12 +1,9 @@
 package com.solinor.paymenthighway.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.solinor.paymenthighway.model.Status;
 
 /**
  * Revert POJO
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class Revert {
 	

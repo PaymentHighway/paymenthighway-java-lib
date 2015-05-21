@@ -1,12 +1,7 @@
-/**
- * 
- */
 package com.solinor.paymenthighway.model;
 
 /**
  * Report Response POJO
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class ReportResponse {
 

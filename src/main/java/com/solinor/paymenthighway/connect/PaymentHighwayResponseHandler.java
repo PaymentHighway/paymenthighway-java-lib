@@ -1,23 +1,17 @@
-/**
- * 
- */
 package com.solinor.paymenthighway.connect;
 
-import java.io.IOException;
-
+import com.solinor.paymenthighway.exception.AuthenticationException;
+import com.solinor.paymenthighway.security.SecureSigner;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.util.EntityUtils;
 
-import com.solinor.paymenthighway.exception.AuthenticationException;
-import com.solinor.paymenthighway.security.SecureSigner;
+import java.io.IOException;
 
 /**
  * Custom Response Handler
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class PaymentHighwayResponseHandler implements ResponseHandler<String> {
 
@@ -32,8 +26,7 @@ public class PaymentHighwayResponseHandler implements ResponseHandler<String> {
 	}
 	
 	@Override
-	public String handleResponse(final HttpResponse response)
-			throws AuthenticationException, HttpResponseException, IOException {
+	public String handleResponse(final HttpResponse response) throws IOException {
 
 		String content = EntityUtils.toString(response.getEntity());
 		int status = response.getStatusLine().getStatusCode();

@@ -1,21 +1,15 @@
 package com.solinor.paymenthighway.connect;
 
-
-import static org.junit.Assert.assertTrue;
+import com.solinor.paymenthighway.PaymentHighwayUtility;
+import com.solinor.paymenthighway.security.SecureSigner;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.junit.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.solinor.paymenthighway.PaymentHighwayUtility;
-import com.solinor.paymenthighway.security.SecureSigner;
+import static org.junit.Assert.assertTrue;
 
 public class SecureSignerTest {
 
@@ -64,8 +58,7 @@ public class SecureSignerTest {
         nameValuePairs.add(new BasicNameValuePair("language", "EN"));
         nameValuePairs.add(new BasicNameValuePair("description", "this is a description"));
         
-        String sig = ss.createSignature(
-        		formPaymentMethod, formPaymentUri, nameValuePairs, formPaymentBody);
+        String sig = ss.createSignature(formPaymentMethod, formPaymentUri, nameValuePairs, formPaymentBody);
        
         assertTrue(sig.contains(secretKeyId));
 	}

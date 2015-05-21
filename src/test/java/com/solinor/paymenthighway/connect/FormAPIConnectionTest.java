@@ -36,8 +36,6 @@ import com.solinor.paymenthighway.security.SecureSigner;
 
 /**
  * Test class for Form API connections
- * @author Tero Kallio <tero.kallio@solinor.com>
- *
  */
 public class FormAPIConnectionTest {
 	
@@ -287,6 +285,7 @@ public class FormAPIConnectionTest {
 			e.printStackTrace();
 		}
 		// test that response is from success url
+		assert submitResponse != null;
 		assertTrue(submitResponse.contains("Payment Highway"));
 
 	}

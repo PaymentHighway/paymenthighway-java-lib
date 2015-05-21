@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.solinor.paymenthighway.json;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -9,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Generates JSON from objects
- * 
- * @author Tero Kallio <tero.kallio@solinor.com>
  */
 public class JsonGenerator {
 	

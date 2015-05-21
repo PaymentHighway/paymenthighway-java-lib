@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.solinor.paymenthighway;
 
 import static org.junit.Assert.*;
@@ -15,8 +12,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @author tero.kallio
- *
  */
 public class FormContainerTest {
 
