@@ -32,8 +32,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.solinor.paymenthighway.PaymentHighwayUtility;
-import com.solinor.paymenthighway.model.CommitTransactionRequest;
-import com.solinor.paymenthighway.model.CommitTransactionResponse;
 import com.solinor.paymenthighway.security.SecureSigner;
 
 /**
