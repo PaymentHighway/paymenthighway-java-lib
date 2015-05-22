@@ -5,9 +5,9 @@ package io.paymenthighway.model.response;
  */
 public class TransactionResponse {
 
-	Result result = null;
-	
-	public Result getResult() {
-		return result;
-	}
+  Result result = null;
+
+  public Result getResult() {
+    return result;
+  }
 }

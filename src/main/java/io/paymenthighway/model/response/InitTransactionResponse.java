@@ -5,14 +5,15 @@ package io.paymenthighway.model.response;
  */
 public class InitTransactionResponse {
 
-	java.util.UUID id = null;
-	Result result = null;
+  java.util.UUID id = null;
+  Result result = null;
 
-	/* getters */
-	public java.util.UUID getId() {
-		return id;
-	}
-	public Result getResult() {
-		return result;
-	}
+  /* getters */
+  public java.util.UUID getId() {
+    return id;
+  }
+
+  public Result getResult() {
+    return result;
+  }
 }
