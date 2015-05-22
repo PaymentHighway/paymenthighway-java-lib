@@ -1,11 +1,10 @@
-package io.paymenthighway.model;
+package io.paymenthighway.model.response;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Method;
 
-import io.paymenthighway.model.response.TransactionResponse;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

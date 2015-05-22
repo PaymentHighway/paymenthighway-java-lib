@@ -112,7 +112,11 @@ public class SecureSigner {
       keyValuesString += entry.getName().toLowerCase() + ":" + entry.getValue() + "\n";
     }
 
-    return keyValuesString.substring(0, keyValuesString.length() - 1);
+    if (keyValuesString.length() == 0) {
+      return "";
+    } else {
+      return keyValuesString.substring(0, keyValuesString.length() - 1);
+    }
   }
 
   /**
@@ -140,7 +144,7 @@ public class SecureSigner {
   }
 
   private List<NameValuePair> getHeadersAsNameValuePairs(Header[] headers) {
-    ArrayList<NameValuePair> list = new ArrayList<NameValuePair>();
+    ArrayList<NameValuePair> list = new ArrayList<>();
     for (Header header : headers) {
       NameValuePair nameValuePair = new BasicNameValuePair(header.getName(), header.getValue());
       list.add(nameValuePair);

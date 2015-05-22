@@ -1,6 +1,3 @@
-/**
- *
- */
 package io.paymenthighway;
 
 import org.apache.http.NameValuePair;
@@ -16,7 +13,6 @@ public class FormContainer {
   private String baseUrl;
   private String actionUrl;
   private List<NameValuePair> nameValuePairs;
-  ;
 
   public FormContainer(String method, String baseUrl, String actionUrl, List<NameValuePair> nameValuePairs) {
     this.method = method;

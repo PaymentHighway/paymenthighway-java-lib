@@ -293,7 +293,6 @@ public class PaymentAPITest {
 		
 		// check status
 		TransactionStatusResponse statusResponse = null;
-
 		try {
 			statusResponse = paymentAPI.transactionStatus(transactionId);
 		} catch (IOException e) {

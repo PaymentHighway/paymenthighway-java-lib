@@ -42,8 +42,7 @@ public class PaymentHighwayResponseHandler implements ResponseHandler<String> {
                 response.getStatusLine().getReasonPhrase() + ":" + content);
       }
       HttpEntity entity = response.getEntity();
-      return entity != null ? content
-          : null;
+      return entity != null ? content : null;
     } else if (status == 401) {
       // signals an authentication failure in Payment Highway
       // Payment Highway couldn't authenticate signature from the given parameters
