@@ -7,12 +7,11 @@ import java.util.UUID;
 /**
  * Tokenization response POJO
  */
-public class TokenizationResponse {
+public class TokenizationResponse extends Response {
 
   @JsonProperty("card_token")
   UUID cardToken;
   TokenizationResponse.Card card;
-  Result result;
 
   public UUID getCardToken() {
     return cardToken;
@@ -20,10 +19,6 @@ public class TokenizationResponse {
 
   public TokenizationResponse.Card getCard() {
     return this.card;
-  }
-
-  public Result getResult() {
-    return this.result;
   }
 
   public static class Card {

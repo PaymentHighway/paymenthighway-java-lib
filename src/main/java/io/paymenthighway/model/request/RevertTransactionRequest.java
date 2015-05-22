@@ -3,7 +3,7 @@ package io.paymenthighway.model.request;
 /**
  * Revert Transaction request POJO
  */
-public class RevertTransactionRequest {
+public class RevertTransactionRequest extends Request {
 
   String amount = null;
   boolean blocking = true;

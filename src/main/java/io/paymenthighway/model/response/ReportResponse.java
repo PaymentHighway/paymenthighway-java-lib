@@ -3,15 +3,9 @@ package io.paymenthighway.model.response;
 /**
  * Report Response POJO
  */
-public class ReportResponse {
-
-  Result result;
+public class ReportResponse extends Response {
 
   Settlement[] settlements;
-
-  public Result getResult() {
-    return this.result;
-  }
 
   public Settlement[] getSettlements() {
     return this.settlements;

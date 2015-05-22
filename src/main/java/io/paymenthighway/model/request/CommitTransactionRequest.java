@@ -3,7 +3,7 @@ package io.paymenthighway.model.request;
 /**
  * Commit transaction request POJO
  */
-public class CommitTransactionRequest {
+public class CommitTransactionRequest extends Request {
 
   String amount;
   String currency;

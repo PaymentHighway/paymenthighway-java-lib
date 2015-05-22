@@ -7,12 +7,11 @@ import java.util.UUID;
 /**
  * Commit Transaction request POJO
  */
-public class CommitTransactionResponse {
+public class CommitTransactionResponse extends Response {
 
   @JsonProperty("card_token")
   UUID cardToken;
   PartialCard card;
-  Result result;
 
   public UUID getCardToken() {
     return cardToken;
@@ -20,9 +19,5 @@ public class CommitTransactionResponse {
 
   public PartialCard getCard() {
     return this.card;
-  }
-
-  public Result getResult() {
-    return this.result;
   }
 }

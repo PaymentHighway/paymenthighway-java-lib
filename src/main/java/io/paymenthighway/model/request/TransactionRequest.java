@@ -5,7 +5,7 @@ import io.paymenthighway.model.Token;
 /**
  * Transaction request POJO
  */
-public class TransactionRequest {
+public class TransactionRequest extends Request {
 
   String amount = null;
   String currency = null;

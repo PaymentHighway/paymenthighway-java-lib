@@ -7,17 +7,12 @@ import java.util.UUID;
 /**
  * Transaction Status Response POJO
  */
-public class TransactionStatusResponse {
+public class TransactionStatusResponse extends Response {
 
-  Result result = null;
   TransactionStatusResponse.Transaction transaction = null;
 
   public TransactionStatusResponse.Transaction getTransaction() {
     return transaction;
-  }
-
-  public Result getResult() {
-    return result;
   }
 
   public static class Transaction {

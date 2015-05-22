@@ -4,6 +4,7 @@ import io.paymenthighway.PaymentHighwayUtility;
 import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.json.JsonParser;
 import io.paymenthighway.model.request.CommitTransactionRequest;
+import io.paymenthighway.model.request.Request;
 import io.paymenthighway.model.request.RevertTransactionRequest;
 import io.paymenthighway.model.request.TransactionRequest;
 import io.paymenthighway.model.response.*;
@@ -198,7 +199,7 @@ public class PaymentAPIConnection implements Closeable {
     return httpclient.execute(httpRequest, responseHandler);
   }
 
-  private String executePost(String requestUri, List<NameValuePair> nameValuePairs, Object requestBody) throws IOException {
+  private String executePost(String requestUri, List<NameValuePair> nameValuePairs, Request requestBody) throws IOException {
     CloseableHttpClient httpclient = returnHttpClients();
 
     SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
@@ -237,7 +238,7 @@ public class PaymentAPIConnection implements Closeable {
     }
   }
 
-  private void addBody(HttpPost httpPost, Object request) {
+  private void addBody(HttpPost httpPost, Request request) {
     JsonGenerator jsonGen = new JsonGenerator();
     String requestBody = jsonGen.createTransactionJson(request);
     StringEntity requestEntity = new StringEntity(requestBody, "utf-8");
@@ -245,7 +246,7 @@ public class PaymentAPIConnection implements Closeable {
     httpPost.setEntity(requestEntity);
   }
 
-  private String createSignature(SecureSigner ss, String method, String uri, List<NameValuePair> nameValuePairs, Object request) {
+  private String createSignature(SecureSigner ss, String method, String uri, List<NameValuePair> nameValuePairs, Request request) {
 
     nameValuePairs = PaymentHighwayUtility.parseSphParameters(nameValuePairs);
 
