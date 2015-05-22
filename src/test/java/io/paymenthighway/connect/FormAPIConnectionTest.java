@@ -222,7 +222,7 @@ public class FormAPIConnectionTest {
   public void testGetFormSubmitResponse() {
 
     UUID requestId = UUID.randomUUID();
-    List<NameValuePair> formParameters = new ArrayList<NameValuePair>();
+    List<NameValuePair> formParameters = new ArrayList<>();
     formParameters.add(new BasicNameValuePair("sph-amount", "990"));
     formParameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
     formParameters.add(new BasicNameValuePair("sph-cancel-url", "http://www.solinor.com/"));
@@ -243,13 +243,14 @@ public class FormAPIConnectionTest {
       e.printStackTrace();
     }
     // this is a bit of a hack, faking a browser, parsing url
+    assertNotNull(response);
     Matcher matcher = Pattern.compile("(?<=form action=\").{50}").matcher(response);
-    matcher.find();
+    assertTrue(matcher.find());
     String formUri = matcher.group();
 
 
     HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
-    List<NameValuePair> submitParameters = new ArrayList<NameValuePair>();
+    List<NameValuePair> submitParameters = new ArrayList<>();
     submitParameters.add(new BasicNameValuePair("card_number_formatted", "4153 0139 9970 0024"));
     submitParameters.add(new BasicNameValuePair("card_number", "4153013999700024"));
     submitParameters.add(new BasicNameValuePair("expiration_month", "11"));
@@ -269,7 +270,7 @@ public class FormAPIConnectionTest {
       ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 
         public String handleResponse(
-            final HttpResponse response) throws ClientProtocolException, IOException {
+            final HttpResponse response) throws IOException {
           int status = response.getStatusLine().getStatusCode();
           if (status >= 200 && status < 300) {
             HttpEntity entity = response.getEntity();

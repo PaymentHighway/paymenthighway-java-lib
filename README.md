@@ -11,27 +11,27 @@ The Java Client is a Maven project built so that it will work on Java 1.7 and Ja
 
 # Structure 
 
-* `com.solinor.paymenthighway`
+* `io.paymenthighway`
 
 Contains API classes. Use these to create Payment Highway API requests.
 
-* `com.solinor.paymenthighway.connect`
+* `io.paymenthighway.connect`
 
 Contains the actual classes that are responsible of the communication with Payment Highway.
 
-* `com.solinor.paymenthighway.exception`
+* `io.paymenthighway.exception`
 
 Contains a custom authentication exception.
 
-* `com.solinor.paymenthighway.json`
+* `io.paymenthighway.json`
 
 Contains classes that serialize and deserialize objects to and from JSON.
 
-* `com.solinor.paymenthighway.model`
+* `io.paymenthighway.model`
 
 Data structures that will be serialized and deserialized
 
-* `com.solinor.paymenthighway.security`
+* `io.paymenthighway.security`
 
 Contains classes that take care of keys and signatures.
 
@@ -56,23 +56,18 @@ Initializing the builder
     String cancelUrl = "https://solinor.com/";
     String language = "EN";
 
-    FormBuilder formBuilder = 
-        new FormBuilder(method, signatureKeyId, signatureSecret, 
-        account, merchant, serviceUrl, successUrl, failureUrl, 
-        cancelUrl, language);
-
+    FormBuilder formBuilder = new FormBuilder(method, signatureKeyId, signatureSecret, account, merchant, serviceUrl, successUrl, failureUrl, cancelUrl, language);
 
 Example generateAddCardParameters
 
-	FormContainer formContainer = 
-        formBuilder.generateAddCardParameters();
+	FormContainer formContainer = formBuilder.generateAddCardParameters();
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
     String actionUrl = formContainer.getAction();
     List<NameValuePair> fields = formContainer.getFields();
 
-    for(NameValuePair field : fields) {
+    for (NameValuePair field : fields) {
         field.getName();
         field.getValue();
     }
@@ -84,16 +79,14 @@ Example generatePaymentParameters
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
 
-    FormContainer formContainer = 
-        formBuilder.generatePaymentParameters
-            (amount, currency, orderId, description);
+    FormContainer formContainer = formBuilder.generatePaymentParameters(amount, currency, orderId, description);
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
     String actionUrl = formContainer.getAction();
     List<NameValuePair> fields = formContainer.getFields();
 
-    for(NameValuePair field : fields) {
+    for (NameValuePair field : fields) {
         field.getName();
         field.getValue();
     }
@@ -105,16 +98,14 @@ Example generateGetAddCardAndPaymentParameters
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
 
-    FormContainer formContainer = formBuilder
-        .generateAddCardAndPaymentParameters
-            (amount, currency, orderId, description);
+    FormContainer formContainer = formBuilder.generateAddCardAndPaymentParameters(amount, currency, orderId, description);
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
     String actionUrl = formContainer.getAction();
     List<NameValuePair> fields = formContainer.getFields();
 
-    for(NameValuePair field : fields) {
+    for (NameValuePair field : fields) {
         field.getName();
         field.getValue();
     }
@@ -137,16 +128,16 @@ Initializing the Payment API
     String account = "test";
     String merchant = "test_merchantId";
 
-    PaymentAPI paymentAPI = new PaymentAPI(serviceUrl,
-        signatureKeyId, signatureSecret, account, merchant);
+    try (PaymentAPI paymentAPI = new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant)) {
+        // Payment API usage
+    }
         
 Example Commit Form Transaction
 
 	String transactionId = ""; // get sph-transaction-id as a GET parameter
     String amount = "1999";
     String currency = "EUR";
-    CommitTransactionResponse response = 
-        paymentAPI.commitTransaction(transactionId, amount, currency);
+    CommitTransactionResponse response = paymentAPI.commitTransaction(transactionId, amount, currency);
 
 Example Init transaction
 
@@ -154,21 +145,17 @@ Example Init transaction
 	
 Example Tokenize (get the actual card token by using token id)
 
-	TokenizationResponse tokenResponse = 
-		paymentAPI.tokenize("tokenizationId");
+	TokenizationResponse tokenResponse = paymentAPI.tokenize("tokenizationId");
 			
 Example Debit with Token
 
 	Token token = new Token("id");
-	TransactionRequest transaction = 
-		new TransactionRequest(token, "amount", "currency");
-	TransactionResponse response = 
-		paymentAPI.debitTransaction("transactionId", transaction);
+	TransactionRequest transaction = new TransactionRequest(token, "amount", "currency");
+	TransactionResponse response = paymentAPI.debitTransaction("transactionId", transaction);
 		
 Example Revert
 
-	TransactionResponse response = 
-		paymentAPI.revertTransaction("transactionId", "amount");
+	TransactionResponse response = paymentAPI.revertTransaction("transactionId", "amount");
 
 Example Transaction Status
 

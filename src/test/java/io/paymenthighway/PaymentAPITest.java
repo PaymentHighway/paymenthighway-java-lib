@@ -388,8 +388,7 @@ public class PaymentAPITest {
         "http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN");
 
     FormContainer formContainer = formBuilder
-        .generateAddCardAndPaymentParameters("9999", "EUR", "1",
-            "test payment");
+        .generateAddCardAndPaymentParameters("9999", "EUR", "1", "test payment");
 
     FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
     String result = null;
@@ -402,12 +401,12 @@ public class PaymentAPITest {
 
     assertNotNull(result);
     Matcher matcher = Pattern.compile("(?<=form action=\").{50}").matcher(result);
-    matcher.find();
+    assertTrue(matcher.find());
     String formUri = matcher.group();
 
     // submit form (fake a browser)
     HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
-    List<NameValuePair> submitParameters = new ArrayList<NameValuePair>();
+    List<NameValuePair> submitParameters = new ArrayList<>();
     submitParameters.add(new BasicNameValuePair("card_number_formatted", "4153 0139 9970 0024"));
     submitParameters.add(new BasicNameValuePair("card_number", "4153013999700024"));
     submitParameters.add(new BasicNameValuePair("expiration_month", "11"));
@@ -432,8 +431,7 @@ public class PaymentAPITest {
     // read redirect uri and GET params from it.
     HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(HttpCoreContext.HTTP_REQUEST);
 
-    List<NameValuePair> params = null;
-    params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
+    List<NameValuePair> params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
 
     // get sph-transaction-id
     String transactionId = null;
@@ -488,12 +486,12 @@ public class PaymentAPITest {
 
     assertNotNull(result);
     Matcher matcher = Pattern.compile("(?<=form action=\").{51}").matcher(result);
-    matcher.find();
+    assertTrue(matcher.find());
     String formUri = matcher.group();
 
     // submit form (fake a browser)
     HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
-    List<NameValuePair> submitParameters = new ArrayList<NameValuePair>();
+    List<NameValuePair> submitParameters = new ArrayList<>();
     submitParameters.add(new BasicNameValuePair("card_number_formatted", "4153 0139 9970 0024"));
     submitParameters.add(new BasicNameValuePair("card_number", "4153013999700024"));
     submitParameters.add(new BasicNameValuePair("expiration_month", "11"));
@@ -519,8 +517,7 @@ public class PaymentAPITest {
     HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(
         HttpCoreContext.HTTP_REQUEST);
 
-    List<NameValuePair> params = null;
-    params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
+    List<NameValuePair> params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
 
     // get sph-tokenization-id
     String tokenizationId = null;
@@ -570,12 +567,12 @@ public class PaymentAPITest {
     }
     assertNotNull(result);
     Matcher matcher = Pattern.compile("(?<=form action=\").{51}").matcher(result);
-    matcher.find();
+    assertTrue(matcher.find());
     String formUri = matcher.group();
 
     // submit form (fake a browser)
     HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
-    List<NameValuePair> submitParameters = new ArrayList<NameValuePair>();
+    List<NameValuePair> submitParameters = new ArrayList<>();
     submitParameters.add(new BasicNameValuePair("card_number_formatted", "4153 0139 9970 0024"));
     submitParameters.add(new BasicNameValuePair("card_number", "4153013999700024"));
     submitParameters.add(new BasicNameValuePair("expiration_month", "11"));
@@ -601,8 +598,7 @@ public class PaymentAPITest {
     HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(
         HttpCoreContext.HTTP_REQUEST);
 
-    List<NameValuePair> params = null;
-    params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
+    List<NameValuePair> params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
 
     // get sph-tokenization-id
     String tokenizationId = null;

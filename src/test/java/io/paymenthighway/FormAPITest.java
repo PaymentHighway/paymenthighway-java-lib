@@ -68,7 +68,7 @@ public class FormAPITest {
   public void testAddCard() {
 
     // required fields
-    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+    List<NameValuePair> nameValuePairs = new ArrayList<>();
     nameValuePairs.add(new BasicNameValuePair("sph-account", "test"));
     nameValuePairs.add(new BasicNameValuePair("sph-amount", "990"));
     nameValuePairs.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com/"));
@@ -98,7 +98,7 @@ public class FormAPITest {
   public void testPayWithCard() {
 
     // required fields
-    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+    List<NameValuePair> nameValuePairs = new ArrayList<>();
     nameValuePairs.add(new BasicNameValuePair("sph-account", "test"));
     nameValuePairs.add(new BasicNameValuePair("sph-amount", "990"));
     nameValuePairs.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com/"));
@@ -129,7 +129,7 @@ public class FormAPITest {
   public void testAddCardAndPay() {
 
     // required fields
-    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+    List<NameValuePair> nameValuePairs = new ArrayList<>();
     nameValuePairs.add(new BasicNameValuePair("sph-account", "test"));
     nameValuePairs.add(new BasicNameValuePair("sph-amount", "990"));
     nameValuePairs.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com/"));

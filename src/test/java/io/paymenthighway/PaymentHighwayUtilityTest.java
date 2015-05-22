@@ -70,7 +70,7 @@ public class PaymentHighwayUtilityTest {
   @Test
   public void testSortParameters() {
 
-    List<NameValuePair> formParameters = new ArrayList<NameValuePair>();
+    List<NameValuePair> formParameters = new ArrayList<>();
 
     formParameters.add(new BasicNameValuePair("sph-amount", "990"));
     formParameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
@@ -87,13 +87,12 @@ public class PaymentHighwayUtilityTest {
     PaymentHighwayUtility.sortParameters(formParameters);
     assertEquals(new BasicNameValuePair("sph-account", "test"), formParameters.get(1)); // first
     assertTrue(formParameters.get(formParameters.size() - 1).toString().startsWith("sph-timestamp")); // last
-
   }
 
   @Test
   public void testParseSphParameters() {
 
-    List<NameValuePair> formParameters = new ArrayList<NameValuePair>();
+    List<NameValuePair> formParameters = new ArrayList<>();
 
     formParameters.add(new BasicNameValuePair("sph-account", "test"));
     formParameters.add(new BasicNameValuePair("sph-amount", "990"));
@@ -110,8 +109,6 @@ public class PaymentHighwayUtilityTest {
     PaymentHighwayUtility.parseSphParameters(formParameters);
     assertEquals(new BasicNameValuePair("sph-account", "test"), formParameters.get(0));
     assertEquals(new BasicNameValuePair("sph-success-url", "https://www.solinor.com"), formParameters.get(formParameters.size() - 1));
-    assertTrue(!formParameters.contains("this should be removed"));
-
   }
 }
 

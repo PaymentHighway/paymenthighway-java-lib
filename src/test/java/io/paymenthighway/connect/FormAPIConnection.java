@@ -33,9 +33,7 @@ public class FormAPIConnection {
   /**
    * Constructor
    */
-  public FormAPIConnection(String serviceUrl,
-                           String signatureKeyId,
-                           String signatureSecret) {
+  public FormAPIConnection(String serviceUrl, String signatureKeyId, String signatureSecret) {
 
     this.serviceUrl = serviceUrl;
     this.signatureKeyId = signatureKeyId;
