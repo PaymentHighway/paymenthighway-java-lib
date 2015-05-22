@@ -8,13 +8,14 @@ import io.paymenthighway.model.request.TransactionRequest;
 import io.paymenthighway.model.response.*;
 import org.apache.http.client.HttpResponseException;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.UUID;
 
 /**
  * Payment Highway Payment API Service.
  */
-public class PaymentAPI {
+public class PaymentAPI implements Closeable {
 
   /*
    * These need to be defined
@@ -141,5 +142,12 @@ public class PaymentAPI {
   public ReportResponse fetchDailyReport(String date) throws IOException {
 
     return paymentApi.fetchReport(date);
+  }
+
+  @Override
+  public void close() throws IOException {
+    if (paymentApi != null) {
+      paymentApi.close();
+    }
   }
 }

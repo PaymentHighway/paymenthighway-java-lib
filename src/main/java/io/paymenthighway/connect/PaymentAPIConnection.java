@@ -19,6 +19,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.UUID;
 /**
  * PaymentHighway Payment API Connections
  */
-public class PaymentAPIConnection {
+public class PaymentAPIConnection implements Closeable {
 
   /* Payment API headers */
   private static final String USER_AGENT = "PaymentHighway Java Lib";
@@ -39,6 +40,8 @@ public class PaymentAPIConnection {
   private String signatureSecret = null;
   private String account = null;
   private String merchant = null;
+
+  private CloseableHttpClient httpclient = HttpClients.createDefault();
 
   /**
    * Constructor
@@ -176,48 +179,48 @@ public class PaymentAPIConnection {
   }
 
   private String executeGet(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {
-    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
+    CloseableHttpClient httpclient = returnHttpClients();
 
-      HttpRequestBase httpRequest = new HttpGet(this.serviceUrl + requestUri);
+    SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
 
-      // create signature
-      String signature = this.createSignature(ss, METHOD_GET, requestUri, nameValuePairs, null);
-      nameValuePairs.add(new BasicNameValuePair("signature", signature));
+    HttpRequestBase httpRequest = new HttpGet(this.serviceUrl + requestUri);
 
-      // add request headers
-      this.addHeaders(httpRequest, nameValuePairs);
+    // create signature
+    String signature = this.createSignature(ss, METHOD_GET, requestUri, nameValuePairs, null);
+    nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-      // Create a custom response handler
-      ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_GET, requestUri);
+    // add request headers
+    this.addHeaders(httpRequest, nameValuePairs);
 
-      return httpclient.execute(httpRequest, responseHandler);
-    }
+    // Create a custom response handler
+    ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_GET, requestUri);
+
+    return httpclient.execute(httpRequest, responseHandler);
   }
 
   private String executePost(String requestUri, List<NameValuePair> nameValuePairs, Object requestBody) throws IOException {
-    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
+    CloseableHttpClient httpclient = returnHttpClients();
 
-      HttpPost httpRequest = new HttpPost(this.serviceUrl + requestUri);
+    SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
 
-      // create signature
-      String signature = this.createSignature(ss, METHOD_POST, requestUri, nameValuePairs, requestBody);
-      nameValuePairs.add(new BasicNameValuePair("signature", signature));
+    HttpPost httpRequest = new HttpPost(this.serviceUrl + requestUri);
 
-      // add request headers
-      this.addHeaders(httpRequest, nameValuePairs);
+    // create signature
+    String signature = this.createSignature(ss, METHOD_POST, requestUri, nameValuePairs, requestBody);
+    nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-      // add request body
-      if (requestBody != null) {
-        this.addBody(httpRequest, requestBody);
-      }
+    // add request headers
+    this.addHeaders(httpRequest, nameValuePairs);
 
-      // Create a custom response handler
-      ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_POST, requestUri);
-
-      return httpclient.execute(httpRequest, responseHandler);
+    // add request body
+    if (requestBody != null) {
+      this.addBody(httpRequest, requestBody);
     }
+
+    // Create a custom response handler
+    ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_POST, requestUri);
+
+    return httpclient.execute(httpRequest, responseHandler);
   }
 
   private String executePost(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {
@@ -266,5 +269,19 @@ public class PaymentAPIConnection {
     nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
     nameValuePairs.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
     return nameValuePairs;
+  }
+
+  private CloseableHttpClient returnHttpClients() {
+    if (httpclient == null) {
+      httpclient = HttpClients.createDefault();
+    }
+    return httpclient;
+  }
+
+  @Override
+  public void close() throws IOException {
+    if (httpclient != null) {
+      httpclient.close();
+    }
   }
 }
