@@ -1,6 +1,7 @@
 package io.paymenthighway.connect;
 
 import io.paymenthighway.PaymentHighwayUtility;
+import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.json.JsonParser;
 import io.paymenthighway.model.request.CommitTransactionRequest;
@@ -10,6 +11,7 @@ import io.paymenthighway.model.request.TransactionRequest;
 import io.paymenthighway.model.response.*;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -42,7 +44,7 @@ public class PaymentAPIConnection implements Closeable {
   private String account = null;
   private String merchant = null;
 
-  private CloseableHttpClient httpclient = HttpClients.createDefault();
+  private CloseableHttpClient httpclient;
 
   /**
    * Constructor
@@ -60,6 +62,10 @@ public class PaymentAPIConnection implements Closeable {
     this.signatureSecret = signatureSecret;
     this.account = account;
     this.merchant = merchant;
+  }
+
+  public void setHttpClient(CloseableHttpClient httpClient) {
+    this.httpclient = httpClient;
   }
 
   public InitTransactionResponse initTransactionHandle() throws IOException {
@@ -264,7 +270,7 @@ public class PaymentAPIConnection implements Closeable {
    * @return
    */
   private List<NameValuePair> createNameValuePairs() {
-    List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+    List<NameValuePair> nameValuePairs = new ArrayList<>();
     nameValuePairs.add(new BasicNameValuePair("sph-account", this.account));
     nameValuePairs.add(new BasicNameValuePair("sph-merchant", this.merchant));
     nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));

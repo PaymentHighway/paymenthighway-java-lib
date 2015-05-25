@@ -35,25 +35,21 @@ public class PaymentHighwayResponseHandler implements ResponseHandler<String> {
       boolean authenticated = ss.authenticate(this.method, this.uri, response, content);
       if (!authenticated) {
         // signals a failure to authenticate incoming message signature
-        System.err.println("Message authentication failed, status:" + status + ", reason:" +
-            response.getStatusLine().getReasonPhrase() + ":" + content);
+        System.err.println("Message authentication failed, status:" + status + ", reason:" + response.getStatusLine().getReasonPhrase() + ":" + content);
         throw new AuthenticationException(
-            "Message authentication failed, status:" + status + ", reason:" +
-                response.getStatusLine().getReasonPhrase() + ":" + content);
+            "Message authentication failed, status:" + status + ", reason:" + response.getStatusLine().getReasonPhrase() + ":" + content
+        );
       }
       HttpEntity entity = response.getEntity();
       return entity != null ? content : null;
     } else if (status == 401) {
       // signals an authentication failure in Payment Highway
       // Payment Highway couldn't authenticate signature from the given parameters
-      throw new HttpResponseException(status, " Authentication failure: " +
-          response.getStatusLine().getReasonPhrase() + ":" + content);
+      throw new HttpResponseException(status, " Authentication failure: " + response.getStatusLine().getReasonPhrase() + ":" + content);
     } else {
       // Signals a non 2xx HTTP response.
-      System.err.println("status:" + status + ", reason:" +
-          response.getStatusLine().getReasonPhrase() + ":" + content);
-      throw new HttpResponseException(status, " reason:" +
-          response.getStatusLine().getReasonPhrase() + ":" + content);
+      System.err.println("status:" + status + ", reason:" + response.getStatusLine().getReasonPhrase() + ":" + content);
+      throw new HttpResponseException(status, " reason:" + response.getStatusLine().getReasonPhrase() + ":" + content);
     }
   }
 }

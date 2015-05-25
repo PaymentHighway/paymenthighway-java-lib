@@ -7,6 +7,7 @@ import io.paymenthighway.model.request.RevertTransactionRequest;
 import io.paymenthighway.model.request.TransactionRequest;
 import io.paymenthighway.model.response.*;
 import org.apache.http.client.HttpResponseException;
+import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -25,6 +26,10 @@ public class PaymentAPI implements Closeable {
   public PaymentAPI(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant) {
 
     paymentApi = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
+  }
+
+  public void setHttpClient(CloseableHttpClient httpClient) {
+    this.paymentApi.setHttpClient(httpClient);
   }
 
   /**
