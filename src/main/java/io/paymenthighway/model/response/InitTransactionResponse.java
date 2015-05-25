@@ -3,16 +3,12 @@ package io.paymenthighway.model.response;
 /**
  * InitTransactionResponse POJO
  */
-public class InitTransactionResponse {
+public class InitTransactionResponse extends Response {
 
-	java.util.UUID id = null;
-	Result result = null;
+  java.util.UUID id = null;
 
-	/* getters */
-	public java.util.UUID getId() {
-		return id;
-	}
-	public Result getResult() {
-		return result;
-	}
+  /* getters */
+  public java.util.UUID getId() {
+    return id;
+  }
 }

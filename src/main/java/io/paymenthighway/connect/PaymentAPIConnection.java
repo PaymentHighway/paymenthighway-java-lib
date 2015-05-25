@@ -1,15 +1,17 @@
 package io.paymenthighway.connect;
 
-import java.io.IOException;
-import java.util.*;
-
+import io.paymenthighway.PaymentHighwayUtility;
+import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.json.JsonParser;
 import io.paymenthighway.model.request.CommitTransactionRequest;
+import io.paymenthighway.model.request.Request;
 import io.paymenthighway.model.request.RevertTransactionRequest;
 import io.paymenthighway.model.request.TransactionRequest;
+import io.paymenthighway.model.response.*;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -20,254 +22,273 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
 
-import io.paymenthighway.PaymentHighwayUtility;
-import io.paymenthighway.model.response.CommitTransactionResponse;
-import io.paymenthighway.model.response.InitTransactionResponse;
-import io.paymenthighway.model.response.ReportResponse;
-import io.paymenthighway.model.response.TokenizationResponse;
-import io.paymenthighway.model.response.TransactionResponse;
-import io.paymenthighway.model.response.TransactionStatusResponse;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * PaymentHighway Payment API Connections
  */
-public class PaymentAPIConnection {
+public class PaymentAPIConnection implements Closeable {
 
-	/* Payment API headers */
-	private static final String USER_AGENT = "PaymentHighway Java Lib";
-	private static final String METHOD_POST = "POST";
-	private static final String METHOD_GET = "GET";
+  /* Payment API headers */
+  private static final String USER_AGENT = "PaymentHighway Java Lib";
+  private static final String METHOD_POST = "POST";
+  private static final String METHOD_GET = "GET";
 
-	private String serviceUrl = "";
-	private String signatureKeyId = null;
-	private String signatureSecret = null;
-	private String account = null;
-	private String merchant = null;
+  private String serviceUrl = "";
+  private String signatureKeyId = null;
+  private String signatureSecret = null;
+  private String account = null;
+  private String merchant = null;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param serviceUrl
-	 * @param account
-	 * @param merchant
-	 * @param signatureKeyId
-	 * @param signatureSecret
-	 */
-	public PaymentAPIConnection(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant) {
+  private CloseableHttpClient httpclient;
 
-		this.serviceUrl = serviceUrl;
-		this.signatureKeyId = signatureKeyId;
-		this.signatureSecret = signatureSecret;
-		this.account = account;
-		this.merchant = merchant;
-	}
+  /**
+   * Constructor
+   *
+   * @param serviceUrl
+   * @param account
+   * @param merchant
+   * @param signatureKeyId
+   * @param signatureSecret
+   */
+  public PaymentAPIConnection(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant) {
 
-	public InitTransactionResponse initTransactionHandle() throws IOException {
+    this.serviceUrl = serviceUrl;
+    this.signatureKeyId = signatureKeyId;
+    this.signatureSecret = signatureSecret;
+    this.account = account;
+    this.merchant = merchant;
+  }
 
-		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
-		final String paymentUri = "/transaction";
+  public void setHttpClient(CloseableHttpClient httpClient) {
+    this.httpclient = httpClient;
+  }
 
-		String response = executePost(paymentUri, nameValuePairs);
+  public InitTransactionResponse initTransactionHandle() throws IOException {
 
-		JsonParser jpar = new JsonParser();
-		return jpar.mapInitTransactionResponse(response);
-	}
+    // sort alphabetically per key
+    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
+    final String paymentUri = "/transaction";
 
-	public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
+    String response = executePost(paymentUri, nameValuePairs);
 
-		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
+    JsonParser jpar = new JsonParser();
+    return jpar.mapInitTransactionResponse(response);
+  }
 
-		final String paymentUri = "/transaction/";
-		final String actionUri = "/debit";
-		String debitUri = paymentUri + transactionId + actionUri;
+  public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
-		String response = executePost(debitUri, nameValuePairs, request);
+    // sort alphabetically per key
+    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
-		JsonParser jpar = new JsonParser();
-		return jpar.mapTransactionResponse(response);
-	}
+    final String paymentUri = "/transaction/";
+    final String actionUri = "/debit";
+    String debitUri = paymentUri + transactionId + actionUri;
 
-	public TransactionResponse creditTransaction(UUID transactionId, TransactionRequest request) throws IOException {
+    String response = executePost(debitUri, nameValuePairs, request);
 
-		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
+    JsonParser jpar = new JsonParser();
+    return jpar.mapTransactionResponse(response);
+  }
 
-		final String paymentUri = "/transaction/";
-		final String actionUri = "/credit";
-		String creditUri = paymentUri + transactionId + actionUri;
+  public TransactionResponse creditTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
-		String response = executePost(creditUri, nameValuePairs, request);
+    // sort alphabetically per key
+    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
-		JsonParser jpar = new JsonParser();
-		return jpar.mapTransactionResponse(response);
-	}
+    final String paymentUri = "/transaction/";
+    final String actionUri = "/credit";
+    String creditUri = paymentUri + transactionId + actionUri;
 
-	public TransactionResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
+    String response = executePost(creditUri, nameValuePairs, request);
 
-		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
+    JsonParser jpar = new JsonParser();
+    return jpar.mapTransactionResponse(response);
+  }
 
-		final String paymentUri = "/transaction/";
-		final String actionUri = "/revert";
-		String revertUri = paymentUri + transactionId + actionUri;
+  public TransactionResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
 
-		String response = executePost(revertUri, nameValuePairs, request);
+    // sort alphabetically per key
+    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
-		JsonParser jpar = new JsonParser();
-		return jpar.mapTransactionResponse(response);
-	}
+    final String paymentUri = "/transaction/";
+    final String actionUri = "/revert";
+    String revertUri = paymentUri + transactionId + actionUri;
 
-	public CommitTransactionResponse commitTransaction(UUID transactionId, CommitTransactionRequest request) throws IOException {
+    String response = executePost(revertUri, nameValuePairs, request);
 
-		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
+    JsonParser jpar = new JsonParser();
+    return jpar.mapTransactionResponse(response);
+  }
 
-		final String paymentUri = "/transaction/";
-		final String actionUri = "/commit";
-		String commitUri = paymentUri + transactionId + actionUri;
+  public CommitTransactionResponse commitTransaction(UUID transactionId, CommitTransactionRequest request) throws IOException {
 
-		String response = executePost(commitUri, nameValuePairs, request);
+    // sort alphabetically per key
+    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
-		JsonParser jpar = new JsonParser();
-		return jpar.mapCommitTransactionResponse(response);
-	}
+    final String paymentUri = "/transaction/";
+    final String actionUri = "/commit";
+    String commitUri = paymentUri + transactionId + actionUri;
 
-	public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
+    String response = executePost(commitUri, nameValuePairs, request);
 
-		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
+    JsonParser jpar = new JsonParser();
+    return jpar.mapCommitTransactionResponse(response);
+  }
 
-		final String paymentUri = "/transaction/";
+  public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
 
-		String statusUri = paymentUri + transactionId;
+    // sort alphabetically per key
+    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
-		String response = executeGet(statusUri, nameValuePairs);
+    final String paymentUri = "/transaction/";
 
-		JsonParser jpar = new JsonParser();
-		return jpar.mapTransactionStatusResponse(response);
-	}
+    String statusUri = paymentUri + transactionId;
 
-	public TokenizationResponse tokenization(String tokenizationId) throws IOException {
+    String response = executeGet(statusUri, nameValuePairs);
 
-		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
+    JsonParser jpar = new JsonParser();
+    return jpar.mapTransactionStatusResponse(response);
+  }
 
-		final String paymentUri = "/tokenization/";
+  public TokenizationResponse tokenization(String tokenizationId) throws IOException {
 
-		String tokenUri = paymentUri + tokenizationId;
+    // sort alphabetically per key
+    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
-		String response = executeGet(tokenUri, nameValuePairs);
+    final String paymentUri = "/tokenization/";
 
-		JsonParser jpar = new JsonParser();
-		return jpar.mapTokenizationResponse(response);
-	}
+    String tokenUri = paymentUri + tokenizationId;
 
-	public ReportResponse fetchReport(String date) throws IOException {
+    String response = executeGet(tokenUri, nameValuePairs);
 
-		// sort alphabetically per key
-		List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
+    JsonParser jpar = new JsonParser();
+    return jpar.mapTokenizationResponse(response);
+  }
 
-		final String reportUri = "/report/batch/";
+  public ReportResponse fetchReport(String date) throws IOException {
 
-		String fetchUri = reportUri + date;
+    // sort alphabetically per key
+    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
 
-		String response = executeGet(fetchUri, nameValuePairs);
+    final String reportUri = "/report/batch/";
 
-		JsonParser jpar = new JsonParser();
-		return jpar.mapReportResponse(response);
-	}
+    String fetchUri = reportUri + date;
 
-	private String executeGet(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {
-		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-			SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
+    String response = executeGet(fetchUri, nameValuePairs);
 
-			HttpRequestBase httpRequest = new HttpGet(this.serviceUrl + requestUri);
+    JsonParser jpar = new JsonParser();
+    return jpar.mapReportResponse(response);
+  }
 
-			// create signature
-			String signature = this.createSignature(ss, METHOD_GET, requestUri, nameValuePairs, null);
-			nameValuePairs.add(new BasicNameValuePair("signature", signature));
+  private String executeGet(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {
+    CloseableHttpClient httpclient = returnHttpClients();
 
-			// add request headers
-			this.addHeaders(httpRequest, nameValuePairs);
+    SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
 
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_GET, requestUri);
+    HttpRequestBase httpRequest = new HttpGet(this.serviceUrl + requestUri);
 
-			return httpclient.execute(httpRequest, responseHandler);
-		}
-	}
+    // create signature
+    String signature = this.createSignature(ss, METHOD_GET, requestUri, nameValuePairs, null);
+    nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-	private String executePost(String requestUri, List<NameValuePair> nameValuePairs, Object requestBody) throws IOException {
-		try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-			SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
+    // add request headers
+    this.addHeaders(httpRequest, nameValuePairs);
 
-			HttpPost httpRequest = new HttpPost(this.serviceUrl + requestUri);
+    // Create a custom response handler
+    ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_GET, requestUri);
 
-			// create signature
-			String signature = this.createSignature(ss, METHOD_POST, requestUri, nameValuePairs, requestBody);
-			nameValuePairs.add(new BasicNameValuePair("signature", signature));
+    return httpclient.execute(httpRequest, responseHandler);
+  }
 
-			// add request headers
-			this.addHeaders(httpRequest, nameValuePairs);
+  private String executePost(String requestUri, List<NameValuePair> nameValuePairs, Request requestBody) throws IOException {
+    CloseableHttpClient httpclient = returnHttpClients();
 
-			// add request body
-			if (requestBody != null) {
-				this.addBody(httpRequest, requestBody);
-			}
+    SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
 
-			// Create a custom response handler
-			ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_POST, requestUri);
+    HttpPost httpRequest = new HttpPost(this.serviceUrl + requestUri);
 
-			return httpclient.execute(httpRequest, responseHandler);
-		}
-	}
+    // create signature
+    String signature = this.createSignature(ss, METHOD_POST, requestUri, nameValuePairs, requestBody);
+    nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-	private String executePost(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {
-		return executePost(requestUri, nameValuePairs, null);
-	}
+    // add request headers
+    this.addHeaders(httpRequest, nameValuePairs);
 
-	protected void addHeaders(HttpRequestBase httpPost, List<NameValuePair> nameValuePairs) {
+    // add request body
+    if (requestBody != null) {
+      this.addBody(httpRequest, requestBody);
+    }
 
-		httpPost.addHeader(HTTP.USER_AGENT, USER_AGENT);
-		httpPost.addHeader(HTTP.CONTENT_TYPE, "application/json; charset=utf-8");
+    // Create a custom response handler
+    ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_POST, requestUri);
 
-		for (NameValuePair param : nameValuePairs) {
-			httpPost.addHeader(param.getName(), param.getValue());
-		}
-	}
+    return httpclient.execute(httpRequest, responseHandler);
+  }
 
-	private void addBody(HttpPost httpPost, Object request) {
-		JsonGenerator jsonGen = new JsonGenerator();
-		String requestBody = jsonGen.createTransactionJson(request);
-		StringEntity requestEntity = new StringEntity(requestBody, "utf-8");
+  private String executePost(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {
+    return executePost(requestUri, nameValuePairs, null);
+  }
 
-		httpPost.setEntity(requestEntity);
-	}
+  protected void addHeaders(HttpRequestBase httpPost, List<NameValuePair> nameValuePairs) {
 
-	private String createSignature(SecureSigner ss, String method, String uri, List<NameValuePair> nameValuePairs, Object request) {
+    httpPost.addHeader(HTTP.USER_AGENT, USER_AGENT);
+    httpPost.addHeader(HTTP.CONTENT_TYPE, "application/json; charset=utf-8");
 
-		nameValuePairs = PaymentHighwayUtility.parseSphParameters(nameValuePairs);
-		
-		String json = "";
-		if (request != null) {
-			JsonGenerator jsonGenerator = new JsonGenerator();
-			json = jsonGenerator.createTransactionJson(request);
-		}
-		return ss.createSignature(method, uri, nameValuePairs, json);
-	}
-	
-	/**
-	 * Create name value pairs
-	 * @return
-	 */
-	private List<NameValuePair> createNameValuePairs() {
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		nameValuePairs.add(new BasicNameValuePair("sph-account", this.account));
-		nameValuePairs.add(new BasicNameValuePair("sph-merchant", this.merchant));
-		nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-		nameValuePairs.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
-		return nameValuePairs;
-	}
+    for (NameValuePair param : nameValuePairs) {
+      httpPost.addHeader(param.getName(), param.getValue());
+    }
+  }
+
+  private void addBody(HttpPost httpPost, Request request) {
+    JsonGenerator jsonGen = new JsonGenerator();
+    String requestBody = jsonGen.createTransactionJson(request);
+    StringEntity requestEntity = new StringEntity(requestBody, "utf-8");
+
+    httpPost.setEntity(requestEntity);
+  }
+
+  private String createSignature(SecureSigner ss, String method, String uri, List<NameValuePair> nameValuePairs, Request request) {
+
+    nameValuePairs = PaymentHighwayUtility.parseSphParameters(nameValuePairs);
+
+    String json = "";
+    if (request != null) {
+      JsonGenerator jsonGenerator = new JsonGenerator();
+      json = jsonGenerator.createTransactionJson(request);
+    }
+    return ss.createSignature(method, uri, nameValuePairs, json);
+  }
+
+  /**
+   * Create name value pairs
+   *
+   * @return
+   */
+  private List<NameValuePair> createNameValuePairs() {
+    List<NameValuePair> nameValuePairs = new ArrayList<>();
+    nameValuePairs.add(new BasicNameValuePair("sph-account", this.account));
+    nameValuePairs.add(new BasicNameValuePair("sph-merchant", this.merchant));
+    nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
+    nameValuePairs.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
+    return nameValuePairs;
+  }
+
+  private CloseableHttpClient returnHttpClients() {
+    if (httpclient == null) {
+      httpclient = HttpClients.createDefault();
+    }
+    return httpclient;
+  }
+
+  @Override
+  public void close() throws IOException {
+    if (httpclient != null) {
+      httpclient.close();
+    }
+  }
 }

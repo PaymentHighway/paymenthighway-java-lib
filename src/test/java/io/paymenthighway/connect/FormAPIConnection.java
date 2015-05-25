@@ -1,6 +1,3 @@
-/**
- * 
- */
 package io.paymenthighway.connect;
 
 import io.paymenthighway.PaymentHighwayUtility;
@@ -25,178 +22,177 @@ import java.util.List;
  */
 public class FormAPIConnection {
 
-	private final static String USER_AGENT = "PaymentHighway Java Lib";
-	private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
-	private final static String METHOD_POST = "POST";
-	
-	String serviceUrl = null;
-	String signatureKeyId = null;
-	String signatureSecret = null;
-	
-	/**
-	 * Constructor
-	 */
-	public FormAPIConnection(String serviceUrl, 
-			String signatureKeyId, 
-			String signatureSecret) {	
-		
-		this.serviceUrl = serviceUrl;
-		this.signatureKeyId = signatureKeyId;
-		this.signatureSecret = signatureSecret;
-	}
-		
-	/**
-	 * Form API call to add card
-	 * 
-	 * @return String responseBody
-	 * @throws IOException
-	 */
-	public String addCardRequest(List<NameValuePair> nameValuePairs) throws IOException {
-        final String formUri = "/form/view/add_card";
+  private final static String USER_AGENT = "PaymentHighway Java Lib";
+  private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
+  private final static String METHOD_POST = "POST";
 
-        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
+  String serviceUrl = null;
+  String signatureKeyId = null;
+  String signatureSecret = null;
 
-            // sort alphabetically per key
-            PaymentHighwayUtility.sortParameters(nameValuePairs);
+  /**
+   * Constructor
+   */
+  public FormAPIConnection(String serviceUrl, String signatureKeyId, String signatureSecret) {
 
-            // create signature
-            String signature = this.createSignature(METHOD_POST, formUri, nameValuePairs);
-            nameValuePairs.add(new BasicNameValuePair("signature", signature));
+    this.serviceUrl = serviceUrl;
+    this.signatureKeyId = signatureKeyId;
+    this.signatureSecret = signatureSecret;
+  }
 
-            // add request headers
-            this.addHeaders(httpPost);
+  /**
+   * Form API call to add card
+   *
+   * @return String responseBody
+   * @throws IOException
+   */
+  public String addCardRequest(List<NameValuePair> nameValuePairs) throws IOException {
+    final String formUri = "/form/view/add_card";
 
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+      HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
 
-            // Create a custom response handler
-            ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-                public String handleResponse(
-                        final HttpResponse response) throws ClientProtocolException, IOException {
-                    int status = response.getStatusLine().getStatusCode();
-                    if (status >= 200 && status < 300) {
-                        HttpEntity entity = response.getEntity();
-                        return entity != null ? EntityUtils.toString(entity) : null;
-                    } else {
-                        throw new ClientProtocolException("Unexpected response status: " + status);
-                    }
-                }
+      // sort alphabetically per key
+      PaymentHighwayUtility.sortParameters(nameValuePairs);
 
-            };
-            return httpclient.execute(httpPost, responseHandler);
+      // create signature
+      String signature = this.createSignature(METHOD_POST, formUri, nameValuePairs);
+      nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
+      // add request headers
+      this.addHeaders(httpPost);
+
+      httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+      // Create a custom response handler
+      ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+        public String handleResponse(
+            final HttpResponse response) throws ClientProtocolException, IOException {
+          int status = response.getStatusLine().getStatusCode();
+          if (status >= 200 && status < 300) {
+            HttpEntity entity = response.getEntity();
+            return entity != null ? EntityUtils.toString(entity) : null;
+          } else {
+            throw new ClientProtocolException("Unexpected response status: " + status);
+          }
         }
+
+      };
+      return httpclient.execute(httpPost, responseHandler);
+
     }
-	
-	/**
-	 * Form API call to make a payment
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	public String paymentRequest(List<NameValuePair> nameValuePairs) throws IOException {
-        final String formPaymentUri = "/form/view/pay_with_card";
+  }
 
-        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
+  /**
+   * Form API call to make a payment
+   *
+   * @return
+   * @throws IOException
+   */
+  public String paymentRequest(List<NameValuePair> nameValuePairs) throws IOException {
+    final String formPaymentUri = "/form/view/pay_with_card";
 
-            // sort alphabetically per key
-            PaymentHighwayUtility.sortParameters(nameValuePairs);
+    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+      HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
 
-            // create signature
-            String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
-            nameValuePairs.add(new BasicNameValuePair("signature", signature));
+      // sort alphabetically per key
+      PaymentHighwayUtility.sortParameters(nameValuePairs);
 
-            // add request headers
-            this.addHeaders(httpPost);
+      // create signature
+      String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
+      nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+      // add request headers
+      this.addHeaders(httpPost);
 
-            // Create a custom response handler
-            ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+      httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-                public String handleResponse(
-                        final HttpResponse response) throws IOException {
-                    int status = response.getStatusLine().getStatusCode();
-                    if (status >= 200 && status < 300) {
-                        HttpEntity entity = response.getEntity();
-                        return entity != null ? EntityUtils.toString(entity) : null;
-                    } else {
-                        throw new ClientProtocolException("Unexpected response status: " + status);
-                    }
-                }
+      // Create a custom response handler
+      ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 
-            };
-            return httpclient.execute(httpPost, responseHandler);
-
+        public String handleResponse(
+            final HttpResponse response) throws IOException {
+          int status = response.getStatusLine().getStatusCode();
+          if (status >= 200 && status < 300) {
+            HttpEntity entity = response.getEntity();
+            return entity != null ? EntityUtils.toString(entity) : null;
+          } else {
+            throw new ClientProtocolException("Unexpected response status: " + status);
+          }
         }
-	}
-	
-	/**
-	 * Form API call to add card and make a payment
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	public String addCardAndPayRequest(List<NameValuePair> nameValuePairs) throws IOException {
 
-        final String formPaymentUri = "/form/view/add_and_pay_with_card";
+      };
+      return httpclient.execute(httpPost, responseHandler);
 
-        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
+    }
+  }
 
-            // sort alphabetically per key
-            PaymentHighwayUtility.sortParameters(nameValuePairs);
+  /**
+   * Form API call to add card and make a payment
+   *
+   * @return
+   * @throws IOException
+   */
+  public String addCardAndPayRequest(List<NameValuePair> nameValuePairs) throws IOException {
 
-            // create signature
-            String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
-            nameValuePairs.add(new BasicNameValuePair("signature", signature));
+    final String formPaymentUri = "/form/view/add_and_pay_with_card";
 
-            // add request headers
-            this.addHeaders(httpPost);
+    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+      HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
 
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+      // sort alphabetically per key
+      PaymentHighwayUtility.sortParameters(nameValuePairs);
 
-            // Create a custom response handler
-            ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+      // create signature
+      String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
+      nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-                public String handleResponse(final HttpResponse response) throws IOException {
-                    int status = response.getStatusLine().getStatusCode();
-                    if (status >= 200 && status < 300) {
-                        HttpEntity entity = response.getEntity();
-                        return entity != null ? EntityUtils.toString(entity) : null;
-                    } else {
-                        throw new ClientProtocolException("Unexpected response status: " + status);
-                    }
-                }
+      // add request headers
+      this.addHeaders(httpPost);
 
-            };
-            return httpclient.execute(httpPost, responseHandler);
+      httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
+      // Create a custom response handler
+      ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+        public String handleResponse(final HttpResponse response) throws IOException {
+          int status = response.getStatusLine().getStatusCode();
+          if (status >= 200 && status < 300) {
+            HttpEntity entity = response.getEntity();
+            return entity != null ? EntityUtils.toString(entity) : null;
+          } else {
+            throw new ClientProtocolException("Unexpected response status: " + status);
+          }
         }
-	}	
 
-	/** 
-	 * Create a secure signature
-	 * 
-	 * @param method
-	 * @param uri
-	 * @return String signature
-	 */
-	private String createSignature(String method, String uri, List<NameValuePair> nameValuePairs) {
-		
-		nameValuePairs = PaymentHighwayUtility.parseSphParameters(nameValuePairs);
-		SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
-		return ss.createSignature(method, uri, nameValuePairs, "");
-	}
-	
-	/**
-	 * Add headers to request
-	 * @param httpPost
-	 */
-	protected void addHeaders(HttpPost httpPost) {
-		httpPost.addHeader("User-Agent", USER_AGENT);
-        httpPost.addHeader("Content-Type", CONTENT_TYPE);
-	}
-	
+      };
+      return httpclient.execute(httpPost, responseHandler);
+
+    }
+  }
+
+  /**
+   * Create a secure signature
+   *
+   * @param method
+   * @param uri
+   * @return String signature
+   */
+  private String createSignature(String method, String uri, List<NameValuePair> nameValuePairs) {
+
+    nameValuePairs = PaymentHighwayUtility.parseSphParameters(nameValuePairs);
+    SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
+    return ss.createSignature(method, uri, nameValuePairs, "");
+  }
+
+  /**
+   * Add headers to request
+   *
+   * @param httpPost
+   */
+  protected void addHeaders(HttpPost httpPost) {
+    httpPost.addHeader("User-Agent", USER_AGENT);
+    httpPost.addHeader("Content-Type", CONTENT_TYPE);
+  }
+
 }

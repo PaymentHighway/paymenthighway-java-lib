@@ -1,11 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.solinor.paymenthighway</groupId>
+
+  <groupId>io.paymenthighway</groupId>
   <artifactId>paymenthighway</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
+
   <name>Payment Highway Java Library</name>
   <url>https://www.paymenthighway.fi</url>
+
+  <scm>
+    <connection>scm:git:git@github.com:solinor/paymenthighway-java-lib.git</connection>
+    <developerConnection>scm:git:git@github.com:solinor/paymenthighway-java-lib.git</developerConnection>
+    <url>git@github.com:solinor/paymenthighway-java-lib.git</url>
+  </scm>
+
   <properties>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
@@ -29,4 +38,19 @@
       <version>2.4.4</version>
   </dependency>
   </dependencies>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.2</version>
+          <configuration>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <tagNameFormat>v@{project.version}</tagNameFormat>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 </project>
