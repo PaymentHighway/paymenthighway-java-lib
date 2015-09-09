@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Creates parameters that can used on the form that sends them to
- * Payment Hiqhway.
+ * Payment Highway.
  * <p/>
  * Creates a request id, timestamp and signature based on request parameters.
  */
@@ -67,10 +67,6 @@ public class FormBuilder {
 
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs();
 
-    // sort alphabetically per key
-    PaymentHighwayUtility.sortParameters(nameValuePairs);
-
-    // create signature
     String addCardUri = "/form/view/add_card";
     String signature = this.createSignature(addCardUri, nameValuePairs);
 
@@ -96,10 +92,6 @@ public class FormBuilder {
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
 
-    // sort alphabetically per key
-    PaymentHighwayUtility.sortParameters(nameValuePairs);
-
-    // create signature
     String payWithCardUri = "/form/view/pay_with_card";
     String signature = this.createSignature(payWithCardUri, nameValuePairs);
 
@@ -126,10 +118,6 @@ public class FormBuilder {
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
 
-    // sort alphabetically per key
-    PaymentHighwayUtility.sortParameters(nameValuePairs);
-
-    // create signature
     String addCardAndPayUri = "/form/view/add_and_pay_with_card";
     String signature = this.createSignature(addCardAndPayUri, nameValuePairs);
 
@@ -162,7 +150,6 @@ public class FormBuilder {
    */
   private String createSignature(String uri, List<NameValuePair> nameValuePairs) {
 
-    nameValuePairs = PaymentHighwayUtility.parseSphParameters(nameValuePairs);
     SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
     return ss.createSignature(this.method, uri, nameValuePairs, "");
   }

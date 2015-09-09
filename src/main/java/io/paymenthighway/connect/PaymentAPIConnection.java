@@ -70,11 +70,9 @@ public class PaymentAPIConnection implements Closeable {
 
   public InitTransactionResponse initTransactionHandle() throws IOException {
 
-    // sort alphabetically per key
-    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
     final String paymentUri = "/transaction";
 
-    String response = executePost(paymentUri, nameValuePairs);
+    String response = executePost(paymentUri, createNameValuePairs());
 
     JsonParser jpar = new JsonParser();
     return jpar.mapInitTransactionResponse(response);
@@ -82,14 +80,11 @@ public class PaymentAPIConnection implements Closeable {
 
   public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
-    // sort alphabetically per key
-    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
-
     final String paymentUri = "/transaction/";
     final String actionUri = "/debit";
     String debitUri = paymentUri + transactionId + actionUri;
 
-    String response = executePost(debitUri, nameValuePairs, request);
+    String response = executePost(debitUri, createNameValuePairs(), request);
 
     JsonParser jpar = new JsonParser();
     return jpar.mapTransactionResponse(response);
@@ -97,14 +92,11 @@ public class PaymentAPIConnection implements Closeable {
 
   public TransactionResponse creditTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
-    // sort alphabetically per key
-    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
-
     final String paymentUri = "/transaction/";
     final String actionUri = "/credit";
     String creditUri = paymentUri + transactionId + actionUri;
 
-    String response = executePost(creditUri, nameValuePairs, request);
+    String response = executePost(creditUri, createNameValuePairs(), request);
 
     JsonParser jpar = new JsonParser();
     return jpar.mapTransactionResponse(response);
@@ -112,14 +104,11 @@ public class PaymentAPIConnection implements Closeable {
 
   public TransactionResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
 
-    // sort alphabetically per key
-    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
-
     final String paymentUri = "/transaction/";
     final String actionUri = "/revert";
     String revertUri = paymentUri + transactionId + actionUri;
 
-    String response = executePost(revertUri, nameValuePairs, request);
+    String response = executePost(revertUri, createNameValuePairs(), request);
 
     JsonParser jpar = new JsonParser();
     return jpar.mapTransactionResponse(response);
@@ -127,14 +116,11 @@ public class PaymentAPIConnection implements Closeable {
 
   public CommitTransactionResponse commitTransaction(UUID transactionId, CommitTransactionRequest request) throws IOException {
 
-    // sort alphabetically per key
-    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
-
     final String paymentUri = "/transaction/";
     final String actionUri = "/commit";
     String commitUri = paymentUri + transactionId + actionUri;
 
-    String response = executePost(commitUri, nameValuePairs, request);
+    String response = executePost(commitUri, createNameValuePairs(), request);
 
     JsonParser jpar = new JsonParser();
     return jpar.mapCommitTransactionResponse(response);
@@ -142,14 +128,11 @@ public class PaymentAPIConnection implements Closeable {
 
   public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
 
-    // sort alphabetically per key
-    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
-
     final String paymentUri = "/transaction/";
 
     String statusUri = paymentUri + transactionId;
 
-    String response = executeGet(statusUri, nameValuePairs);
+    String response = executeGet(statusUri, createNameValuePairs());
 
     JsonParser jpar = new JsonParser();
     return jpar.mapTransactionStatusResponse(response);
@@ -157,14 +140,11 @@ public class PaymentAPIConnection implements Closeable {
 
   public TokenizationResponse tokenization(String tokenizationId) throws IOException {
 
-    // sort alphabetically per key
-    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
-
     final String paymentUri = "/tokenization/";
 
     String tokenUri = paymentUri + tokenizationId;
 
-    String response = executeGet(tokenUri, nameValuePairs);
+    String response = executeGet(tokenUri, createNameValuePairs());
 
     JsonParser jpar = new JsonParser();
     return jpar.mapTokenizationResponse(response);
@@ -172,14 +152,11 @@ public class PaymentAPIConnection implements Closeable {
 
   public ReportResponse fetchReport(String date) throws IOException {
 
-    // sort alphabetically per key
-    List<NameValuePair> nameValuePairs = PaymentHighwayUtility.sortParameters(createNameValuePairs());
-
     final String reportUri = "/report/batch/";
 
     String fetchUri = reportUri + date;
 
-    String response = executeGet(fetchUri, nameValuePairs);
+    String response = executeGet(fetchUri, createNameValuePairs());
 
     JsonParser jpar = new JsonParser();
     return jpar.mapReportResponse(response);
@@ -192,14 +169,11 @@ public class PaymentAPIConnection implements Closeable {
 
     HttpRequestBase httpRequest = new HttpGet(this.serviceUrl + requestUri);
 
-    // create signature
     String signature = this.createSignature(ss, METHOD_GET, requestUri, nameValuePairs, null);
     nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-    // add request headers
     this.addHeaders(httpRequest, nameValuePairs);
 
-    // Create a custom response handler
     ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_GET, requestUri);
 
     return httpclient.execute(httpRequest, responseHandler);
@@ -212,19 +186,15 @@ public class PaymentAPIConnection implements Closeable {
 
     HttpPost httpRequest = new HttpPost(this.serviceUrl + requestUri);
 
-    // create signature
     String signature = this.createSignature(ss, METHOD_POST, requestUri, nameValuePairs, requestBody);
     nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-    // add request headers
     this.addHeaders(httpRequest, nameValuePairs);
 
-    // add request body
     if (requestBody != null) {
       this.addBody(httpRequest, requestBody);
     }
 
-    // Create a custom response handler
     ResponseHandler<String> responseHandler = new PaymentHighwayResponseHandler(ss, METHOD_POST, requestUri);
 
     return httpclient.execute(httpRequest, responseHandler);
@@ -253,8 +223,6 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   private String createSignature(SecureSigner ss, String method, String uri, List<NameValuePair> nameValuePairs, Request request) {
-
-    nameValuePairs = PaymentHighwayUtility.parseSphParameters(nameValuePairs);
 
     String json = "";
     if (request != null) {

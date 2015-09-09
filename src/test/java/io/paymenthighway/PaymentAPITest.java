@@ -473,8 +473,7 @@ public class PaymentAPITest {
         "http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN");
 
     FormContainer formContainer = formBuilder
-        .generateAddCardAndPaymentParameters("9900", "EUR", "123",
-            "test payment");
+        .generateAddCardParameters();
 
     FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
     String result = null;
