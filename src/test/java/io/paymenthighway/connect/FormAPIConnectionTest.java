@@ -269,8 +269,7 @@ public class FormAPIConnectionTest {
       // Create a custom response handler
       ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 
-        public String handleResponse(
-            final HttpResponse response) throws IOException {
+        public String handleResponse(final HttpResponse response) throws IOException {
           int status = response.getStatusLine().getStatusCode();
           if (status >= 200 && status < 300) {
             HttpEntity entity = response.getEntity();
