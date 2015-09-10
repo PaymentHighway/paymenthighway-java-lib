@@ -1,6 +1,5 @@
 package io.paymenthighway.connect;
 
-import io.paymenthighway.PaymentHighwayUtility;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -52,19 +51,13 @@ public class FormAPIConnection {
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
       HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
 
-      // sort alphabetically per key
-      PaymentHighwayUtility.sortParameters(nameValuePairs);
-
-      // create signature
       String signature = this.createSignature(METHOD_POST, formUri, nameValuePairs);
       nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-      // add request headers
       this.addHeaders(httpPost);
 
       httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-      // Create a custom response handler
       ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
         public String handleResponse(
             final HttpResponse response) throws ClientProtocolException, IOException {
@@ -95,19 +88,13 @@ public class FormAPIConnection {
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
       HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
 
-      // sort alphabetically per key
-      PaymentHighwayUtility.sortParameters(nameValuePairs);
-
-      // create signature
       String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
       nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-      // add request headers
       this.addHeaders(httpPost);
 
       httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-      // Create a custom response handler
       ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 
         public String handleResponse(
@@ -140,19 +127,13 @@ public class FormAPIConnection {
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
       HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
 
-      // sort alphabetically per key
-      PaymentHighwayUtility.sortParameters(nameValuePairs);
-
-      // create signature
       String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
       nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
-      // add request headers
       this.addHeaders(httpPost);
 
       httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-      // Create a custom response handler
       ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
 
         public String handleResponse(final HttpResponse response) throws IOException {
@@ -179,8 +160,6 @@ public class FormAPIConnection {
    * @return String signature
    */
   private String createSignature(String method, String uri, List<NameValuePair> nameValuePairs) {
-
-    nameValuePairs = PaymentHighwayUtility.parseSphParameters(nameValuePairs);
     SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
     return ss.createSignature(method, uri, nameValuePairs, "");
   }

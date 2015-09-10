@@ -74,9 +74,9 @@ public class FormBuilderTest {
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(method,
         this.signatureKeyId, this.signatureSecret, account, merchant,
-        this.serviceUrl, successUrl, failureUrl, cancelUrl, language);
+        this.serviceUrl);
 
-    FormContainer formContainer = formBuilder.generateAddCardParameters();
+    FormContainer formContainer = formBuilder.generateAddCardParameters(successUrl, failureUrl, cancelUrl, language);
 
     List<NameValuePair> nameValuePairs = formContainer.getFields();
 
@@ -109,9 +109,9 @@ public class FormBuilderTest {
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(method,
         this.signatureKeyId, this.signatureSecret, account, merchant,
-        this.serviceUrl, successUrl, failureUrl, cancelUrl, language);
+        this.serviceUrl);
 
-    FormContainer formContainer = formBuilder.generateAddCardParameters();
+    FormContainer formContainer = formBuilder.generateAddCardParameters(successUrl, failureUrl, cancelUrl, language);
 
     // test that Payment Highway accepts this as a request
     FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
@@ -147,10 +147,10 @@ public class FormBuilderTest {
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(method,
         this.signatureKeyId, this.signatureSecret, account, merchant,
-        this.serviceUrl, successUrl, failureUrl, cancelUrl, language);
+        this.serviceUrl);
 
     FormContainer formContainer = formBuilder.generatePaymentParameters(
-        amount, currency, orderId, description);
+        successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
 
     // test that the result has a signature
     Iterator<NameValuePair> it = formContainer.getFields().iterator();
@@ -185,10 +185,10 @@ public class FormBuilderTest {
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(method,
         this.signatureKeyId, this.signatureSecret, account, merchant,
-        this.serviceUrl, successUrl, failureUrl, cancelUrl, language);
+        this.serviceUrl);
 
     FormContainer formContainer = formBuilder.generatePaymentParameters(
-        amount, currency, orderId, description);
+        successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
 
     // test that Payment Highway accepts this as a request
     FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
@@ -222,11 +222,10 @@ public class FormBuilderTest {
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(method,
         this.signatureKeyId, this.signatureSecret, account, merchant,
-        this.serviceUrl, successUrl, failureUrl, cancelUrl, language);
+        this.serviceUrl);
 
-    FormContainer formContainer = formBuilder
-        .generateAddCardAndPaymentParameters(amount, currency, orderId,
-            description);
+    FormContainer formContainer = formBuilder.generateAddCardAndPaymentParameters(
+            successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
 
     // test that the result has a signature
     Iterator<NameValuePair> it = formContainer.getFields().iterator();
@@ -261,11 +260,10 @@ public class FormBuilderTest {
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(method,
         this.signatureKeyId, this.signatureSecret, account, merchant,
-        this.serviceUrl, successUrl, failureUrl, cancelUrl, language);
+        this.serviceUrl);
 
-    FormContainer formContainer = formBuilder
-        .generateAddCardAndPaymentParameters(amount, currency, orderId,
-            description);
+    FormContainer formContainer = formBuilder.generateAddCardAndPaymentParameters(
+            successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
 
     // test that Payment Highway accepts this as a request
     FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,

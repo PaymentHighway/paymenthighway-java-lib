@@ -15,8 +15,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Creates a signature for PaymentHighway messages
@@ -72,8 +71,21 @@ public class SecureSigner {
    * @return String eg:
    * "SPH1 testKey 51dcbaf5a9323daed24c0cdc5bb5d344f321aa84435b64e5da3d8f6c49370532"
    */
-  public String createSignature(String method, String uri, List<NameValuePair> keyValues, String body) {
+  public String createSignature(String method, String uri, Map<String, String> keyValues, String body) {
+    List<NameValuePair> keyValuesList = PaymentHighwayUtility.mapToList(keyValues);
+    return String.format("%s %s %s", SignatureScheme, secretKeyId, sign(method, uri, keyValuesList, body));
+  }
 
+  /**
+   * Create signature
+   *
+   * @param method
+   * @param uri
+   * @param body
+   * @return String eg:
+   * "SPH1 testKey 51dcbaf5a9323daed24c0cdc5bb5d344f321aa84435b64e5da3d8f6c49370532"
+   */
+  public String createSignature(String method, String uri, List<NameValuePair> keyValues, String body) {
     return String.format("%s %s %s", SignatureScheme, secretKeyId, sign(method, uri, keyValues, body));
   }
 
@@ -86,7 +98,8 @@ public class SecureSigner {
    * @return String signature
    */
   private String sign(String method, String uri, List<NameValuePair> keyValues, String body) {
-    String stringToSign = String.format("%s\n%s\n%s\n%s", method, uri, concatenateKeyValues(keyValues), body.trim());
+    List<NameValuePair> sphKeyValues = sortParameters(parseSphParameters(new ArrayList<>(keyValues)));
+    String stringToSign = String.format("%s\n%s\n%s\n%s", method, uri, concatenateKeyValues(sphKeyValues), body.trim());
 
     byte[] signature = null;
     try {
@@ -96,6 +109,41 @@ public class SecureSigner {
     }
 
     return DatatypeConverter.printHexBinary(signature).toLowerCase();
+  }
+
+  /**
+   * Sort alphabetically per key
+   *
+   * @param nameValuePairs
+   * @return List<NameValuePair> sorted list
+   */
+  private static List<NameValuePair> sortParameters(List<NameValuePair> nameValuePairs) {
+    Comparator<NameValuePair> comp = new Comparator<NameValuePair>() {
+      @Override
+      public int compare(NameValuePair p1, NameValuePair p2) {
+        return p1.getName().compareTo(p2.getName());
+      }
+    };
+    Collections.sort(nameValuePairs, comp);
+    return nameValuePairs;
+  }
+
+  /**
+   * Signature is formed from parameters that start with "sph-" Therefore we
+   * remove other parameters from the signature param set.
+   *
+   * @param map that may include all params
+   * @return List<NameValuePair> with only params starting "sph-"
+   */
+  private static List<NameValuePair> parseSphParameters(List<NameValuePair> map) {
+
+    for (Iterator<NameValuePair> it = map.iterator(); it.hasNext(); ) {
+      NameValuePair entry = it.next();
+      if (!entry.getName().toLowerCase().startsWith("sph-")) {
+        it.remove();
+      }
+    }
+    return map;
   }
 
   /**
@@ -120,27 +168,84 @@ public class SecureSigner {
   }
 
   /**
-   * Authenticate response by checking the response signature
-   *
-   * @param response
-   * @return boolean true if signatures match
+   * Validates the response redirection by checking the provided signature against the calculated one.
+   * @param keyValues The request parameters from the redirection
+   * @return boolean
    */
-  public boolean authenticate(String method, String uri, HttpResponse response, String content) {
+  public boolean validateFormRedirect(Map<String, String> keyValues) {
+    List<NameValuePair> keyValuesList = PaymentHighwayUtility.mapToList(keyValues);
+    return validateFormRedirect(keyValuesList);
+  }
 
+  /**
+   * Validates the response redirection by checking the provided signature against the calculated one.
+   * @param keyValues The request parameters from the redirection
+   * @return boolean
+   */
+  public boolean validateFormRedirect(List<NameValuePair> keyValues) {
+    return validateSignature("GET", "", keyValues, "");
+  }
+
+  /**
+   * Validates the response by checking the provided signature against the calculated one.
+   *
+   * @param method HTTP METHOD e.g. POST or GET
+   * @param uri The request URI
+   * @param keyValues The key value pairs of headers or request parameters
+   * @param content The body content
+   * @return boolean true if signature is found and matches the calculated one
+   */
+  public boolean validateSignature(String method, String uri, Map<String, String> keyValues, String content) {
+    List<NameValuePair> keyValuesList = PaymentHighwayUtility.mapToList(keyValues);
+    return validateSignature(method, uri, keyValuesList, content);
+  }
+
+  /**
+   * Validates the response by checking the provided signature against the calculated one.
+   *
+   * @param method HTTP METHOD e.g. POST or GET
+   * @param uri The request URI
+   * @param response The key value pairs of headers
+   * @param content The body content
+   * @return boolean true if signature is found and matches the calculated one
+   */
+  public boolean validateSignature(String method, String uri, HttpResponse response, String content) {
     List<NameValuePair> nameValuePairs = this.getHeadersAsNameValuePairs(response.getAllHeaders());
+    return validateSignature(method, uri, nameValuePairs, content);
+  }
 
+  /**
+   * Validates the response by checking the provided signature against the calculated one.
+   *
+   * @param method HTTP METHOD e.g. POST or GET
+   * @param uri The request URI
+   * @param keyValues The key value pairs of headers or request parameters
+   * @param content The body content
+   * @return boolean true if signature is found and matches the calculated one
+   */
+  public boolean validateSignature(String method, String uri, List<NameValuePair> keyValues, String content) {
+
+    String receivedSignature = findSignature(keyValues);
+
+    if (receivedSignature.isEmpty()) {
+      return false;
+    } else {
+      String createdSignature = this.createSignature(method, uri, keyValues, content);
+      return receivedSignature.equals(createdSignature);
+    }
+  }
+
+  private String findSignature(List<NameValuePair> nameValuePairs) {
     String receivedSignature = "";
+
     for (NameValuePair entry : nameValuePairs) {
       if (entry.getName().equalsIgnoreCase("Signature")) {
         receivedSignature = entry.getValue();
         break;
       }
     }
-    PaymentHighwayUtility.sortParameters(PaymentHighwayUtility.parseSphParameters(nameValuePairs));
 
-    String createdSignature = this.createSignature(method, uri, nameValuePairs, content);
-
-    return receivedSignature.equals(createdSignature);
+    return receivedSignature;
   }
 
   private List<NameValuePair> getHeadersAsNameValuePairs(Header[] headers) {
