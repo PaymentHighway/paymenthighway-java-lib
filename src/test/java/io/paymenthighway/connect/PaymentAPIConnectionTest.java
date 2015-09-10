@@ -773,7 +773,7 @@ public class PaymentAPIConnectionTest {
     assertEquals("100", response.getResult().getCode());
     assertEquals("OK", response.getResult().getMessage());
     // TODO: fetch this from Form API get parameters
-    String tokenizationId = "08cc223a-cf93-437c-97a2-f338eaf0d860";
+    UUID tokenizationId = UUID.fromString("08cc223a-cf93-437c-97a2-f338eaf0d860");
 
     TokenizationResponse tokenResponse = null;
     try {

@@ -131,7 +131,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException
    * @throws IOException
    */
-  public TokenizationResponse tokenize(String tokenizationId) throws IOException {
+  public TokenizationResponse tokenize(UUID tokenizationId) throws IOException {
 
     return paymentApi.tokenization(tokenizationId);
   }

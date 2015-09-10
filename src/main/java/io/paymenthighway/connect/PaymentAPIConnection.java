@@ -138,7 +138,7 @@ public class PaymentAPIConnection implements Closeable {
     return jpar.mapTransactionStatusResponse(response);
   }
 
-  public TokenizationResponse tokenization(String tokenizationId) throws IOException {
+  public TokenizationResponse tokenization(UUID tokenizationId) throws IOException {
 
     final String paymentUri = "/tokenization/";
 

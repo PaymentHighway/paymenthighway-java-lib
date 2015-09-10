@@ -518,10 +518,10 @@ public class PaymentAPITest {
     List<NameValuePair> params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
 
     // get sph-tokenization-id
-    String tokenizationId = null;
+    UUID tokenizationId = null;
     for (NameValuePair param : params) {
       if (param.getName().equalsIgnoreCase("sph-tokenization-id")) {
-        tokenizationId = param.getValue();
+        tokenizationId = UUID.fromString(param.getValue());
       }
     }
 
@@ -598,10 +598,10 @@ public class PaymentAPITest {
     List<NameValuePair> params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
 
     // get sph-tokenization-id
-    String tokenizationId = null;
+    UUID tokenizationId = null;
     for (NameValuePair param : params) {
       if (param.getName().equalsIgnoreCase("sph-tokenization-id")) {
-        tokenizationId = param.getValue();
+        tokenizationId = UUID.fromString(param.getValue());
       }
     }
 
