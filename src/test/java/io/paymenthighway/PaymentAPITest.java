@@ -384,11 +384,11 @@ public class PaymentAPITest {
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(
         "POST", this.signatureKeyId, this.signatureSecret,
-        this.account, this.merchant, this.serviceUrl,
-        "http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN");
+        this.account, this.merchant, this.serviceUrl);
 
-    FormContainer formContainer = formBuilder
-        .generateAddCardAndPaymentParameters("9999", "EUR", "1", "test payment");
+    FormContainer formContainer = formBuilder.generateAddCardAndPaymentParameters(
+                "http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN",
+                "9999", "EUR", "1", "test payment");
 
     FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
     String result = null;
@@ -469,11 +469,10 @@ public class PaymentAPITest {
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(
         "POST", this.signatureKeyId, this.signatureSecret,
-        this.account, this.merchant, this.serviceUrl,
-        "http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN");
+        this.account, this.merchant, this.serviceUrl);
 
-    FormContainer formContainer = formBuilder
-        .generateAddCardParameters();
+    FormContainer formContainer = formBuilder.generateAddCardParameters(
+            "http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN");
 
     FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
     String result = null;
@@ -551,11 +550,10 @@ public class PaymentAPITest {
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(
         "POST", this.signatureKeyId, this.signatureSecret,
-        this.account, this.merchant, this.serviceUrl,
-        "http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN");
+        this.account, this.merchant, this.serviceUrl);
 
-    FormContainer formContainer = formBuilder
-        .generateAddCardParameters();
+    FormContainer formContainer = formBuilder.generateAddCardParameters(
+            "http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN");
 
     FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
     String result = null;

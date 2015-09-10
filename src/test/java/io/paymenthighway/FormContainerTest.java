@@ -55,11 +55,10 @@ public class FormContainerTest {
 
     FormBuilder formBuilder =
         new FormBuilder(method, signatureKeyId, signatureSecret,
-            account, merchant, serviceUrl, successUrl, failureUrl,
-            cancelUrl, language);
+            account, merchant, serviceUrl);
 
     FormContainer formContainer =
-        formBuilder.generateAddCardParameters();
+        formBuilder.generateAddCardParameters(successUrl, failureUrl, cancelUrl, language);
 
     String httpMethod = formContainer.getMethod();
     String actionUrl = formContainer.getAction();
@@ -126,17 +125,15 @@ public class FormContainerTest {
 
     FormBuilder formBuilder =
         new FormBuilder(method, signatureKeyId, signatureSecret,
-            account, merchant, serviceUrl, successUrl, failureUrl,
-            cancelUrl, language);
+            account, merchant, serviceUrl);
 
     String amount = "1990";
     String currency = "EUR";
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
 
-    FormContainer formContainer =
-        formBuilder.generatePaymentParameters(
-            amount, currency, orderId, description);
+    FormContainer formContainer = formBuilder.generatePaymentParameters(
+              successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
 
     String httpMethod = formContainer.getMethod();
     String actionUrl = formContainer.getAction();
@@ -219,17 +216,15 @@ public class FormContainerTest {
 
     FormBuilder formBuilder =
         new FormBuilder(method, signatureKeyId, signatureSecret,
-            account, merchant, serviceUrl, successUrl, failureUrl,
-            cancelUrl, language);
+            account, merchant, serviceUrl);
 
     String amount = "1990";
     String currency = "EUR";
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
 
-    FormContainer formContainer =
-        formBuilder.generateAddCardAndPaymentParameters
-            (amount, currency, orderId, description);
+    FormContainer formContainer = formBuilder.generateAddCardAndPaymentParameters(
+                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
 
     String httpMethod = formContainer.getMethod();
     String actionUrl = formContainer.getAction();
