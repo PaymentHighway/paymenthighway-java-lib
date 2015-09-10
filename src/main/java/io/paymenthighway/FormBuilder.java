@@ -66,6 +66,8 @@ public class FormBuilder {
   public FormContainer generateAddCardParameters() {
 
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs();
+    String requestId = PaymentHighwayUtility.createRequestId();
+    nameValuePairs.add(new BasicNameValuePair(SPH_REQUEST_ID, requestId));
 
     String addCardUri = "/form/view/add_card";
     String signature = this.createSignature(addCardUri, nameValuePairs);
@@ -73,7 +75,7 @@ public class FormBuilder {
     nameValuePairs.add(new BasicNameValuePair(LANGUAGE, this.language));
     nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
 
-    return new FormContainer(this.method, this.baseUrl, addCardUri, nameValuePairs);
+    return new FormContainer(this.method, this.baseUrl, addCardUri, nameValuePairs, requestId);
   }
 
   /**
@@ -88,6 +90,8 @@ public class FormBuilder {
   public FormContainer generatePaymentParameters(String amount, String currency, String orderId, String description) {
 
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs();
+    String requestId = PaymentHighwayUtility.createRequestId();
+    nameValuePairs.add(new BasicNameValuePair(SPH_REQUEST_ID, requestId));
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
@@ -99,7 +103,7 @@ public class FormBuilder {
     nameValuePairs.add(new BasicNameValuePair(LANGUAGE, language));
     nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
 
-    return new FormContainer(this.method, this.baseUrl, payWithCardUri, nameValuePairs);
+    return new FormContainer(this.method, this.baseUrl, payWithCardUri, nameValuePairs, requestId);
   }
 
   /**
@@ -114,6 +118,8 @@ public class FormBuilder {
   public FormContainer generateAddCardAndPaymentParameters(String amount, String currency, String orderId, String description) {
 
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs();
+    String requestId = PaymentHighwayUtility.createRequestId();
+    nameValuePairs.add(new BasicNameValuePair(SPH_REQUEST_ID, requestId));
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
@@ -125,7 +131,7 @@ public class FormBuilder {
     nameValuePairs.add(new BasicNameValuePair(LANGUAGE, language));
     nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
 
-    return new FormContainer(method, this.baseUrl, addCardAndPayUri, nameValuePairs);
+    return new FormContainer(method, this.baseUrl, addCardAndPayUri, nameValuePairs, requestId);
   }
 
   private List<NameValuePair> createCommonNameValuePairs() {
@@ -135,7 +141,6 @@ public class FormBuilder {
     nameValuePairs.add(new BasicNameValuePair(SPH_CANCEL_URL, cancelUrl));
     nameValuePairs.add(new BasicNameValuePair(SPH_FAILURE_URL, failureUrl));
     nameValuePairs.add(new BasicNameValuePair(SPH_MERCHANT, merchant));
-    nameValuePairs.add(new BasicNameValuePair(SPH_REQUEST_ID, PaymentHighwayUtility.createRequestId()));
     nameValuePairs.add(new BasicNameValuePair(SPH_SUCCESS_URL, successUrl));
     nameValuePairs.add(new BasicNameValuePair(SPH_TIMESTAMP, PaymentHighwayUtility.getUtcTimestamp()));
 

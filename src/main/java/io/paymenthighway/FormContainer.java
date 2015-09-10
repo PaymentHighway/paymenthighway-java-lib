@@ -13,12 +13,14 @@ public class FormContainer {
   private String baseUrl;
   private String actionUrl;
   private List<NameValuePair> nameValuePairs;
+  private String requestId;
 
-  public FormContainer(String method, String baseUrl, String actionUrl, List<NameValuePair> nameValuePairs) {
+  public FormContainer(String method, String baseUrl, String actionUrl, List<NameValuePair> nameValuePairs, String requestId) {
     this.method = method;
     this.baseUrl = baseUrl;
     this.actionUrl = actionUrl;
     this.nameValuePairs = nameValuePairs;
+    this.requestId = requestId;
   }
 
   public String getMethod() {
@@ -31,5 +33,9 @@ public class FormContainer {
 
   public List<NameValuePair> getFields() {
     return nameValuePairs;
+  }
+
+  public String getRequestId() {
+    return requestId;
   }
 }
