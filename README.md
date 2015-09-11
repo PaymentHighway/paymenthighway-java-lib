@@ -51,21 +51,26 @@ Initializing the builder
     String account = "test";
     String merchant = "test_merchantId";
     String serviceUrl = "https://v1-hub-staging.sph-test-solinor.com";
-    String successUrl = "https://www.paymenthighway.fi/";
-    String failureUrl = "https://paymenthighway.fi/dev/";
-    String cancelUrl = "https://solinor.com/";
-    String language = "EN";
 
-    FormBuilder formBuilder = new FormBuilder(method, signatureKeyId, signatureSecret, account, merchant, serviceUrl, successUrl, failureUrl, cancelUrl, language);
+    FormBuilder formBuilder = new FormBuilder(method, signatureKeyId, signatureSecret, account, merchant, serviceUrl);
+    
+Example common parameters for the following form generation functions
+ 
+    String successUrl = "https://example.com/success";
+    String failureUrl = "https://example.com/failure";
+    String cancelUrl = "https://example.com/cancel";
+    String language = "EN";
 
 Example generateAddCardParameters
 
-	FormContainer formContainer = formBuilder.generateAddCardParameters();
+	FormContainer formContainer = formBuilder.generateAddCardParameters(successUrl, failureUrl, cancelUrl, language);
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
     String actionUrl = formContainer.getAction();
     List<NameValuePair> fields = formContainer.getFields();
+    
+    System.out.println("Initialized form with request-id: " + formContainer.getRequestId());
 
     for (NameValuePair field : fields) {
         field.getName();
@@ -79,12 +84,15 @@ Example generatePaymentParameters
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
 
-    FormContainer formContainer = formBuilder.generatePaymentParameters(amount, currency, orderId, description);
+    FormContainer formContainer = formBuilder.generatePaymentParameters(successUrl, failureUrl, cancelUrl, language,
+        amount, currency, orderId, description);
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
     String actionUrl = formContainer.getAction();
     List<NameValuePair> fields = formContainer.getFields();
+    
+    System.out.println("Initialized form with request-id: " + formContainer.getRequestId());
 
     for (NameValuePair field : fields) {
         field.getName();
@@ -98,12 +106,15 @@ Example generateGetAddCardAndPaymentParameters
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
 
-    FormContainer formContainer = formBuilder.generateAddCardAndPaymentParameters(amount, currency, orderId, description);
+    FormContainer formContainer = formBuilder.generateAddCardAndPaymentParameters(successUrl, failureUrl, cancelUrl, 
+        language, amount, currency, orderId, description);
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
     String actionUrl = formContainer.getAction();
     List<NameValuePair> fields = formContainer.getFields();
+    
+    System.out.println("Initialized form with request-id: " + formContainer.getRequestId());
 
     for (NameValuePair field : fields) {
         field.getName();
@@ -113,6 +124,17 @@ Example generateGetAddCardAndPaymentParameters
 Each method returns a FormContainer object which provides required hidden fields for the HTML form to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, which are included in the FormContainer fields.
 
 In order to charge a card given in the Form API, the corresponding transaction id must be committed by using Payment API.
+
+In addition, after the user is redirected to one of your provided success, failure or cancel URLs, you should validate the request parameters and the signature.
+
+Example validateFormRedirect
+
+    SecureSigner secureSigner = new SecureSigner(signatureKeyId, signatureSecret);
+
+    if ( ! secureSigner.validateFormRedirect(requestParams)) {
+      throw new Exception("Invalid signature!");
+    }
+
 
 - `PaymentApi`
 
