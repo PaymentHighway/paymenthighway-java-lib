@@ -375,6 +375,63 @@ public class PaymentAPITest {
   }
 
   @Test
+  public void testOrderSearch() {
+
+    // create the payment highway service
+    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
+            this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+
+    // init transaction
+    InitTransactionResponse response = null;
+
+    try {
+      response = paymentAPI.initTransaction();
+    } catch (IOException e1) {
+      e1.printStackTrace();
+    }
+
+    // create transaction
+    assertNotNull(response);
+    UUID transactionId = response.getId();
+
+    String pan = "4153013999700024";
+    String cvc = "024";
+    String expiryYear = "2017";
+    String expiryMonth = "11";
+    Card card = new Card(pan, expiryYear, expiryMonth, cvc);
+    UUID orderId = UUID.randomUUID();
+
+    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true, orderId.toString());
+
+    TransactionResponse transactionResponse = null;
+
+    try {
+      transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
+    } catch (IOException e1) {
+      e1.printStackTrace();
+    }
+
+    assertNotNull(transactionResponse);
+    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals(transactionResponse.getResult().getMessage(), "OK");
+
+    // order search test
+    OrderSearchResponse orderSearchResponse = null;
+
+    try {
+      orderSearchResponse = paymentAPI.searchOrders(orderId.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(orderSearchResponse);
+    assertEquals(orderSearchResponse.getResult().getMessage(), "OK");
+    assertEquals(orderSearchResponse.getResult().getCode(), "100");
+    assertEquals(orderSearchResponse.getTransactions()[0].getCurrentAmount(), "9999");
+    assertEquals(orderSearchResponse.getTransactions()[0].getId(), transactionId);
+  }
+
+  @Test
   public void testCommit() {
 
     // create the payment highway service

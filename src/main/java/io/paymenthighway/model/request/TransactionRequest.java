@@ -12,11 +12,19 @@ public class TransactionRequest extends Request {
   Token token = null;
   Card card = null;
   boolean blocking = true;
+  String order = null;
 
   public TransactionRequest(Token token, String amount, String currency) {
     this.token = token;
     this.amount = amount;
     this.currency = currency;
+  }
+
+  public TransactionRequest(Token token, String amount, String currency, String order) {
+    this.token = token;
+    this.amount = amount;
+    this.currency = currency;
+    this.order = order;
   }
 
   public TransactionRequest(Token token, String amount, String currency, boolean blocking) {
@@ -26,10 +34,25 @@ public class TransactionRequest extends Request {
     this.blocking = blocking;
   }
 
+  public TransactionRequest(Token token, String amount, String currency, boolean blocking, String order) {
+    this.token = token;
+    this.amount = amount;
+    this.currency = currency;
+    this.blocking = blocking;
+    this.order = order;
+  }
+
   public TransactionRequest(Card card, String amount, String currency) {
     this.card = card;
     this.amount = amount;
     this.currency = currency;
+  }
+
+  public TransactionRequest(Card card, String amount, String currency, String order) {
+    this.card = card;
+    this.amount = amount;
+    this.currency = currency;
+    this.order = order;
   }
 
   public TransactionRequest(Card card, String amount, String currency, boolean blocking) {
@@ -37,6 +60,14 @@ public class TransactionRequest extends Request {
     this.amount = amount;
     this.currency = currency;
     this.blocking = blocking;
+  }
+
+  public TransactionRequest(Card card, String amount, String currency, boolean blocking, String order) {
+    this.card = card;
+    this.amount = amount;
+    this.currency = currency;
+    this.blocking = blocking;
+    this.order = order;
   }
 
   public String getAmount() {
@@ -57,5 +88,9 @@ public class TransactionRequest extends Request {
 
   public Token getToken() {
     return token;
+  }
+
+  public String getOrder() {
+    return order;
   }
 }

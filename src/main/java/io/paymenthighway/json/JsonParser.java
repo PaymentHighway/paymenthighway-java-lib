@@ -89,6 +89,20 @@ public class JsonParser {
     return response;
   }
 
+  public OrderSearchResponse mapOrderSearchResponse(String json) {
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.setSerializationInclusion(Include.NON_NULL);
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    OrderSearchResponse response = null;
+    try {
+      response = mapper.readValue(json, OrderSearchResponse.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return response;
+  }
+
   public ReportResponse mapReportResponse(String json) {
     ObjectMapper mapper = new ObjectMapper();
     mapper.setSerializationInclusion(Include.NON_NULL);

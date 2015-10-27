@@ -4,10 +4,7 @@ import io.paymenthighway.PaymentHighwayUtility;
 import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.json.JsonParser;
-import io.paymenthighway.model.request.CommitTransactionRequest;
-import io.paymenthighway.model.request.Request;
-import io.paymenthighway.model.request.RevertTransactionRequest;
-import io.paymenthighway.model.request.TransactionRequest;
+import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
@@ -136,6 +133,18 @@ public class PaymentAPIConnection implements Closeable {
 
     JsonParser jpar = new JsonParser();
     return jpar.mapTransactionStatusResponse(response);
+  }
+
+  public OrderSearchResponse searchOrders(String order) throws IOException {
+
+    final String paymentUri = "/transactions/?order=";
+
+    String searchUri = paymentUri + order;
+
+    String response = executeGet(searchUri, createNameValuePairs());
+
+    JsonParser jpar = new JsonParser();
+    return jpar.mapOrderSearchResponse(response);
   }
 
   public TokenizationResponse tokenization(UUID tokenizationId) throws IOException {

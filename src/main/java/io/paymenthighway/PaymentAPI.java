@@ -108,6 +108,18 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
+   * Payment Highway Order Status Request
+   *
+   * @param order The ID of the order whose transactions should be searched for
+   * @return OrderSearchResponse
+   * @throws IOException
+   */
+  public OrderSearchResponse searchOrders(String order) throws IOException {
+
+    return paymentApi.searchOrders(order);
+  }
+
+  /**
    * Payment Highway Transaction Commit Request
    *
    * @param transactionId
