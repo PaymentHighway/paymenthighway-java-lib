@@ -187,6 +187,10 @@ Example Daily Batch Report
 
 	ReportResponse report = paymentAPI.fetchDailyReport("yyyyMMdd");
 	
+Example Order Status
+
+    OrderSearchResponse orderSearchResponse = paymentAPI.searchOrders("order");
+	
 
 # Errors
 

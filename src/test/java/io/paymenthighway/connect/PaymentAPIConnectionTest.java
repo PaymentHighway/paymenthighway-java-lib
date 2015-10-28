@@ -706,6 +706,64 @@ public class PaymentAPIConnectionTest {
   }
 
   /**
+   * This will test a successful order search request
+   * <p/>
+   * 1. create transaction handle 2. create a debit transaction with order id 3. search by the order id
+   */
+  @Test
+  public void testOrderSearch1() {
+
+    InitTransactionResponse response = null;
+    try {
+      response = conn.initTransactionHandle();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(response);
+    assertEquals("100", response.getResult().getCode());
+    assertEquals("OK", response.getResult().getMessage());
+
+    UUID transactionId = response.getId();
+
+    String pan = "4153013999700024";
+    String cvc = "024";
+    String expiryYear = "2017";
+    String expiryMonth = "11";
+    Card card = new Card(pan, expiryYear, expiryMonth, cvc);
+    UUID orderId = UUID.randomUUID();
+
+    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true, orderId.toString());
+
+    TransactionResponse transactionResponse = null;
+    try {
+      transactionResponse = conn.debitTransaction(transactionId, transaction);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(transactionResponse);
+    assertEquals(transactionResponse.getResult().getMessage(), "OK");
+    assertEquals(transactionResponse.getResult().getCode(), "100");
+
+    // order search test
+    OrderSearchResponse orderSearchResponse = null;
+
+    try {
+      orderSearchResponse = conn.searchOrders(orderId.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    // test result
+    assertNotNull(orderSearchResponse);
+    assertEquals(orderSearchResponse.getResult().getMessage(), "OK");
+    assertEquals(orderSearchResponse.getResult().getCode(), "100");
+    assertEquals(orderSearchResponse.getTransactions()[0].getCurrentAmount(), "9999");
+    assertEquals(orderSearchResponse.getTransactions()[0].getId(), transactionId);
+  }
+
+  /**
    * This will test successful com transaction
    */
   @Test
