@@ -153,6 +153,45 @@ public class FormAPIConnection {
   }
 
   /**
+   * Form API call to pay with a tokenized card and a CVC
+   *
+   * @param nameValuePairs The Form API http parameters
+   * @return
+   * @throws IOException
+   */
+  public String payWithTokenAndCvcRequest(List<NameValuePair> nameValuePairs) throws IOException {
+
+    final String formPaymentUri = "/form/view/pay_with_token_and_cvc";
+
+    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+      HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
+
+      String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
+      nameValuePairs.add(new BasicNameValuePair("signature", signature));
+
+      this.addHeaders(httpPost);
+
+      httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+      ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
+
+        public String handleResponse(final HttpResponse response) throws IOException {
+          int status = response.getStatusLine().getStatusCode();
+          if (status >= 200 && status < 300) {
+            HttpEntity entity = response.getEntity();
+            return entity != null ? EntityUtils.toString(entity) : null;
+          } else {
+            throw new ClientProtocolException("Unexpected response status: " + status);
+          }
+        }
+
+      };
+      return httpclient.execute(httpPost, responseHandler);
+
+    }
+  }
+
+  /**
    * Create a secure signature
    *
    * @param method
@@ -173,5 +212,4 @@ public class FormAPIConnection {
     httpPost.addHeader("User-Agent", USER_AGENT);
     httpPost.addHeader("Content-Type", CONTENT_TYPE);
   }
-
 }

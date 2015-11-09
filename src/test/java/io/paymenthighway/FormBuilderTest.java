@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -274,6 +275,44 @@ public class FormBuilderTest {
     String response = null;
     try {
       response = formApi.addCardAndPayRequest(formContainer.getFields());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
+
+  @Test
+  public void testGetPayWithTokenAndCvcParameters() {
+
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    String amount = "9999";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "http://www.solinor.com";
+    String cancelUrl = "https://solinor.fi";
+    String language = "EN";
+    String description = "this is payment description";
+    UUID token = UUID.fromString("71435029-fbb6-4506-aa86-8529efb640b0");
+
+    // create the payment highway request parameters
+    FormBuilder formBuilder = new FormBuilder(method,
+            this.signatureKeyId, this.signatureSecret, account, merchant,
+            this.serviceUrl);
+
+    FormContainer formContainer = formBuilder.generatePayWithTokenAndCvcParameters(
+            token, successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
+
+    // test that Payment Highway accepts this as a request
+    FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
+            this.signatureKeyId, this.signatureSecret);
+
+    String response = null;
+    try {
+      response = formApi.payWithTokenAndCvcRequest(formContainer.getFields());
     } catch (IOException e) {
       e.printStackTrace();
     }

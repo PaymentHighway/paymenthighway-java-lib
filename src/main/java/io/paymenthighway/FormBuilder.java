@@ -6,6 +6,7 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Creates parameters that can used on the form that sends them to
@@ -28,6 +29,7 @@ public class FormBuilder {
   private final static String SPH_CANCEL_URL = "sph-cancel-url";
   private final static String SPH_REQUEST_ID = "sph-request-id";
   private final static String SPH_TIMESTAMP = "sph-timestamp";
+  private final static String SPH_TOKEN = "sph-token";
   private final static String LANGUAGE = "language";
   private final static String DESCRIPTION = "description";
   private final static String SIGNATURE = "signature";
@@ -168,6 +170,42 @@ public class FormBuilder {
     nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
 
     return new FormContainer(method, this.baseUrl, addCardAndPayUri, nameValuePairs, requestId);
+  }
+
+  /**
+   * Get parameters for Pay with Token and CVC request.
+   *
+   * @param token The card token to charge from.
+   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language The language the form is displayed in.
+   * @param amount The amount to pay.
+   * @param currency In which currency is the amount, e.g. "EUR"
+   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description Description of the payment shown in the form.
+   * @return
+   */
+  public FormContainer generatePayWithTokenAndCvcParameters(UUID token, String successUrl, String failureUrl,
+                                                            String cancelUrl, String language, String amount,
+                                                            String currency, String orderId, String description) {
+
+    String requestId = PaymentHighwayUtility.createRequestId();
+    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
+            cancelUrl, language, requestId);
+
+    nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
+    nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
+    nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
+    nameValuePairs.add(new BasicNameValuePair(SPH_TOKEN, token.toString()));
+    nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
+
+    String payWithTokenAndCvcUri = "/form/view/pay_with_token_and_cvc";
+    String signature = this.createSignature(payWithTokenAndCvcUri, nameValuePairs);
+
+    nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
+
+    return new FormContainer(method, this.baseUrl, payWithTokenAndCvcUri, nameValuePairs, requestId);
   }
 
   private List<NameValuePair> createCommonNameValuePairs(String successUrl, String failureUrl, String cancelUrl,
