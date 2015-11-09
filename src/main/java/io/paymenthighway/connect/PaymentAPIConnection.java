@@ -34,6 +34,7 @@ public class PaymentAPIConnection implements Closeable {
   private static final String USER_AGENT = "PaymentHighway Java Lib";
   private static final String METHOD_POST = "POST";
   private static final String METHOD_GET = "GET";
+  private static final String SPH_API_VERSION = "20150605";
 
   private String serviceUrl = "";
   private String signatureKeyId = null;
@@ -248,6 +249,7 @@ public class PaymentAPIConnection implements Closeable {
    */
   private List<NameValuePair> createNameValuePairs() {
     List<NameValuePair> nameValuePairs = new ArrayList<>();
+    nameValuePairs.add(new BasicNameValuePair("sph-api-version", this.SPH_API_VERSION));
     nameValuePairs.add(new BasicNameValuePair("sph-account", this.account));
     nameValuePairs.add(new BasicNameValuePair("sph-merchant", this.merchant));
     nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));

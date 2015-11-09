@@ -16,6 +16,8 @@ import java.util.List;
 public class FormBuilder {
 
   private final static String METHOD_POST = "POST";
+  private final static String SPH_API_VERSION = "sph-api-version";
+  private final static String SPH_ACCEPT_CVC_REQUIRED = "sph-accept-cvc-required";
   private final static String SPH_ACCOUNT = "sph-account";
   private final static String SPH_MERCHANT = "sph-merchant";
   private final static String SPH_AMOUNT = "sph-amount";
@@ -71,6 +73,34 @@ public class FormBuilder {
 
     return new FormContainer(this.method, this.baseUrl, addCardUri, nameValuePairs, requestId);
   }
+
+  /**
+   * Get parameters for Add Card request
+   *
+   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language The language the form is displayed in.
+   * @param acceptCvcRequired Accept a payment card token even if the card requires CVC for payments.
+   * @return FormContainer
+   */
+  public FormContainer generateAddCardParameters(String successUrl, String failureUrl,
+                                                 String cancelUrl, String language, Boolean acceptCvcRequired) {
+
+    String requestId = PaymentHighwayUtility.createRequestId();
+    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
+            cancelUrl, language, requestId);
+
+    nameValuePairs.add(new BasicNameValuePair(SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
+
+    String addCardUri = "/form/view/add_card";
+    String signature = this.createSignature(addCardUri, nameValuePairs);
+
+    nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
+
+    return new FormContainer(this.method, this.baseUrl, addCardUri, nameValuePairs, requestId);
+  }
+
 
   /**
    * Get parameters for Payment request.
@@ -144,6 +174,7 @@ public class FormBuilder {
                                                          String language, String requestId) {
 
     List<NameValuePair> nameValuePairs = new ArrayList<>();
+    nameValuePairs.add(new BasicNameValuePair(SPH_API_VERSION, "20150605"));
     nameValuePairs.add(new BasicNameValuePair(SPH_ACCOUNT, account));
     nameValuePairs.add(new BasicNameValuePair(SPH_MERCHANT, merchant));
     nameValuePairs.add(new BasicNameValuePair(SPH_TIMESTAMP, PaymentHighwayUtility.getUtcTimestamp()));

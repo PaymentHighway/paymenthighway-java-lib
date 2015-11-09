@@ -70,13 +70,14 @@ public class FormBuilderTest {
     String failureUrl = "https://paymenthighway.fi/index-en.html";
     String cancelUrl = "https://solinor.fi";
     String language = "EN";
+    Boolean acceptCvcRequired = false;
 
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(method,
         this.signatureKeyId, this.signatureSecret, account, merchant,
         this.serviceUrl);
 
-    FormContainer formContainer = formBuilder.generateAddCardParameters(successUrl, failureUrl, cancelUrl, language);
+    FormContainer formContainer = formBuilder.generateAddCardParameters(successUrl, failureUrl, cancelUrl, language, acceptCvcRequired);
 
     List<NameValuePair> nameValuePairs = formContainer.getFields();
 
@@ -105,13 +106,14 @@ public class FormBuilderTest {
     String failureUrl = "http://www.solinor.com";
     String cancelUrl = "https://solinor.fi";
     String language = "EN";
+    Boolean acceptCvcRequired = true;
 
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(method,
         this.signatureKeyId, this.signatureSecret, account, merchant,
         this.serviceUrl);
 
-    FormContainer formContainer = formBuilder.generateAddCardParameters(successUrl, failureUrl, cancelUrl, language);
+    FormContainer formContainer = formBuilder.generateAddCardParameters(successUrl, failureUrl, cancelUrl, language, acceptCvcRequired);
 
     // test that Payment Highway accepts this as a request
     FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,

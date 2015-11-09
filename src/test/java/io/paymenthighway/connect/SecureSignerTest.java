@@ -45,6 +45,7 @@ public class SecureSignerTest {
     String formPaymentBody = "";
 
     List<NameValuePair> nameValuePairs = new ArrayList<>();
+    nameValuePairs.add(new BasicNameValuePair("sph-api-version", "20150605"));
     nameValuePairs.add(new BasicNameValuePair("sph-account", "sampleAccount001"));
     nameValuePairs.add(new BasicNameValuePair("sph-amount", "990"));
     nameValuePairs.add(new BasicNameValuePair("sph-cancel-url", "https://merchant.example.com/payment/cancel"));

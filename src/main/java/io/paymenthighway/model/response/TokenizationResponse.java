@@ -29,6 +29,8 @@ public class TokenizationResponse extends Response {
     String expireYear;
     @JsonProperty("expire_month")
     String expireMonth;
+    @JsonProperty("cvc_required")
+    String cvcRequired;
 
     public String getType() {
       return type;
@@ -44,6 +46,10 @@ public class TokenizationResponse extends Response {
 
     public String getExpireYear() {
       return expireYear;
+    }
+
+    public String getCvcRequired() {
+      return cvcRequired;
     }
   }
 }

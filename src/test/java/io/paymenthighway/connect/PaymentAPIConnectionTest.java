@@ -1,10 +1,7 @@
 package io.paymenthighway.connect;
 
 import io.paymenthighway.PaymentHighwayUtility;
-import io.paymenthighway.model.request.Card;
-import io.paymenthighway.model.request.CommitTransactionRequest;
-import io.paymenthighway.model.request.RevertTransactionRequest;
-import io.paymenthighway.model.request.TransactionRequest;
+import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
@@ -13,6 +10,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.junit.*;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -76,6 +74,7 @@ public class PaymentAPIConnectionTest {
 
     List<NameValuePair> sphHeaders = new ArrayList<>();
 
+    sphHeaders.add(new BasicNameValuePair("sph-api-version", "20150605"));
     sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
     sphHeaders.add(new BasicNameValuePair("sph-amount", "9990"));
     sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
@@ -271,6 +270,49 @@ public class PaymentAPIConnectionTest {
     assertEquals(transactionResponse.getResult().getMessage(), "Authorization failed");
     assertEquals(transactionResponse.getResult().getCode(), "200");
   }
+
+  /**
+   * This will test successful debit transaction with the optional customer IP address
+   */
+  @Test
+  public void testDebitTransaction4() {
+
+    InitTransactionResponse response = null;
+    try {
+      response = conn.initTransactionHandle();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(response);
+    assertEquals("100", response.getResult().getCode());
+    assertEquals("OK", response.getResult().getMessage());
+
+    UUID transactionId = response.getId();
+
+    String pan = "4153013999700024";
+    String cvc = "024";
+    String expiryYear = "2017";
+    String expiryMonth = "11";
+    Card card = new Card(pan, expiryYear, expiryMonth, cvc);
+    Customer customer = new Customer(InetAddress.getLoopbackAddress().getHostAddress());
+
+    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", customer);
+
+    TransactionResponse transactionResponse = null;
+    try {
+      transactionResponse = conn.debitTransaction(transactionId,
+              transaction);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(transactionResponse);
+    assertEquals(transactionResponse.getResult().getMessage(), "OK");
+    assertEquals(transactionResponse.getResult().getCode(), "100");
+
+  }
+
 
   /**
    * This will test successful credit transaction NOTE: NOT YET IMPLEMENTED
@@ -703,6 +745,7 @@ public class PaymentAPIConnectionTest {
     assertEquals(statusResponse.getResult().getCode(), "100");
     assertEquals(statusResponse.getTransaction().getCurrentAmount(), "9999");
     assertEquals(statusResponse.getTransaction().getId(), transactionId);
+    assertEquals(statusResponse.getTransaction().getCard().getCvcRequired(), "not_tested");
   }
 
   /**
@@ -811,7 +854,11 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(commitTransactionResponse);
+    //TODO: Should return a token, but the test card does not for some reason
+    //assertNotNull(commitTransactionResponse.getCardToken());
     assertTrue(commitTransactionResponse.getCard().getType().equalsIgnoreCase("visa"));
+    //TODO: Should return "no" for the test card, but for some reason returns "not_tested"
+    assertTrue(commitTransactionResponse.getCard().getCvcRequired().equalsIgnoreCase("not_tested"));
   }
 
   /**
@@ -842,6 +889,7 @@ public class PaymentAPIConnectionTest {
     assertNotNull(tokenResponse);
     assertEquals(tokenResponse.getCard().getExpireYear(), "2017");
     assertEquals(tokenResponse.getCardToken().toString(), "71435029-fbb6-4506-aa86-8529efb640b0");
+    assertEquals(tokenResponse.getCard().getCvcRequired().toString(), "no");
   }
 
   /**

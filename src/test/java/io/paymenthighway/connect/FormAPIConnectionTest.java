@@ -98,6 +98,8 @@ public class FormAPIConnectionTest {
 
     List<NameValuePair> formParameters = new ArrayList<>();
 
+    formParameters.add(new BasicNameValuePair("sph-accept-cvc-required", "true"));
+    formParameters.add(new BasicNameValuePair("sph-api-version", "20150605"));
     formParameters.add(new BasicNameValuePair("sph-amount", "990"));
     formParameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
     formParameters.add(new BasicNameValuePair("sph-cancel-url", "https://www.solinor.com"));

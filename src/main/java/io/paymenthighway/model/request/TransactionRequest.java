@@ -13,6 +13,7 @@ public class TransactionRequest extends Request {
   Card card = null;
   boolean blocking = true;
   String order = null;
+  Customer customer = null;
 
   public TransactionRequest(Token token, String amount, String currency) {
     this.token = token;
@@ -42,10 +43,34 @@ public class TransactionRequest extends Request {
     this.order = order;
   }
 
+  public TransactionRequest(Token token, String amount, String currency, boolean blocking, Customer customer) {
+    this.token = token;
+    this.amount = amount;
+    this.currency = currency;
+    this.blocking = blocking;
+    this.customer = customer;
+  }
+
+  public TransactionRequest(Token token, String amount, String currency, boolean blocking, String order, Customer customer) {
+    this.token = token;
+    this.amount = amount;
+    this.currency = currency;
+    this.blocking = blocking;
+    this.order = order;
+    this.customer = customer;
+  }
+
   public TransactionRequest(Card card, String amount, String currency) {
     this.card = card;
     this.amount = amount;
     this.currency = currency;
+  }
+
+  public TransactionRequest(Card card, String amount, String currency, Customer customer) {
+    this.card = card;
+    this.amount = amount;
+    this.currency = currency;
+    this.customer = customer;
   }
 
   public TransactionRequest(Card card, String amount, String currency, String order) {
@@ -55,11 +80,27 @@ public class TransactionRequest extends Request {
     this.order = order;
   }
 
+  public TransactionRequest(Card card, String amount, String currency, String order, Customer customer) {
+    this.card = card;
+    this.amount = amount;
+    this.currency = currency;
+    this.order = order;
+    this.customer = customer;
+  }
+
   public TransactionRequest(Card card, String amount, String currency, boolean blocking) {
     this.card = card;
     this.amount = amount;
     this.currency = currency;
     this.blocking = blocking;
+  }
+
+  public TransactionRequest(Card card, String amount, String currency, boolean blocking, Customer customer) {
+    this.card = card;
+    this.amount = amount;
+    this.currency = currency;
+    this.blocking = blocking;
+    this.customer = customer;
   }
 
   public TransactionRequest(Card card, String amount, String currency, boolean blocking, String order) {
@@ -68,6 +109,15 @@ public class TransactionRequest extends Request {
     this.currency = currency;
     this.blocking = blocking;
     this.order = order;
+  }
+
+  public TransactionRequest(Card card, String amount, String currency, boolean blocking, String order, Customer customer) {
+    this.card = card;
+    this.amount = amount;
+    this.currency = currency;
+    this.blocking = blocking;
+    this.order = order;
+    this.customer = customer;
   }
 
   public String getAmount() {
@@ -92,5 +142,9 @@ public class TransactionRequest extends Request {
 
   public String getOrder() {
     return order;
+  }
+
+  public Customer getCustomer() {
+    return customer;
   }
 }

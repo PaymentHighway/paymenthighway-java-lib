@@ -183,9 +183,13 @@ public class PaymentAPITest {
     }
 
     assertNotNull(commitResponse);
+    //TODO: Should get a token, but the test card does not return one
+    //assertNotNull(commitResponse.getCardToken());
     assertEquals(commitResponse.getResult().getCode(), "100");
     assertEquals(commitResponse.getResult().getMessage(), "OK");
     assertEquals(commitResponse.getCard().getType(), "Visa");
+    //TODO: Should get a "no", but the test card gives "not_tested"
+    assertEquals(commitResponse.getCard().getCvcRequired(), "not_tested");
 
   }
 
@@ -372,6 +376,7 @@ public class PaymentAPITest {
     assertEquals(statusResponse.getResult().getCode(), "100");
     assertEquals(statusResponse.getTransaction().getCurrentAmount(), "49");
     assertEquals(statusResponse.getTransaction().getId(), transactionId);
+    assertEquals(statusResponse.getTransaction().getCard().getCvcRequired(), "not_tested");
   }
 
   @Test
@@ -594,6 +599,7 @@ public class PaymentAPITest {
     assertEquals(tokenResponse.getCard().getExpireYear(), "2017");
     assertTrue(tokenResponse.getCardToken().toString().length() == 36);
     assertEquals(tokenResponse.getResult().getMessage(), "OK");
+    assertEquals(tokenResponse.getCard().getCvcRequired(), "no");
 
   }
 
