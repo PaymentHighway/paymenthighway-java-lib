@@ -31,6 +31,9 @@ public class TransactionStatus {
   PartialCard card;
   @JsonProperty("reverts")
   Revert[] reverts;
+  Customer customer;
+  @JsonProperty("cardholder_authentication")
+  String cardholderAuthentication;
 
   public UUID getId() {
     return id;
@@ -90,5 +93,13 @@ public class TransactionStatus {
 
   public Revert[] getReverts() {
     return reverts;
+  }
+
+  public Customer getCustomer() {
+    return customer;
+  }
+
+  public String getCardholderAuthentication() {
+    return cardholderAuthentication;
   }
 }

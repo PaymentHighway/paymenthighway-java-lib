@@ -212,7 +212,7 @@ public class FormBuilder {
                                                          String language, String requestId) {
 
     List<NameValuePair> nameValuePairs = new ArrayList<>();
-    nameValuePairs.add(new BasicNameValuePair(SPH_API_VERSION, "20150605"));
+    nameValuePairs.add(new BasicNameValuePair(SPH_API_VERSION, "20151028"));
     nameValuePairs.add(new BasicNameValuePair(SPH_ACCOUNT, account));
     nameValuePairs.add(new BasicNameValuePair(SPH_MERCHANT, merchant));
     nameValuePairs.add(new BasicNameValuePair(SPH_TIMESTAMP, PaymentHighwayUtility.getUtcTimestamp()));
