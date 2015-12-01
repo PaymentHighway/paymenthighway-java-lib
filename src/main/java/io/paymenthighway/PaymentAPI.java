@@ -161,6 +161,20 @@ public class PaymentAPI implements Closeable {
     return paymentApi.fetchReport(date);
   }
 
+  /**
+   * Payment Highway Reconciliation Report Request
+   *
+   * @param date The date to fetch the reconciliation report for. Must be today - 1 day or earlier.
+   * @return ReconciliationReportResponse
+   * @throws HttpResponseException
+   * @throws AuthenticationException
+   * @throws IOException
+   */
+  public ReconciliationReportResponse fetchReconciliationReport(String date) throws IOException {
+
+    return paymentApi.fetchReconciliationReport(date);
+  }
+
   @Override
   public void close() throws IOException {
     if (paymentApi != null) {

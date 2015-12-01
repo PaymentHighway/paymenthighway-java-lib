@@ -117,4 +117,18 @@ public class JsonParser {
     return response;
   }
 
+  public ReconciliationReportResponse mapReconciliationReportResponse(String json) {
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.setSerializationInclusion(Include.NON_NULL);
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    ReconciliationReportResponse response = null;
+    try {
+      response = mapper.readValue(json, ReconciliationReportResponse.class);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return response;
+  }
+
 }

@@ -759,6 +759,74 @@ public class PaymentAPIConnectionTest {
   }
 
   /**
+   * This will test successful transaction status request with the option "order" parameter
+   * <p/>
+   * 1. create transaction handle 2. create a debit transaction 3. request a
+   * transaction status
+   */
+  @Test
+  public void testTransactionStatus2() {
+
+    InitTransactionResponse response = null;
+    try {
+      response = conn.initTransactionHandle();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(response);
+    assertEquals("100", response.getResult().getCode());
+    assertEquals("OK", response.getResult().getMessage());
+
+    UUID transactionId = response.getId();
+
+    String pan = "4153013999700024";
+    String cvc = "024";
+    String expiryYear = "2017";
+    String expiryMonth = "11";
+    Card card = new Card(pan, expiryYear, expiryMonth, cvc);
+    Customer customer = new Customer("83.145.208.186");
+    String orderId = "ABC123";
+
+    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true, orderId, customer);
+
+    TransactionResponse transactionResponse = null;
+    try {
+      transactionResponse = conn.debitTransaction(transactionId, transaction);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(transactionResponse);
+    assertEquals(transactionResponse.getResult().getMessage(), "OK");
+    assertEquals(transactionResponse.getResult().getCode(), "100");
+
+    // status response test
+    TransactionStatusResponse statusResponse = null;
+
+    try {
+      statusResponse = conn.transactionStatus(transactionId);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    // test result
+    assertNotNull(statusResponse);
+    assertEquals(statusResponse.getResult().getMessage(), "OK");
+    assertEquals(statusResponse.getResult().getCode(), "100");
+    assertEquals(statusResponse.getTransaction().getCurrentAmount(), "9999");
+    assertEquals(statusResponse.getTransaction().getId(), transactionId);
+    assertEquals(statusResponse.getTransaction().getCard().getCvcRequired(), "not_tested");
+    assertEquals(statusResponse.getTransaction().getCard().getBin(), "415301");
+    assertEquals(statusResponse.getTransaction().getCard().getFunding(), "debit");
+    assertEquals(statusResponse.getTransaction().getCard().getCategory(), "unknown");
+    assertEquals(statusResponse.getTransaction().getCard().getCountryCode(), "FI");
+    assertEquals(statusResponse.getTransaction().getCustomer().getNetworkAddress(), "83.145.208.186");
+    assertEquals(statusResponse.getTransaction().getCustomer().getCountryCode(), "FI");
+    assertEquals(statusResponse.getTransaction().getCardholderAuthentication(), "no");
+    assertEquals(statusResponse.getTransaction().getOrder(), orderId);
+  }
+
+  /**
    * This will test a successful order search request
    * <p/>
    * 1. create transaction handle 2. create a debit transaction with order id 3. search by the order id
@@ -985,5 +1053,82 @@ public class PaymentAPIConnectionTest {
     assertNotNull(result);
     assertEquals(result.getResult().getCode(), "100");
     assertEquals(result.getResult().getMessage(), "OK");
+    assertEquals(result.getSettlements()[0].getMerchant().getAcquirerMerchantId(), "90000001");
+  }
+
+  /**
+   * This will test successful reconciliation report request
+   */
+  @Ignore
+  @Test
+  public void testReconciliationReport() {
+
+    fail("No test report available yet");
+
+    // request settlement report for yesterday, today is not available
+    DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+    Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.DATE, -1);
+    String date = dateFormat.format(cal.getTime());
+
+    ReconciliationReportResponse result = null;
+    try {
+      result = conn.fetchReconciliationReport(date);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    assertNotNull(result);
+    assertEquals(result.getResult().getCode(), "100");
+    assertEquals(result.getResult().getMessage(), "OK");
+    assertNotNull(result.getReconciliationSettlements()[0].getAcquirerBatchId());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getMerchant());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerAmountPresented());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerCommission());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerCommissionCurrency());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerDiscountRate());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerEstimatedSettlementValue());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerEstimatedSettlementValueCurrency());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerExchangeRate());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerTransactionFee());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerTransactionFeeCurrency());
+  }
+
+  /**
+   * This will test successful reconciliation report request with unallocated transactions
+   */
+  @Ignore
+  @Test
+  public void testReconciliationReport2() {
+
+    fail("No test report available yet");
+
+    // request settlement report for yesterday, today is not available
+    DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+    Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.DATE, -1);
+    String date = dateFormat.format(cal.getTime());
+
+    ReconciliationReportResponse result = null;
+    try {
+      result = conn.fetchReconciliationReport(date);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    assertNotNull(result);
+    assertEquals(result.getResult().getCode(), "100");
+    assertEquals(result.getResult().getMessage(), "OK");
+    assertNotEquals(Integer.parseInt(result.getReconciliationSettlements()[0].getUnallocatedTransactionsCount()), 0);
+    assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getFilingCode());
+    assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerAmountPresented());
+    assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerCommission());
+    assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerCommissionCurrency());
+    assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerDiscountRate());
+    assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerEstimatedSettlementValue());
+    assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerEstimatedSettlementValueCurrency());
+    assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerExchangeRate());
+    assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerTransactionFee());
+    assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerTransactionFeeCurrency());
+
+
   }
 }

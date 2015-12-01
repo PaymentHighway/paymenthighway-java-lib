@@ -733,4 +733,35 @@ public class PaymentAPITest {
     assertEquals(reportResponse.getResult().getCode(), "100");
     assertEquals(reportResponse.getResult().getMessage(), "OK");
   }
+
+  @Ignore
+  @Test
+  public void testReconciliationReport() {
+
+    fail("No test report available yet");
+
+    // create the payment highway service
+    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
+            this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+
+    // request batch for yesterday, today is not available
+    DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+    Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.DATE, -1);
+    String date = dateFormat.format(cal.getTime());
+
+    ReconciliationReportResponse reconciliationReportResponse = null;
+
+    try {
+      reconciliationReportResponse = paymentAPI.fetchReconciliationReport(date);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(reconciliationReportResponse);
+    assertEquals(reconciliationReportResponse.getResult().getCode(), "100");
+    assertEquals(reconciliationReportResponse.getResult().getMessage(), "OK");
+    assertNotNull(reconciliationReportResponse.getReconciliationSettlements()[0].getTransactions()[0].getMerchant());
+    assertNotNull(reconciliationReportResponse.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerAmountPresented());
+  }
 }
