@@ -1080,7 +1080,17 @@ public class PaymentAPIConnectionTest {
     assertNotNull(result);
     assertEquals(result.getResult().getCode(), "100");
     assertEquals(result.getResult().getMessage(), "OK");
+    assertNotNull(result.getReconciliationSettlements()[0].getAcquirer());
     assertNotNull(result.getReconciliationSettlements()[0].getAcquirerBatchId());
+    assertNotNull(result.getReconciliationSettlements()[0].getBatch());
+    assertNotNull(result.getReconciliationSettlements()[0].getCurrency());
+    assertNotNull(result.getReconciliationSettlements()[0].getDateProcessed());
+    assertNotNull(result.getReconciliationSettlements()[0].getMainAcquirerMerchantId());
+    assertNotNull(result.getReconciliationSettlements()[0].getNetAmount());
+    assertNotNull(result.getReconciliationSettlements()[0].getReference());
+    assertNotNull(result.getReconciliationSettlements()[0].getStatus());
+    assertNotEquals(result.getReconciliationSettlements()[0].getTransactionCount(), "0");
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions());
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getMerchant());
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerAmountPresented());
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerCommission());
@@ -1091,6 +1101,8 @@ public class PaymentAPIConnectionTest {
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerExchangeRate());
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerTransactionFee());
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerTransactionFeeCurrency());
+    assertEquals(result.getReconciliationSettlements()[0].getUnallocatedTransactionsCount(), "0");
+
   }
 
   /**
@@ -1117,6 +1129,16 @@ public class PaymentAPIConnectionTest {
     assertNotNull(result);
     assertEquals(result.getResult().getCode(), "100");
     assertEquals(result.getResult().getMessage(), "OK");
+    assertNotNull(result.getReconciliationSettlements()[0].getAcquirer());
+    assertNotNull(result.getReconciliationSettlements()[0].getAcquirerBatchId());
+    assertNotNull(result.getReconciliationSettlements()[0].getBatch());
+    assertNotNull(result.getReconciliationSettlements()[0].getCurrency());
+    assertNotNull(result.getReconciliationSettlements()[0].getDateProcessed());
+    assertNotNull(result.getReconciliationSettlements()[0].getMainAcquirerMerchantId());
+    assertNotNull(result.getReconciliationSettlements()[0].getNetAmount());
+    assertNotNull(result.getReconciliationSettlements()[0].getReference());
+    assertNotNull(result.getReconciliationSettlements()[0].getStatus());
+    assertEquals(result.getReconciliationSettlements()[0].getTransactionCount(), "0");
     assertNotEquals(Integer.parseInt(result.getReconciliationSettlements()[0].getUnallocatedTransactionsCount()), 0);
     assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getFilingCode());
     assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerAmountPresented());
@@ -1128,7 +1150,63 @@ public class PaymentAPIConnectionTest {
     assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerExchangeRate());
     assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerTransactionFee());
     assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerTransactionFeeCurrency());
+  }
 
+  /**
+   * This will test successful reconciliation report request with commission settlement data included
+   */
+  @Ignore
+  @Test
+  public void  testReconciliationReport3() {
+
+    fail("No test report available yet");
+
+    // request settlement report for yesterday, today is not available
+    DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+    Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.DATE, -1);
+    String date = dateFormat.format(cal.getTime());
+
+    ReconciliationReportResponse result = null;
+    try {
+      result = conn.fetchReconciliationReport(date);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    assertNotNull(result);
+    assertEquals(result.getResult().getCode(), "100");
+    assertEquals(result.getResult().getMessage(), "OK");
+    assertNotNull(result.getReconciliationSettlements()[0].getAcquirer());
+    assertNotNull(result.getReconciliationSettlements()[0].getAcquirerBatchId());
+    assertNotNull(result.getReconciliationSettlements()[0].getBatch());
+    assertNotNull(result.getReconciliationSettlements()[0].getCurrency());
+    assertNotNull(result.getReconciliationSettlements()[0].getDateProcessed());
+    assertNotNull(result.getReconciliationSettlements()[0].getMainAcquirerMerchantId());
+    assertNotNull(result.getReconciliationSettlements()[0].getNetAmount());
+    assertNotNull(result.getReconciliationSettlements()[0].getReference());
+    assertNotNull(result.getReconciliationSettlements()[0].getStatus());
+    assertNotEquals(result.getReconciliationSettlements()[0].getTransactionCount(), "0");
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getMerchant());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerAmountPresented());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerCommission());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerCommissionCurrency());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerDiscountRate());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerEstimatedSettlementValue());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerEstimatedSettlementValueCurrency());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerExchangeRate());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerTransactionFee());
+    assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerTransactionFeeCurrency());
+    assertNotNull(result.getCommissionSettlements());
+    assertNotNull(result.getCommissionSettlements()[0].getAcquirer());
+    assertNotNull(result.getCommissionSettlements()[0].getAcquirerBatchId());
+    assertNotNull(result.getCommissionSettlements()[0].getAmount());
+    assertNotNull(result.getCommissionSettlements()[0].getBatch());
+    assertNotNull(result.getCommissionSettlements()[0].getCurrency());
+    assertNotNull(result.getCommissionSettlements()[0].getDateProcessed());
+    assertNotNull(result.getCommissionSettlements()[0].getMainAcquirerMerchantId());
+    assertNotNull(result.getCommissionSettlements()[0].getReference());
 
   }
+
 }

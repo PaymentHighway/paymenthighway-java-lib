@@ -15,8 +15,8 @@ public class ReconciliationSettlement {
   Status status;
   @JsonProperty("batch")
   String batch;
-  @JsonProperty("timestamp")
-  String timestamp;
+  @JsonProperty("date_processed")
+  String dateProcessed;
   @JsonProperty("reference")
   String reference;
   @JsonProperty("acquirer")
@@ -47,8 +47,8 @@ public class ReconciliationSettlement {
     return batch;
   }
 
-  public String getTimestamp() {
-    return timestamp;
+  public String getDateProcessed() {
+    return dateProcessed;
   }
 
   public String getReference() {

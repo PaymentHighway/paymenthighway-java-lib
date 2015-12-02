@@ -26,6 +26,12 @@ public class UnallocatedTransaction {
   String acquirerCommission;
   @JsonProperty("acquirer_commission_currency")
   String acquirerCommissionCurrency;
+  @JsonProperty("partial_pan")
+  String partialPan;
+  @JsonProperty("card_type")
+  String cardType;
+  @JsonProperty("transaction_date")
+  String transactionDate;
 
   public String getFilingCode() {
     return filingCode;
@@ -69,5 +75,17 @@ public class UnallocatedTransaction {
 
   public String getAcquirerCommissionCurrency() {
     return acquirerCommissionCurrency;
+  }
+
+  public String getPartialPan() {
+    return partialPan;
+  }
+
+  public String getCardType() {
+    return cardType;
+  }
+
+  public String getTransactionDate() {
+    return transactionDate;
   }
 }

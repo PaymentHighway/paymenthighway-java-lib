@@ -34,7 +34,7 @@ public class PaymentAPIConnection implements Closeable {
   private static final String USER_AGENT = "PaymentHighway Java Lib";
   private static final String METHOD_POST = "POST";
   private static final String METHOD_GET = "GET";
-  private static final String SPH_API_VERSION = "20151126";
+  private static final String SPH_API_VERSION = "20151201";
 
   private String serviceUrl = "";
   private String signatureKeyId = null;
