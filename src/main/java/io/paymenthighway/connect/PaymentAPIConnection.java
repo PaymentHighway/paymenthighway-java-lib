@@ -6,6 +6,7 @@ import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.json.JsonParser;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpResponseException;
@@ -76,7 +77,7 @@ public class PaymentAPIConnection implements Closeable {
     return jpar.mapInitTransactionResponse(response);
   }
 
-  public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
+  public DebitTransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
     final String paymentUri = "/transaction/";
     final String actionUri = "/debit";
@@ -85,7 +86,7 @@ public class PaymentAPIConnection implements Closeable {
     String response = executePost(debitUri, createNameValuePairs(), request);
 
     JsonParser jpar = new JsonParser();
-    return jpar.mapTransactionResponse(response);
+    return jpar.mapResponse(response, DebitTransactionResponse.class);
   }
 
   public TransactionResponse creditTransaction(UUID transactionId, TransactionRequest request) throws IOException {
@@ -184,7 +185,7 @@ public class PaymentAPIConnection implements Closeable {
     return jpar.mapReconciliationReportResponse(response);
   }
 
-  private String executeGet(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {
+  protected String executeGet(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {
     CloseableHttpClient httpclient = returnHttpClients();
 
     SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
@@ -201,7 +202,7 @@ public class PaymentAPIConnection implements Closeable {
     return httpclient.execute(httpRequest, responseHandler);
   }
 
-  private String executePost(String requestUri, List<NameValuePair> nameValuePairs, Request requestBody) throws IOException {
+  protected String executePost(String requestUri, List<NameValuePair> nameValuePairs, Request requestBody) throws IOException {
     CloseableHttpClient httpclient = returnHttpClients();
 
     SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
@@ -261,7 +262,7 @@ public class PaymentAPIConnection implements Closeable {
    */
   private List<NameValuePair> createNameValuePairs() {
     List<NameValuePair> nameValuePairs = new ArrayList<>();
-    nameValuePairs.add(new BasicNameValuePair("sph-api-version", this.SPH_API_VERSION));
+    nameValuePairs.add(new BasicNameValuePair("sph-api-version", SPH_API_VERSION));
     nameValuePairs.add(new BasicNameValuePair("sph-account", this.account));
     nameValuePairs.add(new BasicNameValuePair("sph-merchant", this.merchant));
     nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));

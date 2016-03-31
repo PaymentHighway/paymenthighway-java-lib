@@ -14,6 +14,7 @@ public class TransactionRequest extends Request {
   boolean blocking = true;
   String order = null;
   Customer customer = null;
+  private boolean commit;
 
   public TransactionRequest(Token token, String amount, String currency) {
     this.token = token;
@@ -28,6 +29,15 @@ public class TransactionRequest extends Request {
     this.order = order;
   }
 
+  public TransactionRequest(Token token, String amount, String currency, String order, boolean commit) {
+    this.token = token;
+    this.amount = amount;
+    this.currency = currency;
+    this.order = order;
+    this.commit = commit;
+  }
+
+  @Deprecated
   public TransactionRequest(Token token, String amount, String currency, boolean blocking) {
     this.token = token;
     this.amount = amount;
@@ -35,6 +45,7 @@ public class TransactionRequest extends Request {
     this.blocking = blocking;
   }
 
+  @Deprecated
   public TransactionRequest(Token token, String amount, String currency, boolean blocking, String order) {
     this.token = token;
     this.amount = amount;
@@ -43,6 +54,7 @@ public class TransactionRequest extends Request {
     this.order = order;
   }
 
+  @Deprecated
   public TransactionRequest(Token token, String amount, String currency, boolean blocking, Customer customer) {
     this.token = token;
     this.amount = amount;
@@ -51,6 +63,7 @@ public class TransactionRequest extends Request {
     this.customer = customer;
   }
 
+  @Deprecated
   public TransactionRequest(Token token, String amount, String currency, boolean blocking, String order, Customer customer) {
     this.token = token;
     this.amount = amount;
@@ -88,6 +101,7 @@ public class TransactionRequest extends Request {
     this.customer = customer;
   }
 
+  @Deprecated
   public TransactionRequest(Card card, String amount, String currency, boolean blocking) {
     this.card = card;
     this.amount = amount;
@@ -95,6 +109,7 @@ public class TransactionRequest extends Request {
     this.blocking = blocking;
   }
 
+  @Deprecated
   public TransactionRequest(Card card, String amount, String currency, boolean blocking, Customer customer) {
     this.card = card;
     this.amount = amount;
@@ -103,6 +118,7 @@ public class TransactionRequest extends Request {
     this.customer = customer;
   }
 
+  @Deprecated
   public TransactionRequest(Card card, String amount, String currency, boolean blocking, String order) {
     this.card = card;
     this.amount = amount;
@@ -111,6 +127,7 @@ public class TransactionRequest extends Request {
     this.order = order;
   }
 
+  @Deprecated
   public TransactionRequest(Card card, String amount, String currency, boolean blocking, String order, Customer customer) {
     this.card = card;
     this.amount = amount;
@@ -128,6 +145,7 @@ public class TransactionRequest extends Request {
     return currency;
   }
 
+  @Deprecated
   public boolean isBlocking() {
     return blocking;
   }
@@ -146,5 +164,9 @@ public class TransactionRequest extends Request {
 
   public Customer getCustomer() {
     return customer;
+  }
+
+  public Boolean getCommit() {
+    return commit;
   }
 }

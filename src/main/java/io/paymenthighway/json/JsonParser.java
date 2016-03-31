@@ -19,6 +19,20 @@ public class JsonParser {
 
   }
 
+  public <T> T mapResponse(String json, Class<T> clazz) {
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.setSerializationInclusion(Include.NON_NULL);
+    mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    T response = null;
+    try {
+      response = mapper.readValue(json, clazz);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return response;
+  }
+
   public InitTransactionResponse mapInitTransactionResponse(String json) {
     ObjectMapper mapper = new ObjectMapper();
     mapper.setSerializationInclusion(Include.NON_NULL);
