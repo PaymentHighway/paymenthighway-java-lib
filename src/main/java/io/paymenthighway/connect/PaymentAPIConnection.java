@@ -35,7 +35,7 @@ public class PaymentAPIConnection implements Closeable {
   private static final String USER_AGENT = "PaymentHighway Java Lib";
   private static final String METHOD_POST = "POST";
   private static final String METHOD_GET = "GET";
-  private static final String SPH_API_VERSION = "20151201";
+  private static final String SPH_API_VERSION = "20160307";
 
   private String serviceUrl = "";
   private String signatureKeyId = null;
@@ -174,10 +174,15 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   public ReconciliationReportResponse fetchReconciliationReport(String date) throws IOException {
+    return fetchReconciliationReport(date, false);
+  }
 
+  public ReconciliationReportResponse fetchReconciliationReport(String date, Boolean useDateProcessed) throws IOException {
     final String reportUri = "/report/reconciliation/";
 
-    String fetchUri = reportUri + date;
+    String queryString = String.format("?use-date-processed=%s", useDateProcessed);
+
+    String fetchUri = reportUri + date + queryString;
 
     String response = executeGet(fetchUri, createNameValuePairs());
 
