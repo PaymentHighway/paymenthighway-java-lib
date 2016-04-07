@@ -10,6 +10,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import javax.crypto.Mac;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
@@ -28,7 +29,7 @@ public class SecureSigner {
   private String secretKeyId = null;
   private String secretKey = null;
 
-  private Mac signer = null;
+  private SecretKeySpec secretKeySpec = null;
 
   /**
    * Constructor
@@ -39,7 +40,20 @@ public class SecureSigner {
   public SecureSigner(String id, String key) {
     this.secretKeyId = id;
     this.secretKey = key;
-    this.signer = this.initSigner();
+    this.secretKeySpec = initSecretKeySpec();
+  }
+
+  private SecretKeySpec initSecretKeySpec() {
+
+      SecretKeySpec keySpec = null;
+
+      try {
+          keySpec = new SecretKeySpec(this.secretKey.getBytes("UTF-8"), Algorithm);
+      } catch (UnsupportedEncodingException e) {
+          e.printStackTrace();
+      }
+
+      return keySpec;
   }
 
   /**
@@ -48,15 +62,13 @@ public class SecureSigner {
    * @return javax.crypto.Mac Instance
    */
   private Mac initSigner() {
-    if (this.signer == null) {
-      SecretKeySpec keySpec;
-      try {
-        keySpec = new SecretKeySpec(this.secretKey.getBytes("UTF-8"), Algorithm);
-        signer = Mac.getInstance(Algorithm);
-        signer.init(keySpec);
-      } catch (UnsupportedEncodingException | NoSuchAlgorithmException | InvalidKeyException e) {
-        e.printStackTrace();
-      }
+    Mac signer = null;
+
+    try {
+      signer = Mac.getInstance(Algorithm);
+      signer.init(secretKeySpec);
+    } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+      e.printStackTrace();
     }
 
     return signer;
@@ -103,7 +115,7 @@ public class SecureSigner {
 
     byte[] signature = null;
     try {
-      signature = this.signer.doFinal(stringToSign.getBytes("UTF-8"));
+      signature = initSigner().doFinal(stringToSign.getBytes("UTF-8"));
     } catch (IllegalStateException | UnsupportedEncodingException e) {
       e.printStackTrace();
     }
