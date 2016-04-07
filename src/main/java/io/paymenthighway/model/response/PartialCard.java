@@ -15,6 +15,13 @@ public class PartialCard {
   String expireYear;
   @JsonProperty("expire_month")
   String expireMonth;
+  @JsonProperty("cvc_required")
+  String cvcRequired;
+  String bin;
+  String funding;
+  String category;
+  @JsonProperty("country_code")
+  String countryCode;
 
   public String getPartialPan() {
     return partialPan;
@@ -30,5 +37,25 @@ public class PartialCard {
 
   public String getExpireMonth() {
     return expireMonth;
+  }
+
+  public String getCvcRequired() {
+    return cvcRequired;
+  }
+
+  public String getBin() {
+    return bin;
+  }
+
+  public String getFunding() {
+    return funding;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public String getCountryCode() {
+    return countryCode;
   }
 }

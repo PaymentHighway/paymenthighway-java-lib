@@ -22,8 +22,6 @@ public class TransactionStatus {
   String filingCode;
   @JsonProperty("authorization_code")
   String authorizationCode;
-  @JsonProperty("verification_method")
-  String verificationMethod;
   String token;
   @JsonProperty("status")
   Status status;
@@ -31,6 +29,10 @@ public class TransactionStatus {
   PartialCard card;
   @JsonProperty("reverts")
   Revert[] reverts;
+  Customer customer;
+  @JsonProperty("cardholder_authentication")
+  String cardholderAuthentication;
+  String order;
 
   public UUID getId() {
     return id;
@@ -68,10 +70,6 @@ public class TransactionStatus {
     return authorizationCode;
   }
 
-  public String getVerificationMethod() {
-    return verificationMethod;
-  }
-
   public String getToken() {
     return token;
   }
@@ -90,5 +88,17 @@ public class TransactionStatus {
 
   public Revert[] getReverts() {
     return reverts;
+  }
+
+  public Customer getCustomer() {
+    return customer;
+  }
+
+  public String getCardholderAuthentication() {
+    return cardholderAuthentication;
+  }
+
+  public String getOrder() {
+    return order;
   }
 }

@@ -12,6 +12,9 @@ public class TokenizationResponse extends Response {
   @JsonProperty("card_token")
   UUID cardToken;
   TokenizationResponse.Card card;
+  Customer customer;
+  @JsonProperty("cardholder_authentication")
+  String cardholderAuthentication;
 
   public UUID getCardToken() {
     return cardToken;
@@ -19,6 +22,14 @@ public class TokenizationResponse extends Response {
 
   public TokenizationResponse.Card getCard() {
     return this.card;
+  }
+
+  public Customer getCustomer() {
+    return customer;
+  }
+
+  public String getCardholderAuthentication() {
+    return cardholderAuthentication;
   }
 
   public static class Card {
@@ -29,6 +40,13 @@ public class TokenizationResponse extends Response {
     String expireYear;
     @JsonProperty("expire_month")
     String expireMonth;
+    @JsonProperty("cvc_required")
+    String cvcRequired;
+    String bin;
+    String funding;
+    String category;
+    @JsonProperty("country_code")
+    String countryCode;
 
     public String getType() {
       return type;
@@ -44,6 +62,26 @@ public class TokenizationResponse extends Response {
 
     public String getExpireYear() {
       return expireYear;
+    }
+
+    public String getCvcRequired() {
+      return cvcRequired;
+    }
+
+    public String getBin() {
+      return bin;
+    }
+
+    public String getFunding() {
+      return funding;
+    }
+
+    public String getCategory() {
+      return category;
+    }
+
+    public String getCountryCode() {
+      return countryCode;
     }
   }
 }

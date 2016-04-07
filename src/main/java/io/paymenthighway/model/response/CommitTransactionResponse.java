@@ -12,6 +12,9 @@ public class CommitTransactionResponse extends Response {
   @JsonProperty("card_token")
   UUID cardToken;
   PartialCard card;
+  Customer customer;
+  @JsonProperty("cardholder_authentication")
+  String cardholderAuthentication;
 
   public UUID getCardToken() {
     return cardToken;
@@ -19,5 +22,13 @@ public class CommitTransactionResponse extends Response {
 
   public PartialCard getCard() {
     return this.card;
+  }
+
+  public Customer getCustomer() {
+    return customer;
+  }
+
+  public String getCardholderAuthentication() {
+    return cardholderAuthentication;
   }
 }

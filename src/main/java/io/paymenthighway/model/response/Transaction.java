@@ -22,6 +22,9 @@ public class Transaction {
   String authorizationCode;
   @JsonProperty("status")
   Status status;
+  @JsonProperty("cardholder_authentication")
+  String cardholderAuthentication;
+  String order;
 
   public String getId() {
     return id;
@@ -57,5 +60,13 @@ public class Transaction {
 
   public Status getStatus() {
     return status;
+  }
+
+  public String getCardholderAuthentication() {
+    return cardholderAuthentication;
+  }
+
+  public String getOrder() {
+    return order;
   }
 }
