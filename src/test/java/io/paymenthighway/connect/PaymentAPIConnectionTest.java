@@ -259,7 +259,7 @@ public class PaymentAPIConnectionTest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "99900", "EUR");
+    TransactionRequest transaction = new TransactionRequest.Builder(card, 99900, "EUR").build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -288,7 +288,7 @@ public class PaymentAPIConnectionTest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "99900", "EUR");
+    TransactionRequest transaction = TransactionRequest.Builder(card, 99900, "EUR").build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -316,7 +316,7 @@ public class PaymentAPIConnectionTest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer(InetAddress.getLoopbackAddress().getHostAddress());
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", customer);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -346,7 +346,10 @@ public class PaymentAPIConnectionTest {
 
     UUID transactionId = createAndTestTransactionInit();
 
-    TransactionRequest transaction = new TransactionRequest(new Token(tokenResponse.getCardToken()), "9999", "EUR", "PIPPURI", false);
+    TransactionRequest transaction = new TransactionRequest.Builder(new Token(tokenResponse.getCardToken()), 9999, "EUR")
+        .setOrder("PIPPURI")
+        .setCommit(false)
+        .build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -400,7 +403,10 @@ public class PaymentAPIConnectionTest {
 
     UUID transactionId = createAndTestTransactionInit();
 
-    TransactionRequest transaction = new TransactionRequest(new Token(tokenResponse.getCardToken(), "048"), "9999", "EUR", "PIPPURI", false);
+    TransactionRequest transaction = TransactionRequest.Builder(new Token(tokenResponse.getCardToken(), "048"), 9999, "EUR")
+        .setOrder("PIPPURI")
+        .setCommit(false)
+        .build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -845,7 +851,7 @@ public class PaymentAPIConnectionTest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer("83.145.208.186");
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", customer);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -912,7 +918,7 @@ public class PaymentAPIConnectionTest {
     Customer customer = new Customer("83.145.208.186");
     String orderId = "ABC123";
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", orderId, customer);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setOrder(orderId).setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -979,7 +985,7 @@ public class PaymentAPIConnectionTest {
     UUID orderId = UUID.randomUUID();
     Customer customer = new Customer("83.145.208.186");
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", orderId.toString(), customer);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setOrder(orderId.toString()).setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -1042,7 +1048,7 @@ public class PaymentAPIConnectionTest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer("83.145.208.186");
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", customer);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
