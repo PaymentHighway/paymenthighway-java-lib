@@ -15,6 +15,8 @@ public class CommitTransactionResponse extends Response {
   Customer customer;
   @JsonProperty("cardholder_authentication")
   String cardholderAuthentication;
+  @JsonProperty("filing_code")
+  private String filingCode;
 
   public UUID getCardToken() {
     return cardToken;
@@ -30,5 +32,9 @@ public class CommitTransactionResponse extends Response {
 
   public String getCardholderAuthentication() {
     return cardholderAuthentication;
+  }
+
+  public String getFilingCode() {
+    return filingCode;
   }
 }

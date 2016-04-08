@@ -1,9 +1,11 @@
 package io.paymenthighway.connect;
 
 import io.paymenthighway.PaymentHighwayUtility;
+import io.paymenthighway.model.Token;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.request.Customer;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.HttpPost;
@@ -15,6 +17,8 @@ import java.net.InetAddress;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
@@ -69,6 +73,57 @@ public class PaymentAPIConnectionTest {
    */
   @After
   public void tearDown() throws Exception {
+  }
+
+  private UUID createAndTestTransactionInit() {
+
+    InitTransactionResponse response = null;
+    try {
+      response = conn.initTransactionHandle();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(response);
+    assertEquals("Transaction init should succeed", "100", response.getResult().getCode());
+    assertEquals("Transaction init should succeed", "OK", response.getResult().getMessage());
+
+    assertNotNull("Transaction init should return id", response.getId());
+
+    return response.getId();
+  }
+
+  private TokenizationResponse createAndTestTokenizationId(String cardNumber, String expirationMonth, String expirationYear, String cvc) {
+    String formUri = FormAPIConnectionTest.createAndTestAddCardForm(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
+
+    String query = FormAPIConnectionTest.postCardFormAndReturnLastQueryString(serviceUrl, formUri, cardNumber, expirationMonth, expirationYear, cvc);
+
+    Matcher matcher = Pattern.compile("(?<=sph-tokenization-id=).{36}").matcher(query);
+    assertTrue(matcher.find());
+    UUID tokenizationId = UUID.fromString(matcher.group());
+
+    TokenizationResponse tokenResponse = null;
+    try {
+      tokenResponse = conn.tokenization(tokenizationId);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    assertNotNull(tokenResponse);
+    assertEquals(
+        expirationYear,
+        tokenResponse.getCard().getExpireYear()
+    );
+    assertEquals(
+        cardNumber.substring(0, 6),
+        tokenResponse.getCard().getBin()
+    );
+    assertEquals(
+        "attempted",
+        tokenResponse.getCardholderAuthentication()
+    );
+    assertNotNull(tokenResponse.getCustomer());
+
+    return tokenResponse;
   }
 
   @Test
@@ -160,18 +215,7 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testDebitTransaction1() {
 
-    InitTransactionResponse response = null;
-    try {
-      response = conn.initTransactionHandle();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    assertNotNull(response);
-    assertEquals("100", response.getResult().getCode());
-    assertEquals("OK", response.getResult().getMessage());
-
-    UUID transactionId = response.getId();
+    UUID transactionId = createAndTestTransactionInit();
 
     String pan = "4153013999700024";
     String cvc = "024";
@@ -179,20 +223,26 @@ public class PaymentAPIConnectionTest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
+    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
-      transactionResponse = conn.debitTransaction(transactionId,
-          transaction);
+      transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
       e.printStackTrace();
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
-
+    assertEquals(
+        "OK",
+        transactionResponse.getResult().getMessage()
+    );
+    assertEquals(
+        "100",
+        transactionResponse.getResult().getCode()
+    );
+    assertNotNull(transactionResponse.getFilingCode());
+    assertTrue(transactionResponse.getFilingCode().length() == 12);
   }
 
   /**
@@ -201,18 +251,7 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testDebitTransaction2() {
 
-    InitTransactionResponse response = null;
-    try {
-      response = conn.initTransactionHandle();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    assertNotNull(response);
-    assertEquals("100", response.getResult().getCode());
-    assertEquals("OK", response.getResult().getMessage());
-
-    UUID transactionId = response.getId();
+    UUID transactionId = createAndTestTransactionInit();
 
     String pan = "4153013999700156";
     String cvc = "156";
@@ -220,7 +259,7 @@ public class PaymentAPIConnectionTest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "99900", "EUR", true);
+    TransactionRequest transaction = new TransactionRequest.Builder(card, 99900, "EUR").build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -241,18 +280,7 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testDebitTransaction3() {
 
-    InitTransactionResponse response = null;
-    try {
-      response = conn.initTransactionHandle();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    assertNotNull(response);
-    assertEquals("100", response.getResult().getCode());
-    assertEquals("OK", response.getResult().getMessage());
-
-    UUID transactionId = response.getId();
+    UUID transactionId = createAndTestTransactionInit();
 
     String pan = "4153013999700289";
     String cvc = "289";
@@ -260,7 +288,7 @@ public class PaymentAPIConnectionTest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "99900", "EUR", true);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 99900, "EUR").build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -279,18 +307,7 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testDebitTransaction4() {
 
-    InitTransactionResponse response = null;
-    try {
-      response = conn.initTransactionHandle();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    assertNotNull(response);
-    assertEquals("100", response.getResult().getCode());
-    assertEquals("OK", response.getResult().getMessage());
-
-    UUID transactionId = response.getId();
+    UUID transactionId = createAndTestTransactionInit();
 
     String pan = "4153013999700024";
     String cvc = "024";
@@ -299,7 +316,7 @@ public class PaymentAPIConnectionTest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer(InetAddress.getLoopbackAddress().getHostAddress());
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", customer);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -315,6 +332,119 @@ public class PaymentAPIConnectionTest {
 
   }
 
+  /**
+   * This will test successful tokenization payment without auto commit
+   */
+  @Test
+  public void testDebitTransaction5() {
+
+    TokenizationResponse tokenResponse = createAndTestTokenizationId("4153013999700024", "11", "2017", "024");
+
+    assertEquals(tokenResponse.getCard().getCvcRequired(), "no");
+    assertEquals(tokenResponse.getCard().getFunding(), "debit");
+    assertEquals(tokenResponse.getCard().getCategory(), "unknown");
+
+    UUID transactionId = createAndTestTransactionInit();
+
+    TransactionRequest transaction = new TransactionRequest.Builder(new Token(tokenResponse.getCardToken()), 9999, "EUR")
+        .setOrder("PIPPURI")
+        .setCommit(false)
+        .build();
+
+    TransactionResponse transactionResponse = null;
+    try {
+      transactionResponse = conn.debitTransaction(transactionId, transaction);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(transactionResponse);
+    assertEquals(transactionResponse.getResult().getMessage(), "OK");
+    assertEquals(transactionResponse.getResult().getCode(), "100");
+
+    // status response test
+    TransactionStatusResponse statusResponse = null;
+
+    try {
+      statusResponse = conn.transactionStatus(transactionId);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    // test result
+    assertNotNull(statusResponse);
+    assertEquals(statusResponse.getResult().getMessage(), "OK");
+    assertEquals(statusResponse.getResult().getCode(), "100");
+    assertNotNull(statusResponse.getTransaction());
+    assertNotNull(statusResponse.getTransaction().getStatus());
+    assertEquals(
+        "4100",
+        statusResponse.getTransaction().getStatus().getCode()
+    );
+    assertEquals(
+        "ok_pending",
+        statusResponse.getTransaction().getStatus().getState()
+    );
+    assertEquals(statusResponse.getTransaction().getCurrentAmount(), "9999");
+    assertEquals(statusResponse.getTransaction().getId(), transactionId);
+    assertEquals(statusResponse.getTransaction().getCard().getCvcRequired(), "no");
+  }
+
+  /**
+   * This will test successful tokenization payment without auto commit and using token that requires cvc
+   */
+  @Test
+  public void testDebitTransaction6() {
+
+    TokenizationResponse tokenResponse = createAndTestTokenizationId("4324643990016048", "11", "2017", "048");
+
+    assertEquals("yes", tokenResponse.getCard().getCvcRequired());
+    assertEquals("unknown", tokenResponse.getCard().getFunding());
+    assertEquals("unknown", tokenResponse.getCard().getCategory());
+
+    UUID transactionId = createAndTestTransactionInit();
+
+    TransactionRequest transaction = TransactionRequest.Builder(new Token(tokenResponse.getCardToken(), "048"), 9999, "EUR")
+        .setOrder("PIPPURI")
+        .setCommit(false)
+        .build();
+
+    TransactionResponse transactionResponse = null;
+    try {
+      transactionResponse = conn.debitTransaction(transactionId, transaction);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(transactionResponse);
+    assertEquals(transactionResponse.getResult().getMessage(), "OK");
+    assertEquals(transactionResponse.getResult().getCode(), "100");
+
+    // status response test
+    TransactionStatusResponse statusResponse = null;
+
+    try {
+      statusResponse = conn.transactionStatus(transactionId);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    // test result
+    assertNotNull(statusResponse);
+    assertEquals(statusResponse.getResult().getMessage(), "OK");
+    assertEquals(statusResponse.getResult().getCode(), "100");
+    assertNotNull(statusResponse.getTransaction());
+    assertNotNull(statusResponse.getTransaction().getStatus());
+    assertEquals(
+        "4100",
+        statusResponse.getTransaction().getStatus().getCode()
+    );
+    assertEquals(
+        "ok_pending",
+        statusResponse.getTransaction().getStatus().getState()
+    );
+    assertEquals(statusResponse.getTransaction().getCurrentAmount(), "9999");
+    assertEquals(statusResponse.getTransaction().getId(), transactionId);
+    assertEquals(statusResponse.getTransaction().getCard().getCvcRequired(), "yes");
+  }
 
   /**
    * This will test successful credit transaction NOTE: NOT YET IMPLEMENTED
@@ -353,7 +483,7 @@ public class PaymentAPIConnectionTest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
+    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
     TransactionResponse transactionResponse = null;
     try {
@@ -469,7 +599,7 @@ public class PaymentAPIConnectionTest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR", true);
+    TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR");
 
     TransactionResponse transactionResponse = null;
     try {
@@ -527,7 +657,7 @@ public class PaymentAPIConnectionTest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR", true);
+    TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR");
 
     TransactionResponse transactionResponse = null;
     try {
@@ -654,7 +784,7 @@ public class PaymentAPIConnectionTest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR", true);
+    TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR");
 
     TransactionResponse transactionResponse = null;
     try {
@@ -721,7 +851,7 @@ public class PaymentAPIConnectionTest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer("83.145.208.186");
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true, customer);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -788,7 +918,7 @@ public class PaymentAPIConnectionTest {
     Customer customer = new Customer("83.145.208.186");
     String orderId = "ABC123";
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true, orderId, customer);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setOrder(orderId).setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -855,7 +985,7 @@ public class PaymentAPIConnectionTest {
     UUID orderId = UUID.randomUUID();
     Customer customer = new Customer("83.145.208.186");
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true, orderId.toString(), customer);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setOrder(orderId.toString()).setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -918,7 +1048,7 @@ public class PaymentAPIConnectionTest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer("83.145.208.186");
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true, customer);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -953,6 +1083,8 @@ public class PaymentAPIConnectionTest {
     assertEquals(commitTransactionResponse.getCustomer().getNetworkAddress(), "83.145.208.186");
     assertEquals(commitTransactionResponse.getCustomer().getCountryCode(), "FI");
     assertEquals(commitTransactionResponse.getCardholderAuthentication(), "no");
+    assertNotNull(commitTransactionResponse.getFilingCode());
+    assertTrue(commitTransactionResponse.getFilingCode().length() == 12);
   }
 
   /**
@@ -961,16 +1093,6 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testTokenization1() {
 
-    InitTransactionResponse response = null;
-    try {
-      response = conn.initTransactionHandle();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    assertNotNull(response);
-    assertEquals("100", response.getResult().getCode());
-    assertEquals("OK", response.getResult().getMessage());
     // TODO: fetch this from Form API get parameters
     UUID tokenizationId = UUID.fromString("08cc223a-cf93-437c-97a2-f338eaf0d860");
 
@@ -999,16 +1121,6 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testTokenization2() {
 
-    InitTransactionResponse response = null;
-    try {
-      response = conn.initTransactionHandle();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    assertNotNull(response);
-    assertEquals("100", response.getResult().getCode());
-    assertEquals("OK", response.getResult().getMessage());
     // TODO: fetch this from Form API get parameters
     UUID tokenizationId = UUID.fromString("475d49ec-2c37-4ae5-a6ef-33dc6b60ac71");
 
@@ -1027,7 +1139,7 @@ public class PaymentAPIConnectionTest {
     assertEquals(tokenResponse.getCard().getCategory(), "unknown");
     assertEquals(tokenResponse.getCard().getCountryCode(), "FI");
     // Customer information from the time the tokenizationId was generated through the Form API add_card request
-    assertEquals(tokenResponse.getCustomer().getNetworkAddress(), "83.145.208.186");
+    assertEquals(tokenResponse.getCustomer().getNetworkAddress(), "83.145.208.185"); // Manually updated :/
     assertEquals(tokenResponse.getCustomer().getCountryCode(), "FI");
     assertEquals(tokenResponse.getCardholderAuthentication(), "no");
   }
