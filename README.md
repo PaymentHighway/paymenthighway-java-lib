@@ -45,7 +45,7 @@ Create an instance of the builder, then use the generate methods to receive a li
 
 Initializing the builder
 
-	String method = "POST";
+    String method = "POST";
     String signatureKeyId = "testKey";
     String signatureSecret = "testSecret";
     String account = "test";
@@ -79,13 +79,21 @@ Example generateAddCardParameters
 
 Example generatePaymentParameters 
 
-	String amount = "1990";
+    String amount = "1990";
     String currency = "EUR";
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
 
-    FormContainer formContainer = formBuilder.generatePaymentParameters(successUrl, failureUrl, cancelUrl, language,
-        amount, currency, orderId, description);
+    FormContainer formContainer = formBuilder.generatePaymentParameters(
+      successUrl,
+      failureUrl,
+      cancelUrl,
+      language,
+      amount,
+      currency,
+      orderId,
+      description
+    );
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
@@ -101,13 +109,21 @@ Example generatePaymentParameters
         	
 Example generateGetAddCardAndPaymentParameters
 
-	String amount = "1990";
+    String amount = "1990";
     String currency = "EUR";
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
 
-    FormContainer formContainer = formBuilder.generateAddCardAndPaymentParameters(successUrl, failureUrl, cancelUrl, 
-        language, amount, currency, orderId, description);
+    FormContainer formContainer = formBuilder.generateAddCardAndPaymentParameters(
+      successUrl,
+      failureUrl,
+      cancelUrl,
+      language,
+      amount,
+      currency,
+      orderId,
+      description
+    );
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
@@ -144,7 +160,7 @@ In order to be sure that a tokenized card is valid and is able to process paymen
 
 Initializing the Payment API
 
-	String serviceUrl = "https://v1-hub-staging.sph-test-solinor.com";
+    String serviceUrl = "https://v1-hub-staging.sph-test-solinor.com";
     String signatureKeyId = "testKey";
     String signatureSecret = "testSecret";
     String account = "test";
@@ -156,7 +172,7 @@ Initializing the Payment API
         
 Example Commit Form Transaction
 
-	String transactionId = ""; // get sph-transaction-id as a GET parameter
+    String transactionId = ""; // get sph-transaction-id as a GET parameter
     String amount = "1999";
     String currency = "EUR";
     CommitTransactionResponse response = paymentAPI.commitTransaction(transactionId, amount, currency);
@@ -171,10 +187,12 @@ Example Tokenize (get the actual card token by using token id)
 			
 Example Debit with Token
 
-	Token token = new Token("id");
-	TransactionRequest transaction = new TransactionRequest(token, "amount", "currency");
-	TransactionResponse response = paymentAPI.debitTransaction("transactionId", transaction);
-		
+    Token token = new Token("id");
+    long amount = 1095;
+    String currency = "EUR";
+    TransactionRequest transaction = new TransactionRequest.Builder(token, amount, currency).build();
+    TransactionResponse response = paymentAPI.debitTransaction("transactionId", transaction);
+
 Example Revert
 
 	TransactionResponse response = paymentAPI.revertTransaction("transactionId", "amount");
