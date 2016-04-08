@@ -28,7 +28,7 @@ public class ReportResponseTest {
     String json = "{\"settlements\":[{\"id\":\"11d22268-cc71-4894-bf41-e13a9039c327\",\"batch\":\"000016\",\"timestamp\":\"2015-03-20T22:00:09Z\",\"merchant\":{\"id\":\"test_merchantId\",\"name\":\"Test user\"},\"transaction_count\":1,\"net_amount\":320,\"currency\":\"EUR\",\"acquirer\":{\"id\":\"nets\",\"name\":\"Nets\"},\"transactions\":[{\"id\":\"f9a48e02-4301-49ff-a4f1-65749435924a\",\"timestamp\":\"2015-03-20T13:09:36Z\",\"type\":\"debit\",\"partial_pan\":\"0024\",\"amount\":320,\"currency\":\"EUR\",\"filing_code\":\"150320000263\",\"status\":{\"state\":\"ok\",\"code\":4000},\"authorization_code\":\"894463\"}],\"status\":{\"state\":\"ok\",\"code\":4000},\"reference\":\"11503201000000162\"}],\"result\":{\"code\":100,\"message\":\"OK\"}}";
 
     JsonParser parser = new JsonParser();
-    ReportResponse response = parser.mapReportResponse(json);
+    ReportResponse response = parser.mapResponse(json, ReportResponse.class);
 
     assertEquals("100", response.getResult().getCode());
     assertEquals("OK", response.getResult().getMessage());
@@ -57,7 +57,7 @@ public class ReportResponseTest {
     String json = "{\"settlements\":[{\"id\":\"11d22268-cc71-4894-bf41-e13a9039c327\",\"batch\":\"000016\",\"timestamp\":\"2015-03-20T22:00:09Z\",\"merchant\":{\"id\":\"test_merchantId\",\"name\":\"Test user\"},\"transaction_count\":1,\"net_amount\":320,\"currency\":\"EUR\",\"acquirer\":{\"id\":\"nets\",\"name\":\"Nets\"},\"transactions\":[{\"id\":\"f9a48e02-4301-49ff-a4f1-65749435924a\",\"timestamp\":\"2015-03-20T13:09:36Z\",\"type\":\"debit\",\"partial_pan\":\"0024\",\"amount\":320,\"robustnesstest1\":true,\"robustnesstest2\":\"xxxxxx\",\"currency\":\"EUR\",\"filing_code\":\"150320000263\",\"status\":{\"state\":\"ok\",\"code\":4000},\"authorization_code\":\"894463\"}],\"status\":{\"state\":\"ok\",\"code\":4000},\"reference\":\"11503201000000162\"}],\"result\":{\"code\":100,\"message\":\"OK\"}}";
 
     JsonParser parser = new JsonParser();
-    ReportResponse response = parser.mapReportResponse(json);
+    ReportResponse response = parser.mapResponse(json, ReportResponse.class);;
 
     assertEquals("100", response.getResult().getCode());
     assertEquals("OK", response.getResult().getMessage());

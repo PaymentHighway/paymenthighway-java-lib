@@ -41,7 +41,7 @@ public class InitTransactionResponseTest {
   public void testInitTransactionResponse() {
     String json = "{\"id\":\"4b402052-c2fd-44cf-bf44-de4cbe7d2d18\",\"result\":{\"code\":100,\"message\":\"OK\"}}";
     JsonParser parser = new JsonParser();
-    InitTransactionResponse response = parser.mapInitTransactionResponse(json);
+    InitTransactionResponse response = parser.mapResponse(json, InitTransactionResponse.class);
 
     assertEquals("4b402052-c2fd-44cf-bf44-de4cbe7d2d18", response.getId().toString());
     assertEquals("100", response.getResult().getCode());
