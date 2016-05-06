@@ -13,7 +13,7 @@ public class TransactionRequest extends Request {
   private Card card = null;
   private String order = null;
   private Customer customer = null;
-  private boolean commit;
+  private Boolean commit;
 
   public TransactionRequest(Token token, String amount, String currency) {
     this.token = token;
@@ -142,7 +142,7 @@ public class TransactionRequest extends Request {
 
     private String order = null;
     private Customer customer = null;
-    private boolean commit;
+    private Boolean commit;
 
 
     public Builder(Token token, long amount, String currency) {
@@ -167,7 +167,7 @@ public class TransactionRequest extends Request {
       return this;
     }
 
-    public Builder setCommit(boolean commit) {
+    public Builder setCommit(Boolean commit) {
       this.commit = commit;
       return this;
     }
