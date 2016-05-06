@@ -330,6 +330,40 @@ public class PaymentAPIConnectionTest {
     assertEquals(transactionResponse.getResult().getMessage(), "OK");
     assertEquals(transactionResponse.getResult().getCode(), "100");
 
+    // status response test
+    TransactionStatusResponse statusResponse = null;
+
+    try {
+      statusResponse = conn.transactionStatus(transactionId);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    // test result
+    assertNotNull(statusResponse);
+    assertEquals(statusResponse.getResult().getMessage(), "OK");
+    assertEquals(statusResponse.getResult().getCode(), "100");
+    assertNotNull(statusResponse.getTransaction());
+    assertNotNull(statusResponse.getTransaction().getStatus());
+    assertEquals(
+        "4000",
+        statusResponse.getTransaction().getStatus().getCode()
+    );
+    assertEquals(
+        "ok",
+        statusResponse.getTransaction().getStatus().getState()
+    );
+    assertEquals(
+        "9999",
+        statusResponse.getTransaction().getCurrentAmount()
+    );
+    assertEquals(
+        transactionId,
+        statusResponse.getTransaction().getId()
+    );
+    assertEquals(
+        "not_tested",
+        statusResponse.getTransaction().getCard().getCvcRequired()
+    );
   }
 
   /**
