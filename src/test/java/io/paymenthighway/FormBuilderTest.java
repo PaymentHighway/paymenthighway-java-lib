@@ -180,6 +180,44 @@ public class FormBuilderTest {
     assertTrue(response.contains("Payment Highway"));
   }
 
+  @Test
+  public void testAddCardUse3ds() {
+
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "http://www.solinor.com";
+    String cancelUrl = "https://solinor.fi";
+    String language = "EN";
+    Boolean acceptCvcRequired = null;
+    Boolean skipFormNotifications = null;
+    Boolean exitIframeOnResult = null;
+    Boolean exitIframeOn3ds = null;
+    Boolean use3ds = false;
+
+    FormBuilder formBuilder = new FormBuilder(method,
+        this.signatureKeyId, this.signatureSecret, account, merchant,
+        this.serviceUrl);
+
+    FormContainer formContainer = formBuilder.generateAddCardParameters(successUrl, failureUrl, cancelUrl, language,
+        acceptCvcRequired, skipFormNotifications, exitIframeOnResult, exitIframeOn3ds, use3ds);
+
+    FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
+        this.signatureKeyId, this.signatureSecret);
+
+    String response = null;
+    try {
+      response = formApi.addCardRequest(formContainer.getFields());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+    assertTrue(response.contains("Payment Highway"));
+  }
+
   /**
    * Test with only the mandatory parameters.
    */
@@ -341,6 +379,46 @@ public class FormBuilderTest {
   }
 
   @Test
+  public void testGetPaymentFormWithUse3ds() {
+
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    String amount = "9999";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "http://www.solinor.com";
+    String cancelUrl = "https://solinor.fi";
+    String language = "EN";
+    String description = "this is payment description";
+    Boolean skipFormNotifications = null;
+    Boolean exitIframeOnResult = null;
+    Boolean exitIframeOn3ds = null;
+    Boolean use3ds = true;
+
+    FormBuilder formBuilder = new FormBuilder(method,
+        this.signatureKeyId, this.signatureSecret, account, merchant,
+        this.serviceUrl);
+
+    FormContainer formContainer = formBuilder.generatePaymentParameters(
+        successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description,
+        skipFormNotifications, exitIframeOnResult, exitIframeOn3ds, use3ds);
+
+    FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
+        this.signatureKeyId, this.signatureSecret);
+
+    String response = null;
+    try {
+      response = formApi.paymentRequest(formContainer.getFields());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
+
+  @Test
   public void testGetAddCardAndPaymentParameters() {
 
     String method = "POST";
@@ -462,6 +540,48 @@ public class FormBuilderTest {
     assertTrue(response.contains("card_number_formatted"));
   }
 
+  @Test
+  public void testGetAddCardAndPaymentWithUse3ds() {
+
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    String amount = "9999";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "http://www.solinor.com";
+    String cancelUrl = "https://solinor.fi";
+    String language = "EN";
+    String description = "this is payment description";
+    Boolean skipFormNotifications = true;
+    Boolean exitIframeOnResult = true;
+    Boolean exitIframeOn3ds = true;
+    Boolean use3ds = true;
+
+    // create the payment highway request parameters
+    FormBuilder formBuilder = new FormBuilder(method,
+        this.signatureKeyId, this.signatureSecret, account, merchant,
+        this.serviceUrl);
+
+    FormContainer formContainer = formBuilder.generateAddCardAndPaymentParameters(
+        successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description,
+        skipFormNotifications, exitIframeOnResult, exitIframeOn3ds, use3ds);
+
+    // test that Payment Highway accepts this as a request
+    FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
+        this.signatureKeyId, this.signatureSecret);
+
+    String response = null;
+    try {
+      response = formApi.addCardAndPayRequest(formContainer.getFields());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
+
   /**
    * Test without optional parameters.
    */
@@ -537,6 +657,49 @@ public class FormBuilderTest {
     // test that Payment Highway accepts this as a request
     FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
             this.signatureKeyId, this.signatureSecret);
+
+    String response = null;
+    try {
+      response = formApi.payWithTokenAndCvcRequest(formContainer.getFields());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
+
+  @Test
+  public void testGetPayWithTokenAndCvcWithUse3ds() {
+
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    String amount = "9999";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "http://www.solinor.com";
+    String cancelUrl = "https://solinor.fi";
+    String language = "EN";
+    String description = "this is payment description";
+    UUID token = UUID.fromString("71435029-fbb6-4506-aa86-8529efb640b0");
+    Boolean skipFormNotifications = false;
+    Boolean exitIframeOnResult = null;
+    Boolean exitIframeOn3ds = false;
+    Boolean use3ds = false;
+
+    // create the payment highway request parameters
+    FormBuilder formBuilder = new FormBuilder(method,
+        this.signatureKeyId, this.signatureSecret, account, merchant,
+        this.serviceUrl);
+
+    FormContainer formContainer = formBuilder.generatePayWithTokenAndCvcParameters(
+        token, successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description,
+        skipFormNotifications, exitIframeOnResult, exitIframeOn3ds, use3ds);
+
+    // test that Payment Highway accepts this as a request
+    FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
+        this.signatureKeyId, this.signatureSecret);
 
     String response = null;
     try {
