@@ -121,8 +121,12 @@ public class PaymentAPI implements Closeable {
 
   /**
    * Payment Highway Transaction Commit Request
+   * Used to commit (capture) the transaction.
+   * In order to find out the result of the transaction without committing it, use Transaction Result request instead.
    *
    * @param transactionId
+   * @param amount The amount to commit, must be less or equal than the initial transaction amount
+   * @param currency The original transaction currency
    * @return CommitTransactionResponse
    * @throws HttpResponseException
    * @throws AuthenticationException
@@ -133,6 +137,21 @@ public class PaymentAPI implements Closeable {
     CommitTransactionRequest commitRequest = new CommitTransactionRequest(amount, currency);
 
     return paymentApi.commitTransaction(transactionId, commitRequest);
+  }
+
+  /**
+   * Payment Highway Transaction Result Request
+   * Used to find out whether or not an uncommitted transaction succeeded, without actually committing (capturing) it.
+   *
+   * @param transactionId
+   * @return TransactionResultResponse
+   * @throws HttpResponseException
+   * @throws AuthenticationException
+   * @throws IOException
+   */
+  public TransactionResultResponse transactionResult(UUID transactionId) throws IOException {
+
+    return paymentApi.transactionResult(transactionId);
   }
 
   /**

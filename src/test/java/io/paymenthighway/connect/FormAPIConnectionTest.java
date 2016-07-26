@@ -177,7 +177,7 @@ public class FormAPIConnectionTest {
     }
     // test that response is from success url
     assertNotNull(submitResponse);
-    assertTrue(submitResponse.contains("Payment Highway"));
+    assertTrue(submitResponse.contains("paymenthighway"));
 
     List<URI> redirectURIs = context.getRedirectLocations();
     assertEquals(2, redirectURIs.size());

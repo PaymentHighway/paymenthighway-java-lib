@@ -33,6 +33,10 @@ public class TransactionStatus {
   @JsonProperty("cardholder_authentication")
   String cardholderAuthentication;
   String order;
+  @JsonProperty("committed")
+  private Boolean committed;
+  @JsonProperty("committed_amount")
+  private String committedAmount;
 
   public UUID getId() {
     return id;
@@ -100,5 +104,16 @@ public class TransactionStatus {
 
   public String getOrder() {
     return order;
+  }
+
+  public Boolean getCommitted() {
+    return committed;
+  }
+
+  /**
+   * @return The committed amount or null if transaction not committed
+   */
+  public String getCommittedAmount() {
+    return committedAmount;
   }
 }
