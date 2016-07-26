@@ -36,6 +36,9 @@ public class PaymentAPIConnectionTest {
 
   private static PaymentAPIConnection conn;
 
+  private static final String RESULT_CODE_AUTHORIZATION_FAILED = "200";
+  private static final String RESULT_CODE_UNMATCHED_REQUEST_PARAMETERS = "920";
+
   /**
    * @throws java.lang.Exception
    */
@@ -124,6 +127,57 @@ public class PaymentAPIConnectionTest {
     assertNotNull(tokenResponse.getCustomer());
 
     return tokenResponse;
+  }
+
+  private Card testCardOkWithCvc = new Card("4153013999700024", "2017", "11", "024");
+  private Card testCardTokenizeOkPaymentFails = new Card("4153013999700156", "2017", "11", "156");
+
+  private void isSuccessfulCommitOrResultResponse(AbstractTransactionOutcomeResponse response) {
+    assertNotNull(response);
+    // Does not return card token when not paying with tokenized card
+    //assertNotNull(commitTransactionResponse.getCardToken());
+    assertTrue(response.getCard().getType().equalsIgnoreCase("visa"));
+    assertEquals(response.getCard().getCvcRequired(), "not_tested");
+    assertEquals(response.getCard().getBin(), testCardOkWithCvc.getPan().substring(0,6));
+    assertEquals(response.getCard().getFunding(), "debit");
+    assertEquals(response.getCard().getCategory(), "unknown");
+    assertEquals(response.getCard().getCountryCode(), "FI");
+    assertEquals(response.getCustomer().getNetworkAddress(), "83.145.208.186");
+    assertEquals(response.getCustomer().getCountryCode(), "FI");
+    assertEquals(response.getCardholderAuthentication(), "no");
+    assertNotNull(response.getFilingCode());
+    assertTrue(response.getFilingCode().length() == 12);
+  }
+
+  private UUID initAndDebitTransaction(Card card, Long amount, Boolean commit) {
+
+    UUID transactionId = createAndTestTransactionInit();
+
+    Customer customer = new Customer("83.145.208.186");
+
+    TransactionRequest transaction = TransactionRequest.Builder(card, amount, "EUR")
+        .setCustomer(customer)
+        .setCommit(commit)
+        .build();
+
+    TransactionResponse transactionResponse = null;
+    try {
+      transactionResponse = conn.debitTransaction(transactionId, transaction);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(transactionResponse);
+    assertEquals(transactionResponse.getResult().getMessage(), "OK");
+    assertEquals(transactionResponse.getResult().getCode(), "100");
+
+    return transactionId;
+  }
+
+  private void assertCommitted(AbstractTransactionOutcomeResponse response, Boolean isCommitted, String committedAmount) {
+    assertNotNull(response.getCommitted());
+    assertEquals(isCommitted, response.getCommitted());
+    assertEquals(committedAmount, response.getCommittedAmount());
   }
 
   @Test
@@ -245,21 +299,9 @@ public class PaymentAPIConnectionTest {
     assertTrue(transactionResponse.getFilingCode().length() == 12);
   }
 
-  /**
-   * No limit available in the test bank account
-   */
-  @Test
-  public void testDebitTransaction2() {
+  private void performAndTestRejectedDebitRequest(UUID transactionId, Long amount) {
 
-    UUID transactionId = createAndTestTransactionInit();
-
-    String pan = "4153013999700156";
-    String cvc = "156";
-    String expiryYear = "2017";
-    String expiryMonth = "11";
-    Card card = new Card(pan, expiryYear, expiryMonth, cvc);
-
-    TransactionRequest transaction = new TransactionRequest.Builder(card, 99900, "EUR").build();
+    TransactionRequest transaction = new TransactionRequest.Builder(testCardTokenizeOkPaymentFails, amount, "EUR").build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -272,6 +314,42 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals(transactionResponse.getResult().getMessage(), "Authorization failed");
     assertEquals(transactionResponse.getResult().getCode(), "200");
+  }
+
+  private CommitTransactionResponse commitTransaction(UUID transactionId, String amount, String currency) {
+    CommitTransactionRequest commitTransaction = new CommitTransactionRequest(amount, currency);
+
+    CommitTransactionResponse commitTransactionResponse = null;
+    try {
+      commitTransactionResponse = conn.commitTransaction(transactionId, commitTransaction);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return commitTransactionResponse;
+  }
+
+  private TransactionResultResponse transactionResult(UUID transactionId) {
+
+    TransactionResultResponse transactionResultResponse = null;
+    try {
+      transactionResultResponse = conn.transactionResult(transactionId);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return transactionResultResponse;
+  }
+
+  /**
+   * No limit available in the test bank account
+   */
+  @Test
+  public void testDebitTransaction2() {
+
+    UUID transactionId = createAndTestTransactionInit();
+
+    performAndTestRejectedDebitRequest(transactionId, 9999L);
   }
 
   /**
@@ -920,10 +998,12 @@ public class PaymentAPIConnectionTest {
     assertEquals(statusResponse.getTransaction().getCustomer().getNetworkAddress(), "83.145.208.186");
     assertEquals(statusResponse.getTransaction().getCustomer().getCountryCode(), "FI");
     assertEquals(statusResponse.getTransaction().getCardholderAuthentication(), "no");
+    assertEquals(true, statusResponse.getTransaction().getCommitted());
+    assertEquals("9999", statusResponse.getTransaction().getCommittedAmount());
   }
 
   /**
-   * This will test successful transaction status request with the option "order" parameter
+   * This will test successful transaction status request with the option "order" parameter and no auto-commit
    * <p/>
    * 1. create transaction handle 2. create a debit transaction 3. request a
    * transaction status
@@ -952,7 +1032,7 @@ public class PaymentAPIConnectionTest {
     Customer customer = new Customer("83.145.208.186");
     String orderId = "ABC123";
 
-    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setOrder(orderId).setCustomer(customer).build();
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setOrder(orderId).setCommit(false).setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -988,6 +1068,9 @@ public class PaymentAPIConnectionTest {
     assertEquals(statusResponse.getTransaction().getCustomer().getCountryCode(), "FI");
     assertEquals(statusResponse.getTransaction().getCardholderAuthentication(), "no");
     assertEquals(statusResponse.getTransaction().getOrder(), orderId);
+    assertEquals(statusResponse.getTransaction().getCommitted(), false);
+    assertEquals(statusResponse.getTransaction().getCommittedAmount(), null);
+
   }
 
   /**
@@ -1054,6 +1137,8 @@ public class PaymentAPIConnectionTest {
     assertEquals(orderSearchResponse.getTransactions()[0].getCustomer().getNetworkAddress(), "83.145.208.186");
     assertEquals(orderSearchResponse.getTransactions()[0].getCustomer().getCountryCode(), "FI");
     assertEquals(orderSearchResponse.getTransactions()[0].getCardholderAuthentication(), "no");
+    assertEquals(true, orderSearchResponse.getTransactions()[0].getCommitted());
+    assertEquals("9999", orderSearchResponse.getTransactions()[0].getCommittedAmount());
   }
 
   /**
@@ -1062,63 +1147,87 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testCommitTransaction1() {
 
-    InitTransactionResponse response = null;
-    try {
-      response = conn.initTransactionHandle();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    UUID transactionId = initAndDebitTransaction(testCardOkWithCvc, 9999L, false);
 
-    assertNotNull(response);
-    assertEquals("100", response.getResult().getCode());
-    assertEquals("OK", response.getResult().getMessage());
+    CommitTransactionResponse commitTransactionResponse = commitTransaction(transactionId, "9999", "EUR");
+    isSuccessfulCommitOrResultResponse(commitTransactionResponse);
+    assertCommitted(commitTransactionResponse, true, "9999");
+  }
 
-    UUID transactionId = response.getId();
+  @Test
+  public void testCommitTransactionWithLessThanTotalAmount() {
 
-    String pan = "4153013999700024";
-    String cvc = "024";
-    String expiryYear = "2017";
-    String expiryMonth = "11";
-    Card card = new Card(pan, expiryYear, expiryMonth, cvc);
-    Customer customer = new Customer("83.145.208.186");
+    UUID transactionId = initAndDebitTransaction(testCardOkWithCvc, 9999L, false);
 
-    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setCustomer(customer).build();
+    CommitTransactionResponse commitTransactionResponse = commitTransaction(transactionId, "5000", "EUR");
+    isSuccessfulCommitOrResultResponse(commitTransactionResponse);
+    assertCommitted(commitTransactionResponse, true, "5000");
+  }
 
-    TransactionResponse transactionResponse = null;
-    try {
-      transactionResponse = conn.debitTransaction(transactionId, transaction);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+  @Test
+  public void testCommitTransactionRejectedWithAmountGreaterThanPayment() {
 
-    assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    UUID transactionId = initAndDebitTransaction(testCardOkWithCvc, 9999L, false);
 
-    CommitTransactionRequest commitTransaction = new CommitTransactionRequest("9999", "EUR", true);
+    CommitTransactionResponse commitTransactionResponse = commitTransaction(transactionId, "10000", "EUR");
+    assertEquals(RESULT_CODE_UNMATCHED_REQUEST_PARAMETERS, commitTransactionResponse.getResult().getCode());
+  }
 
-    CommitTransactionResponse commitTransactionResponse = null;
-    try {
-      commitTransactionResponse = conn.commitTransaction(transactionId, commitTransaction);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+  @Test
+  public void testCommitTransactionTwiceWithSameValuesSucceeds() {
 
-    assertNotNull(commitTransactionResponse);
-    //TODO: Should return a token, but the test card does not for some reason
-    //assertNotNull(commitTransactionResponse.getCardToken());
-    assertTrue(commitTransactionResponse.getCard().getType().equalsIgnoreCase("visa"));
-    //TODO: Should return "no" for the test card, but for some reason returns "not_tested"
-    assertEquals(commitTransactionResponse.getCard().getCvcRequired(), "not_tested");
-    assertEquals(commitTransactionResponse.getCard().getBin(), "415301");
-    assertEquals(commitTransactionResponse.getCard().getFunding(), "debit");
-    assertEquals(commitTransactionResponse.getCard().getCategory(), "unknown");
-    assertEquals(commitTransactionResponse.getCard().getCountryCode(), "FI");
-    assertEquals(commitTransactionResponse.getCustomer().getNetworkAddress(), "83.145.208.186");
-    assertEquals(commitTransactionResponse.getCustomer().getCountryCode(), "FI");
-    assertEquals(commitTransactionResponse.getCardholderAuthentication(), "no");
-    assertNotNull(commitTransactionResponse.getFilingCode());
-    assertTrue(commitTransactionResponse.getFilingCode().length() == 12);
+    UUID transactionId = initAndDebitTransaction(testCardOkWithCvc, 9999L, false);
+
+    CommitTransactionResponse commitTransactionResponse = commitTransaction(transactionId, "9999", "EUR");
+    isSuccessfulCommitOrResultResponse(commitTransactionResponse);
+    assertCommitted(commitTransactionResponse, true, "9999");
+
+    CommitTransactionResponse commitTransactionResponse2 = commitTransaction(transactionId, "9999", "EUR");
+    isSuccessfulCommitOrResultResponse(commitTransactionResponse2);
+    assertCommitted(commitTransactionResponse2, true, "9999");
+  }
+
+  @Test
+  public void testCommitTransactionTwiceWithDifferentValueDoesNotChangeTheInitialCommittedValue() {
+
+    UUID transactionId = initAndDebitTransaction(testCardOkWithCvc, 9999L, false);
+
+    CommitTransactionResponse commitTransactionResponse = commitTransaction(transactionId, "9999", "EUR");
+    isSuccessfulCommitOrResultResponse(commitTransactionResponse);
+    assertCommitted(commitTransactionResponse, true, "9999");
+
+    CommitTransactionResponse commitTransactionResponse2 = commitTransaction(transactionId, "5000", "EUR");
+    isSuccessfulCommitOrResultResponse(commitTransactionResponse2);
+    assertCommitted(commitTransactionResponse2, true, "9999");
+  }
+
+  @Test
+  public void testTransactionResultReturnsCommittedAndUncommittedValues() {
+
+    UUID transactionId = initAndDebitTransaction(testCardOkWithCvc, 9999L, false);
+
+    TransactionResultResponse transactionResultResponse1 = transactionResult(transactionId);
+    isSuccessfulCommitOrResultResponse(transactionResultResponse1);
+    assertCommitted(transactionResultResponse1, false, null);
+
+    CommitTransactionResponse commitTransactionResponse = commitTransaction(transactionId, "9999", "EUR");
+    isSuccessfulCommitOrResultResponse(commitTransactionResponse);
+    assertCommitted(commitTransactionResponse, true, "9999");
+
+    TransactionResultResponse transactionResultResponse2 = transactionResult(transactionId);
+    isSuccessfulCommitOrResultResponse(transactionResultResponse2);
+    assertCommitted(transactionResultResponse2, true, "9999");
+  }
+
+  @Test
+  public void testTransactionResultReturnsFailureIfRejectedPayment() {
+    UUID transactionId = createAndTestTransactionInit();
+
+    performAndTestRejectedDebitRequest(transactionId, 9999L);
+
+    TransactionResultResponse transactionResultResponse = transactionResult(transactionId);
+
+    assertEquals(RESULT_CODE_AUTHORIZATION_FAILED, transactionResultResponse.getResult().getCode());
   }
 
   /**

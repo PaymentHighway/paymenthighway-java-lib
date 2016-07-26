@@ -53,6 +53,11 @@ public class JsonParser {
   }
 
   @Deprecated
+  public TransactionResultResponse mapTransactionResultResponse(String json) {
+    return mapResponse(json, TransactionResultResponse.class);
+  }
+
+  @Deprecated
   public TokenizationResponse mapTokenizationResponse(String json) {
     return mapResponse(json, TokenizationResponse.class);
   }

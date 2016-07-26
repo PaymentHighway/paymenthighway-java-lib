@@ -35,7 +35,7 @@ public class PaymentAPIConnection implements Closeable {
   private static final String USER_AGENT = "PaymentHighway Java Lib";
   private static final String METHOD_POST = "POST";
   private static final String METHOD_GET = "GET";
-  private static final String SPH_API_VERSION = "20160307";
+  private static final String SPH_API_VERSION = "20160630";
 
   private String serviceUrl = "";
   private String signatureKeyId = null;
@@ -123,6 +123,18 @@ public class PaymentAPIConnection implements Closeable {
 
     JsonParser jpar = new JsonParser();
     return jpar.mapResponse(response, CommitTransactionResponse.class);
+  }
+
+  public TransactionResultResponse transactionResult(UUID transactionId) throws IOException {
+
+    final String paymentUri = "/transaction/";
+    final String actionUri = "/result";
+    String transactionResultUrl = paymentUri + transactionId + actionUri;
+
+    String response = executeGet(transactionResultUrl, createNameValuePairs());
+
+    JsonParser jpar = new JsonParser();
+    return jpar.mapResponse(response, TransactionResultResponse.class);
   }
 
   public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
