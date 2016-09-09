@@ -47,33 +47,7 @@ public class FormAPIConnection {
    */
   public String addCardRequest(List<NameValuePair> nameValuePairs) throws IOException {
     final String formUri = "/form/view/add_card";
-
-    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
-
-      String signature = this.createSignature(METHOD_POST, formUri, nameValuePairs);
-      nameValuePairs.add(new BasicNameValuePair("signature", signature));
-
-      this.addHeaders(httpPost);
-
-      httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-      ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-        public String handleResponse(
-            final HttpResponse response) throws ClientProtocolException, IOException {
-          int status = response.getStatusLine().getStatusCode();
-          if (status >= 200 && status < 300) {
-            HttpEntity entity = response.getEntity();
-            return entity != null ? EntityUtils.toString(entity) : null;
-          } else {
-            throw new ClientProtocolException("Unexpected response status: " + status);
-          }
-        }
-
-      };
-      return httpclient.execute(httpPost, responseHandler);
-
-    }
+    return makeRequest(formUri, nameValuePairs);
   }
 
   /**
@@ -84,34 +58,7 @@ public class FormAPIConnection {
    */
   public String paymentRequest(List<NameValuePair> nameValuePairs) throws IOException {
     final String formPaymentUri = "/form/view/pay_with_card";
-
-    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
-
-      String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
-      nameValuePairs.add(new BasicNameValuePair("signature", signature));
-
-      this.addHeaders(httpPost);
-
-      httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-      ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-        public String handleResponse(
-            final HttpResponse response) throws IOException {
-          int status = response.getStatusLine().getStatusCode();
-          if (status >= 200 && status < 300) {
-            HttpEntity entity = response.getEntity();
-            return entity != null ? EntityUtils.toString(entity) : null;
-          } else {
-            throw new ClientProtocolException("Unexpected response status: " + status);
-          }
-        }
-
-      };
-      return httpclient.execute(httpPost, responseHandler);
-
-    }
+    return makeRequest(formPaymentUri, nameValuePairs);
   }
 
   /**
@@ -124,32 +71,7 @@ public class FormAPIConnection {
 
     final String formPaymentUri = "/form/view/add_and_pay_with_card";
 
-    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
-
-      String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
-      nameValuePairs.add(new BasicNameValuePair("signature", signature));
-
-      this.addHeaders(httpPost);
-
-      httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-      ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-        public String handleResponse(final HttpResponse response) throws IOException {
-          int status = response.getStatusLine().getStatusCode();
-          if (status >= 200 && status < 300) {
-            HttpEntity entity = response.getEntity();
-            return entity != null ? EntityUtils.toString(entity) : null;
-          } else {
-            throw new ClientProtocolException("Unexpected response status: " + status);
-          }
-        }
-
-      };
-      return httpclient.execute(httpPost, responseHandler);
-
-    }
+    return makeRequest(formPaymentUri, nameValuePairs);
   }
 
   /**
@@ -162,11 +84,21 @@ public class FormAPIConnection {
   public String payWithTokenAndCvcRequest(List<NameValuePair> nameValuePairs) throws IOException {
 
     final String formPaymentUri = "/form/view/pay_with_token_and_cvc";
+    return makeRequest(formPaymentUri, nameValuePairs);
+  }
 
+  /**
+   *
+   * @param formUri
+   * @param nameValuePairs
+   * @return
+   * @throws IOException
+   */
+  private String makeRequest(String formUri, List<NameValuePair> nameValuePairs) throws  IOException {
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      HttpPost httpPost = new HttpPost(this.serviceUrl + formPaymentUri);
+      HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
 
-      String signature = this.createSignature(METHOD_POST, formPaymentUri, nameValuePairs);
+      String signature = this.createSignature(METHOD_POST, formUri, nameValuePairs);
       nameValuePairs.add(new BasicNameValuePair("signature", signature));
 
       this.addHeaders(httpPost);
@@ -174,8 +106,8 @@ public class FormAPIConnection {
       httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
       ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-        public String handleResponse(final HttpResponse response) throws IOException {
+        public String handleResponse(
+                final HttpResponse response) throws ClientProtocolException, IOException {
           int status = response.getStatusLine().getStatusCode();
           if (status >= 200 && status < 300) {
             HttpEntity entity = response.getEntity();
