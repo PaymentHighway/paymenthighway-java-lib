@@ -137,7 +137,7 @@ Example generateGetAddCardAndPaymentParameters
         field.getValue();
     }
 
-Example generatePayWithMobilePayParameters
+Example MobilePay form payment
 
     String amount = "1990";
     String currency = "EUR";
@@ -167,6 +167,8 @@ Example generatePayWithMobilePayParameters
         field.getName();
         field.getValue();
     }
+
+_MobilePay payment is to be committed as any other Form Payment_
 
 Each method returns a FormContainer object which provides required hidden fields for the HTML form to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, which are included in the FormContainer fields.
 
