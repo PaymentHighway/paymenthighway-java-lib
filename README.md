@@ -129,7 +129,38 @@ Example generateGetAddCardAndPaymentParameters
     String httpMethod = formContainer.getMethod();
     String actionUrl = formContainer.getAction();
     List<NameValuePair> fields = formContainer.getFields();
-    
+
+    System.out.println("Initialized form with request-id: " + formContainer.getRequestId());
+
+    for (NameValuePair field : fields) {
+        field.getName();
+        field.getValue();
+    }
+
+Example generatePayWithMobilePayParameters
+
+    String amount = "1990";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String description = "A Box of Dreams. 19,90€";
+
+    FormContainer formContainer = formBuilder.generatePayWithMobilePayParameters(
+      successUrl,
+      failureUrl,
+      cancelUrl,
+      language,
+      amount,
+      currency,
+      orderId,
+      description,
+      null
+    );
+
+    // read form parameters
+    String httpMethod = formContainer.getMethod();
+    String actionUrl = formContainer.getAction();
+    List<NameValuePair> fields = formContainer.getFields();
+
     System.out.println("Initialized form with request-id: " + formContainer.getRequestId());
 
     for (NameValuePair field : fields) {
