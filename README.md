@@ -129,13 +129,46 @@ Example generateGetAddCardAndPaymentParameters
     String httpMethod = formContainer.getMethod();
     String actionUrl = formContainer.getAction();
     List<NameValuePair> fields = formContainer.getFields();
-    
+
     System.out.println("Initialized form with request-id: " + formContainer.getRequestId());
 
     for (NameValuePair field : fields) {
         field.getName();
         field.getValue();
     }
+
+Example MobilePay form payment
+
+    String amount = "1990";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String description = "A Box of Dreams. 19,90€";
+
+    FormContainer formContainer = formBuilder.generatePayWithMobilePayParameters(
+      successUrl,
+      failureUrl,
+      cancelUrl,
+      language,
+      amount,
+      currency,
+      orderId,
+      description,
+      null
+    );
+
+    // read form parameters
+    String httpMethod = formContainer.getMethod();
+    String actionUrl = formContainer.getAction();
+    List<NameValuePair> fields = formContainer.getFields();
+
+    System.out.println("Initialized form with request-id: " + formContainer.getRequestId());
+
+    for (NameValuePair field : fields) {
+        field.getName();
+        field.getValue();
+    }
+
+_MobilePay payment is to be committed as any other Form Payment_
 
 Each method returns a FormContainer object which provides required hidden fields for the HTML form to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, which are included in the FormContainer fields.
 

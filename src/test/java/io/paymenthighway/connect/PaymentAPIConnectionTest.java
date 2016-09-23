@@ -39,9 +39,6 @@ public class PaymentAPIConnectionTest {
   private static final String RESULT_CODE_AUTHORIZATION_FAILED = "200";
   private static final String RESULT_CODE_UNMATCHED_REQUEST_PARAMETERS = "920";
 
-  /**
-   * @throws java.lang.Exception
-   */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
     Properties p = PaymentHighwayUtility.getProperties();
@@ -54,9 +51,6 @@ public class PaymentAPIConnectionTest {
     conn = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @AfterClass
   public static void tearDownAfterClass() throws Exception {
     if (conn != null) {
@@ -64,16 +58,10 @@ public class PaymentAPIConnectionTest {
     }
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @Before
   public void setUp() throws Exception {
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @After
   public void tearDown() throws Exception {
   }

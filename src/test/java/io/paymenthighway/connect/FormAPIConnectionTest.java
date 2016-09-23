@@ -39,23 +39,14 @@ public class FormAPIConnectionTest {
   private String signatureKeyId = null;
   private String signatureSecret = null;
 
-  /**
-   * @throws java.lang.Exception
-   */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @AfterClass
   public static void tearDownAfterClass() throws Exception {
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @Before
   public void setUp() throws Exception {
     Properties p = PaymentHighwayUtility.getProperties();
@@ -65,9 +56,6 @@ public class FormAPIConnectionTest {
 
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @After
   public void tearDown() throws Exception {
   }
@@ -157,20 +145,7 @@ public class FormAPIConnectionTest {
       CloseableHttpClient httpclient = HttpClients.createDefault();
       context = HttpClientContext.create();
 
-      // Create a custom response handler
-      ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-
-        public String handleResponse(final HttpResponse response) throws IOException {
-          int status = response.getStatusLine().getStatusCode();
-          if (status >= 200 && status < 300) {
-            HttpEntity entity = response.getEntity();
-            return entity != null ? EntityUtils.toString(entity) : null;
-          } else {
-            throw new ClientProtocolException("Unexpected response status: " + status);
-          }
-        }
-      };
-      submitResponse = httpclient.execute(httpPost, responseHandler, context);
+      submitResponse = httpclient.execute(httpPost, FormAPIConnection.bodyResponseHandler(), context);
       httpclient.close();
     } catch (IOException e) {
       e.printStackTrace();
