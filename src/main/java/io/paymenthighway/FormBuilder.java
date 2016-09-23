@@ -40,20 +40,26 @@ public class FormBuilder {
 
   private String method = METHOD_POST;
   private String baseUrl = null;
-  private String signatureKeyId = null;
-  private String signatureSecret = null;
   private String account = null;
   private String merchant = null;
+
+  private SecureSigner ss = null;
+
+  private Boolean acceptCvcRequired = null;
+  private Boolean skipFormNotifications = null;
+  private Boolean exitIframeOnResult = null;
+  private Boolean exitIframeOn3ds = null;
+  private Boolean use3ds = null;
 
   public FormBuilder(String method, String signatureKeyId,
                      String signatureSecret, String account, String merchant,
                      String baseUrl) {
     this.method = method;
-    this.signatureKeyId = signatureKeyId;
-    this.signatureSecret = signatureSecret;
     this.account = account;
     this.merchant = merchant;
     this.baseUrl = baseUrl;
+
+    this.ss = new SecureSigner(signatureKeyId, signatureSecret);
   }
 
   /**
@@ -65,12 +71,26 @@ public class FormBuilder {
    * @param language The language the form is displayed in.
    * @return FormContainer
    */
-  public FormContainer generateAddCardParameters(String successUrl, String failureUrl,
-                                                 String cancelUrl, String language) {
+  public FormContainer generateAddCardParameters(String successUrl, String failureUrl, String cancelUrl, String language) {
 
     String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl, cancelUrl, language, requestId);
+
+    if (this.acceptCvcRequired != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
+    }
+    if (this.skipFormNotifications != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+    }
+    if (this.exitIframeOnResult != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+    }
+    if (this.exitIframeOn3ds != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+    }
+    if (this.use3ds != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
+    }
 
     String addCardUri = "/form/view/add_card";
     String signature = this.createSignature(addCardUri, nameValuePairs);
@@ -90,21 +110,18 @@ public class FormBuilder {
    * @param acceptCvcRequired Accept a payment card token even if the card requires CVC for payments.
    * @return FormContainer
    */
-  public FormContainer generateAddCardParameters(String successUrl, String failureUrl,
-                                                 String cancelUrl, String language, Boolean acceptCvcRequired) {
+  @Deprecated
+  public FormContainer generateAddCardParameters(
+      String successUrl,
+      String failureUrl,
+      String cancelUrl,
+      String language,
+      Boolean acceptCvcRequired
+  ) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+    this.setAcceptCvcRequired(acceptCvcRequired);
 
-    nameValuePairs.add(new BasicNameValuePair(SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
-
-    String addCardUri = "/form/view/add_card";
-    String signature = this.createSignature(addCardUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
-
-    return new FormContainer(this.method, this.baseUrl, addCardUri, nameValuePairs, requestId);
+    return generateAddCardParameters(successUrl, failureUrl, cancelUrl, language);
   }
 
   /**
@@ -124,87 +141,66 @@ public class FormBuilder {
    * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
    * @return FormContainer
    */
-  public FormContainer generateAddCardParameters(String successUrl, String failureUrl,
-                                                 String cancelUrl, String language, Boolean acceptCvcRequired,
-                                                 Boolean skipFormNotifications, Boolean exitIframeOnResult,
-                                                 Boolean exitIframeOn3ds) {
+  @Deprecated
+  public FormContainer generateAddCardParameters(
+      String successUrl,
+      String failureUrl,
+      String cancelUrl,
+      String language,
+      Boolean acceptCvcRequired,
+      Boolean skipFormNotifications,
+      Boolean exitIframeOnResult,
+      Boolean exitIframeOn3ds
+  ) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+    this.setAcceptCvcRequired(acceptCvcRequired);
+    this.setSkipFormNotifications(skipFormNotifications);
+    this.setExitIframeOnResult(exitIframeOnResult);
+    this.setExitIframeOn3ds(exitIframeOn3ds);
 
-    if(acceptCvcRequired != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
-    }
-    if(skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
-    }
-    if(exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
-    }
-    if(exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
-    }
-
-    String addCardUri = "/form/view/add_card";
-    String signature = this.createSignature(addCardUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
-
-    return new FormContainer(this.method, this.baseUrl, addCardUri, nameValuePairs, requestId);
+    return generateAddCardParameters(successUrl, failureUrl, cancelUrl, language);
   }
 
-    /**
-     * Get parameters for Add Card request with the possibility to
-     * <li>accept cards that require CVC</li>
-     * <li>skip notifications displayed on the Payment Highway form</li>
-     * <li>exit from iframe after a result</li>
-     * <li>exit from iframe when redirecting the user to 3DS.</li>
-     * <li>force enable/disable 3ds</li>
-     *
-     * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-     * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-     * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-     * @param language The language the form is displayed in.
-     * @param acceptCvcRequired Accept a payment card token even if the card requires CVC for payments. May be null.
-     * @param skipFormNotifications Skip notifications displayed on the Payment Highway form. May be null.
-     * @param exitIframeOnResult Exit from iframe after a result. May be null.
-     * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
-     * @param use3ds Force enable/disable 3ds. Null to use default configured parameter.
-     * @return FormContainer
-     */
-    public FormContainer generateAddCardParameters(String successUrl, String failureUrl,
-            String cancelUrl, String language, Boolean acceptCvcRequired,
-            Boolean skipFormNotifications, Boolean exitIframeOnResult,
-            Boolean exitIframeOn3ds, Boolean use3ds) {
+  /**
+   * Get parameters for Add Card request with the possibility to
+   * <li>accept cards that require CVC</li>
+   * <li>skip notifications displayed on the Payment Highway form</li>
+   * <li>exit from iframe after a result</li>
+   * <li>exit from iframe when redirecting the user to 3DS.</li>
+   * <li>force enable/disable 3ds</li>
+   *
+   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language The language the form is displayed in.
+   * @param acceptCvcRequired Accept a payment card token even if the card requires CVC for payments. May be null.
+   * @param skipFormNotifications Skip notifications displayed on the Payment Highway form. May be null.
+   * @param exitIframeOnResult Exit from iframe after a result. May be null.
+   * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
+   * @param use3ds Force enable/disable 3ds. Null to use default configured parameter.
+   * @return FormContainer
+   */
+  @Deprecated
+  public FormContainer generateAddCardParameters(
+      String successUrl,
+      String failureUrl,
+      String cancelUrl,
+      String language,
+      Boolean acceptCvcRequired,
+      Boolean skipFormNotifications,
+      Boolean exitIframeOnResult,
+      Boolean exitIframeOn3ds,
+      Boolean use3ds
+  ) {
 
-        String requestId = PaymentHighwayUtility.createRequestId();
-        List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-                cancelUrl, language, requestId);
+    this.setAcceptCvcRequired(acceptCvcRequired);
+    this.setSkipFormNotifications(skipFormNotifications);
+    this.setExitIframeOnResult(exitIframeOnResult);
+    this.setExitIframeOn3ds(exitIframeOn3ds);
+    this.setUse3ds(use3ds);
 
-        if(acceptCvcRequired != null) {
-            nameValuePairs.add(new BasicNameValuePair(SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
-        }
-        if(skipFormNotifications != null) {
-            nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
-        }
-        if(exitIframeOnResult != null) {
-            nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
-        }
-        if(exitIframeOn3ds != null) {
-            nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
-        }
-        if(use3ds != null) {
-            nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
-        }
-
-        String addCardUri = "/form/view/add_card";
-        String signature = this.createSignature(addCardUri, nameValuePairs);
-
-        nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
-
-        return new FormContainer(this.method, this.baseUrl, addCardUri, nameValuePairs, requestId);
-    }
+    return generateAddCardParameters(successUrl, failureUrl, cancelUrl, language);
+  }
 
   /**
    * Get parameters for Payment request.
@@ -224,13 +220,26 @@ public class FormBuilder {
                                                  String description) {
 
     String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl, cancelUrl, language, requestId);
 
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
     nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
+
+    // TODO: info logging if this.acceptCvcRequired is set, it is ignored at backend
+    if (this.skipFormNotifications != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+    }
+    if (this.exitIframeOnResult != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+    }
+    if (this.exitIframeOn3ds != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+    }
+    if (this.use3ds != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
+    }
 
     String payWithCardUri = "/form/view/pay_with_card";
     String signature = this.createSignature(payWithCardUri, nameValuePairs);
@@ -259,35 +268,17 @@ public class FormBuilder {
    * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
    * @return FormContainer
    */
+  @Deprecated
   public FormContainer generatePaymentParameters(String successUrl, String failureUrl, String cancelUrl,
                                                  String language, String amount, String currency, String orderId,
                                                  String description, Boolean skipFormNotifications,
                                                  Boolean exitIframeOnResult, Boolean exitIframeOn3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+    this.setSkipFormNotifications(skipFormNotifications);
+    this.setExitIframeOnResult(exitIframeOnResult);
+    this.setExitIframeOn3ds(exitIframeOn3ds);
 
-    nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
-    }
-    if(exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
-    }
-    if(exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
-    }
-
-    String payWithCardUri = "/form/view/pay_with_card";
-    String signature = this.createSignature(payWithCardUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
-
-    return new FormContainer(this.method, this.baseUrl, payWithCardUri, nameValuePairs, requestId);
+    return generatePaymentParameters(successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
   }
 
   /**
@@ -311,38 +302,18 @@ public class FormBuilder {
    * @param use3ds Force enable/disable 3ds. Null to use default configured parameter.
    * @return FormContainer
    */
+  @Deprecated
   public FormContainer generatePaymentParameters(String successUrl, String failureUrl, String cancelUrl,
       String language, String amount, String currency, String orderId,
       String description, Boolean skipFormNotifications,
       Boolean exitIframeOnResult, Boolean exitIframeOn3ds, Boolean use3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
+    this.setSkipFormNotifications(skipFormNotifications);
+    this.setExitIframeOnResult(exitIframeOnResult);
+    this.setExitIframeOn3ds(exitIframeOn3ds);
+    this.setUse3ds(use3ds);
 
-    nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
-    }
-    if(exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
-    }
-    if(exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
-    }
-    if(use3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
-    }
-
-    String payWithCardUri = "/form/view/pay_with_card";
-    String signature = this.createSignature(payWithCardUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
-
-    return new FormContainer(this.method, this.baseUrl, payWithCardUri, nameValuePairs, requestId);
+    return generatePaymentParameters(successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
   }
 
   /**
@@ -363,13 +334,26 @@ public class FormBuilder {
                                                            String orderId, String description) {
 
     String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl, cancelUrl, language, requestId);
 
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
     nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
+
+    // TODO: info logging if this.acceptCvcRequired is set, it is ignored at backend
+    if (this.skipFormNotifications != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+    }
+    if (this.exitIframeOnResult != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+    }
+    if (this.exitIframeOn3ds != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+    }
+    if (this.use3ds != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
+    }
 
     String addCardAndPayUri = "/form/view/add_and_pay_with_card";
     String signature = this.createSignature(addCardAndPayUri, nameValuePairs);
@@ -398,36 +382,18 @@ public class FormBuilder {
    * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
    * @return FormContainer
    */
+  @Deprecated
   public FormContainer generateAddCardAndPaymentParameters(String successUrl, String failureUrl, String cancelUrl,
                                                            String language, String amount, String currency,
                                                            String orderId, String description,
                                                            Boolean skipFormNotifications, Boolean exitIframeOnResult,
                                                            Boolean exitIframeOn3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+    this.setSkipFormNotifications(skipFormNotifications);
+    this.setExitIframeOnResult(exitIframeOnResult);
+    this.setExitIframeOn3ds(exitIframeOn3ds);
 
-    nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
-    }
-    if(exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
-    }
-    if(exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
-    }
-
-    String addCardAndPayUri = "/form/view/add_and_pay_with_card";
-    String signature = this.createSignature(addCardAndPayUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
-
-    return new FormContainer(method, this.baseUrl, addCardAndPayUri, nameValuePairs, requestId);
+    return generateAddCardAndPaymentParameters(successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
   }
 
   /**
@@ -451,39 +417,19 @@ public class FormBuilder {
    * @param use3ds Force enable/disable 3ds. Null to use default configured parameter.
    * @return FormContainer
    */
+  @Deprecated
   public FormContainer generateAddCardAndPaymentParameters(String successUrl, String failureUrl, String cancelUrl,
       String language, String amount, String currency,
       String orderId, String description,
       Boolean skipFormNotifications, Boolean exitIframeOnResult,
       Boolean exitIframeOn3ds, Boolean use3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
+    this.setSkipFormNotifications(skipFormNotifications);
+    this.setExitIframeOnResult(exitIframeOnResult);
+    this.setExitIframeOn3ds(exitIframeOn3ds);
+    this.setUse3ds(use3ds);
 
-    nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
-    }
-    if(exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
-    }
-    if(exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
-    }
-    if(use3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
-    }
-
-    String addCardAndPayUri = "/form/view/add_and_pay_with_card";
-    String signature = this.createSignature(addCardAndPayUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
-
-    return new FormContainer(method, this.baseUrl, addCardAndPayUri, nameValuePairs, requestId);
+    return generateAddCardAndPaymentParameters(successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
   }
 
   /**
@@ -505,14 +451,27 @@ public class FormBuilder {
                                                             String currency, String orderId, String description) {
 
     String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl, cancelUrl, language, requestId);
 
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
     nameValuePairs.add(new BasicNameValuePair(SPH_TOKEN, token.toString()));
     nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
+
+    // TODO: info logging if this.acceptCvcRequired is set, it is ignored at backend
+    if (this.skipFormNotifications != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+    }
+    if (this.exitIframeOnResult != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+    }
+    if (this.exitIframeOn3ds != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+    }
+    if (this.use3ds != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
+    }
 
     String payWithTokenAndCvcUri = "/form/view/pay_with_token_and_cvc";
     String signature = this.createSignature(payWithTokenAndCvcUri, nameValuePairs);
@@ -542,37 +501,18 @@ public class FormBuilder {
    * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
    * @return
    */
+  @Deprecated
   public FormContainer generatePayWithTokenAndCvcParameters(UUID token, String successUrl, String failureUrl,
                                                             String cancelUrl, String language, String amount,
                                                             String currency, String orderId, String description,
                                                             Boolean skipFormNotifications, Boolean exitIframeOnResult,
                                                             Boolean exitIframeOn3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+    this.setSkipFormNotifications(skipFormNotifications);
+    this.setExitIframeOnResult(exitIframeOnResult);
+    this.setExitIframeOn3ds(exitIframeOn3ds);
 
-    nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(SPH_TOKEN, token.toString()));
-    nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
-    }
-    if(exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
-    }
-    if(exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
-    }
-
-    String payWithTokenAndCvcUri = "/form/view/pay_with_token_and_cvc";
-    String signature = this.createSignature(payWithTokenAndCvcUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
-
-    return new FormContainer(method, this.baseUrl, payWithTokenAndCvcUri, nameValuePairs, requestId);
+    return generatePayWithTokenAndCvcParameters(token, successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
   }
 
   /**
@@ -597,44 +537,103 @@ public class FormBuilder {
    * @param use3ds Force enable/disable 3ds. Null to use default configured parameter.
    * @return
    */
+  @Deprecated
   public FormContainer generatePayWithTokenAndCvcParameters(UUID token, String successUrl, String failureUrl,
       String cancelUrl, String language, String amount,
       String currency, String orderId, String description,
       Boolean skipFormNotifications, Boolean exitIframeOnResult,
       Boolean exitIframeOn3ds, Boolean use3ds) {
 
+    this.setSkipFormNotifications(skipFormNotifications);
+    this.setExitIframeOnResult(exitIframeOnResult);
+    this.setExitIframeOn3ds(exitIframeOn3ds);
+    this.setUse3ds(use3ds);
+
+    return generatePayWithTokenAndCvcParameters(token, successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description);
+  }
+
+
+  /**
+   * Get parameters for MobilePay request.
+   *
+   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language The language the form is displayed in.
+   * @param amount The amount to pay.
+   * @param currency In which currency is the amount, e.g. "EUR"
+   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description Description of the payment shown in the form.
+   * @return FormContainer
+   */
+  public FormContainer generateMobilePayParameters(
+      String successUrl,
+      String failureUrl,
+      String cancelUrl,
+      String language,
+      String amount,
+      String currency,
+      String orderId,
+      String description
+  ) {
+
     String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
+    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl, cancelUrl, language, requestId);
 
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(SPH_TOKEN, token.toString()));
     nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
+
+    // TODO: info logging if this.acceptCvcRequired, this.exitIframeOn3ds or this.use3ds is set, they are ignored at backend
+
+    if (this.skipFormNotifications != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
     }
-    if(exitIframeOnResult != null) {
+    if (this.exitIframeOnResult != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
     }
-    if(exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
-    }
-    if(use3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
-    }
 
-    String payWithTokenAndCvcUri = "/form/view/pay_with_token_and_cvc";
-    String signature = this.createSignature(payWithTokenAndCvcUri, nameValuePairs);
+    String mobilePayUri = "/form/view/mobilepay";
+    String signature = this.createSignature(mobilePayUri, nameValuePairs);
 
     nameValuePairs.add(new BasicNameValuePair(SIGNATURE, signature));
 
-    return new FormContainer(method, this.baseUrl, payWithTokenAndCvcUri, nameValuePairs, requestId);
+    return new FormContainer(method, this.baseUrl, mobilePayUri, nameValuePairs, requestId);
   }
 
-  private List<NameValuePair> createCommonNameValuePairs(String successUrl, String failureUrl, String cancelUrl,
-                                                         String language, String requestId) {
+  public FormBuilder setAcceptCvcRequired(Boolean acceptCvcRequired) {
+    this.acceptCvcRequired = acceptCvcRequired;
+    return this;
+  }
+
+  public FormBuilder setSkipFormNotifications(Boolean skipFormNotifications) {
+    this.skipFormNotifications = skipFormNotifications;
+    return this;
+  }
+
+  public FormBuilder setExitIframeOnResult(Boolean exitIframeOnResult) {
+    this.exitIframeOnResult = exitIframeOnResult;
+    return this;
+  }
+
+  public FormBuilder setExitIframeOn3ds(Boolean exitIframeOn3ds) {
+    this.exitIframeOn3ds = exitIframeOn3ds;
+    return this;
+  }
+
+  public FormBuilder setUse3ds(Boolean use3ds) {
+    this.use3ds = use3ds;
+    return this;
+  }
+
+  private List<NameValuePair> createCommonNameValuePairs(
+      String successUrl,
+      String failureUrl,
+      String cancelUrl,
+      String language,
+      String requestId
+  ) {
 
     List<NameValuePair> nameValuePairs = new ArrayList<>();
     nameValuePairs.add(new BasicNameValuePair(SPH_API_VERSION, "20151028"));
@@ -651,8 +650,6 @@ public class FormBuilder {
   }
 
   private String createSignature(String uri, List<NameValuePair> nameValuePairs) {
-
-    SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
     return ss.createSignature(this.method, uri, nameValuePairs, "");
   }
 }

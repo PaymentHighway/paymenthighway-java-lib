@@ -25,9 +25,9 @@ public class FormAPIConnection {
   private final static String CONTENT_TYPE = "application/x-www-form-urlencoded";
   private final static String METHOD_POST = "POST";
 
-  String serviceUrl = null;
-  String signatureKeyId = null;
-  String signatureSecret = null;
+  private String serviceUrl = null;
+  private String signatureKeyId = null;
+  private String signatureSecret = null;
 
   /**
    * Constructor
@@ -42,8 +42,7 @@ public class FormAPIConnection {
   /**
    * Form API call to add card
    *
-   * @return String responseBody
-   * @throws IOException
+   * @return Response body
    */
   public String addCardRequest(List<NameValuePair> nameValuePairs) throws IOException {
     final String formUri = "/form/view/add_card";
@@ -53,8 +52,7 @@ public class FormAPIConnection {
   /**
    * Form API call to make a payment
    *
-   * @return
-   * @throws IOException
+   * @return Response body
    */
   public String paymentRequest(List<NameValuePair> nameValuePairs) throws IOException {
     final String formPaymentUri = "/form/view/pay_with_card";
@@ -64,13 +62,10 @@ public class FormAPIConnection {
   /**
    * Form API call to add card and make a payment
    *
-   * @return
-   * @throws IOException
+   * @return Response body
    */
   public String addCardAndPayRequest(List<NameValuePair> nameValuePairs) throws IOException {
-
     final String formPaymentUri = "/form/view/add_and_pay_with_card";
-
     return makeRequest(formPaymentUri, nameValuePairs);
   }
 
@@ -78,11 +73,9 @@ public class FormAPIConnection {
    * Form API call to pay with a tokenized card and a CVC
    *
    * @param nameValuePairs The Form API http parameters
-   * @return
-   * @throws IOException
+   * @return Response body
    */
   public String payWithTokenAndCvcRequest(List<NameValuePair> nameValuePairs) throws IOException {
-
     final String formPaymentUri = "/form/view/pay_with_token_and_cvc";
     return makeRequest(formPaymentUri, nameValuePairs);
   }
@@ -92,7 +85,6 @@ public class FormAPIConnection {
    * @param formUri
    * @param nameValuePairs
    * @return
-   * @throws IOException
    */
   private String makeRequest(String formUri, List<NameValuePair> nameValuePairs) throws  IOException {
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
@@ -105,22 +97,23 @@ public class FormAPIConnection {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
-      ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-        public String handleResponse(
-                final HttpResponse response) throws ClientProtocolException, IOException {
-          int status = response.getStatusLine().getStatusCode();
-          if (status >= 200 && status < 300) {
-            HttpEntity entity = response.getEntity();
-            return entity != null ? EntityUtils.toString(entity) : null;
-          } else {
-            throw new ClientProtocolException("Unexpected response status: " + status);
-          }
-        }
-
-      };
-      return httpclient.execute(httpPost, responseHandler);
-
+      return httpclient.execute(httpPost, bodyResponseHandler());
     }
+  }
+
+  // TODO: Move this code to some test helper class
+  static ResponseHandler<String> bodyResponseHandler() {
+    return new ResponseHandler<String>() {
+      public String handleResponse(final HttpResponse response) throws IOException {
+        int status = response.getStatusLine().getStatusCode();
+        if (status >= 200 && status < 300) {
+          HttpEntity entity = response.getEntity();
+          return entity != null ? EntityUtils.toString(entity) : null;
+        } else {
+          throw new ClientProtocolException("Unexpected response status: " + status);
+        }
+      }
+    };
   }
 
   /**
@@ -140,7 +133,7 @@ public class FormAPIConnection {
    *
    * @param httpPost
    */
-  protected void addHeaders(HttpPost httpPost) {
+  void addHeaders(HttpPost httpPost) {
     httpPost.addHeader("User-Agent", USER_AGENT);
     httpPost.addHeader("Content-Type", CONTENT_TYPE);
   }
