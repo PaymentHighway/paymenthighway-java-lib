@@ -9,6 +9,35 @@ For full documentation on the PaymentHighway API visit our developer website: ht
 
 The Java Client is a Maven project built so that it will work on Java 1.7 and Java 1.8. It requires the following third party frameworks: Apache HttpComponents and Jackson JSON. It also uses JUnit test packages.
 
+## Installation
+
+### Maven
+
+Add sonatype-snapshots repository to pom.xml:
+
+```xml
+<repositories>
+    <repository>
+        <id>sonatype-snapshots</id>
+        <name>Sonatype Snapshots</name>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </repository>
+</repositories>
+```
+
+Add as dependency:
+
+```xml
+    <dependencies>
+        <dependency>
+            <groupId>io.paymenthighway</groupId>
+            <artifactId>paymenthighway</artifactId>
+            <version>1.4-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+```
+
+
 # Structure 
 
 * `io.paymenthighway`
@@ -43,7 +72,10 @@ Start with building the HTTP form parameters by using the FormParameterBuilder.
 
 Create an instance of the builder, then use the generate methods to receive a list of parameters for each API call.
 
+    import io.paymenthighway.FormBuilder;
+
 Initializing the builder
+
 
     String method = "POST";
     String signatureKeyId = "testKey";
@@ -190,6 +222,8 @@ Example validateFormRedirect
 In order to do safe transactions, an execution model is used where the first call to /transaction acquires a financial transaction handle, later referred as “ID”, which ensures the transaction is executed exactly once. Afterwards it is possible to execute a debit transaction by using the received id handle. If the execution fails, the command can be repeated in order to confirm the transaction with the particular id has been processed. After executing the command, the status of the transaction can be checked by executing the PaymentAPI.transactionStatus("id") request. 
 
 In order to be sure that a tokenized card is valid and is able to process payment transactions the corresponding tokenization id must be used to get the actual card token. 
+
+    import io.paymenthighway.PaymentAPI;
 
 Initializing the Payment API
 
