@@ -183,7 +183,7 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Reconciliation Report Request
    *
-   * @param date The date to fetch the reconciliation report for. Must be today - 1 day or earlier.
+   * @param date The date to fetch the reconciliation report for.
    * @return ReconciliationReportResponse
    * @throws HttpResponseException
    * @throws AuthenticationException
@@ -199,7 +199,7 @@ public class PaymentAPI implements Closeable {
    *
    * Deprecated: use of the default behaviour (useDateProcessed=false) is encouraged to be used instead
    *
-   * @param date The date to fetch the reconciliation report for. Must be today - 1 day or earlier.
+   * @param date The date to fetch the reconciliation report for.
    * @param useDateProcessed True for using the Euroline processing date (legacy style), instead of the report's fetching date. May result in changes in the past.
    * @return ReconciliationReportResponse
    * @throws HttpResponseException
