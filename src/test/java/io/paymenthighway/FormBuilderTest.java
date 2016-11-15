@@ -710,4 +710,53 @@ public class FormBuilderTest {
     assertNotNull(response);
     assertTrue(response.contains("card_number_formatted"));
   }
+
+  @Test
+  public void testMobilePayForm() {
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    String amount = "9999";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "http://www.solinor.com";
+    String cancelUrl = "https://solinor.fi";
+    String language = "EN";
+    String description = "this is payment description";
+    Boolean exitIframeOnResult = null;
+
+    FormBuilder formBuilder = new FormBuilder(method,
+            this.signatureKeyId, this.signatureSecret, account, merchant,
+            this.serviceUrl);
+    FormContainer formContainer = formBuilder.generatePayWithMobilePayParameters(successUrl, failureUrl, cancelUrl,
+            language, amount, currency, orderId, description, exitIframeOnResult);
+    assertTrue(formContainer.getFields().size() == 14);
+  }
+
+  @Test
+  public void testMobilePayFormWithLogo() {
+
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    String amount = "9999";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "http://www.solinor.com";
+    String cancelUrl = "https://solinor.fi";
+    String language = "EN";
+    String description = "this is payment description";
+    String logoUrl = "https://foo.bar";
+    Boolean exitIframeOnResult = true;
+
+    FormBuilder formBuilder = new FormBuilder(method,
+            this.signatureKeyId, this.signatureSecret, account, merchant,
+            this.serviceUrl);
+    FormContainer formContainer = formBuilder.generatePayWithMobilePayParameters(successUrl, failureUrl, cancelUrl,
+            language, amount, currency, orderId, description, exitIframeOnResult, logoUrl);
+    assertTrue(formContainer.getFields().size() == 16);
+  }
+
 }
