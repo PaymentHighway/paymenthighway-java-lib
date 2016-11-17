@@ -37,6 +37,7 @@ public class FormBuilder {
   private final static String LANGUAGE = "language";
   private final static String DESCRIPTION = "description";
   private final static String SIGNATURE = "signature";
+  private final static String SPH_SHOP_LOGO_URL = "sph-shop-logo-url";
 
   private String method = METHOD_POST;
   private String baseUrl = null;
@@ -66,8 +67,8 @@ public class FormBuilder {
    *
    * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
+   * @param cancelUrl  The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language   The language the form is displayed in.
    * @return FormContainer
    */
   public FormContainer generateAddCardParameters(String successUrl, String failureUrl,
@@ -75,7 +76,7 @@ public class FormBuilder {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+        cancelUrl, language, requestId);
 
     String addCardUri = "/form/view/add_card";
     String signature = this.createSignature(addCardUri, nameValuePairs);
@@ -88,10 +89,10 @@ public class FormBuilder {
   /**
    * Get parameters for Add Card request with the possibility to accept cards that require CVC.
    *
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
+   * @param successUrl        The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl        The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl         The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language          The language the form is displayed in.
    * @param acceptCvcRequired Accept a payment card token even if the card requires CVC for payments.
    * @return FormContainer
    */
@@ -100,7 +101,7 @@ public class FormBuilder {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+        cancelUrl, language, requestId);
 
     nameValuePairs.add(new BasicNameValuePair(SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
 
@@ -119,14 +120,14 @@ public class FormBuilder {
    * <li>exit from iframe after a result</li>
    * <li>exit from iframe when redirecting the user to 3DS.</li>
    *
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param acceptCvcRequired Accept a payment card token even if the card requires CVC for payments. May be null.
+   * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl             The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language              The language the form is displayed in.
+   * @param acceptCvcRequired     Accept a payment card token even if the card requires CVC for payments. May be null.
    * @param skipFormNotifications Skip notifications displayed on the Payment Highway form. May be null.
-   * @param exitIframeOnResult Exit from iframe after a result. May be null.
-   * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
+   * @param exitIframeOnResult    Exit from iframe after a result. May be null.
+   * @param exitIframeOn3ds       Exit from iframe when redirecting the user to 3DS. May be null.
    * @return FormContainer
    */
   public FormContainer generateAddCardParameters(String successUrl, String failureUrl,
@@ -136,18 +137,18 @@ public class FormBuilder {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+        cancelUrl, language, requestId);
 
-    if(acceptCvcRequired != null) {
+    if (acceptCvcRequired != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
     }
-    if(skipFormNotifications != null) {
+    if (skipFormNotifications != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
     }
-    if(exitIframeOnResult != null) {
+    if (exitIframeOnResult != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
     }
-    if(exitIframeOn3ds != null) {
+    if (exitIframeOn3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
     }
 
@@ -167,15 +168,15 @@ public class FormBuilder {
    * <li>exit from iframe when redirecting the user to 3DS.</li>
    * <li>force enable/disable 3ds</li>
    *
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param acceptCvcRequired Accept a payment card token even if the card requires CVC for payments. May be null.
+   * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl             The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language              The language the form is displayed in.
+   * @param acceptCvcRequired     Accept a payment card token even if the card requires CVC for payments. May be null.
    * @param skipFormNotifications Skip notifications displayed on the Payment Highway form. May be null.
-   * @param exitIframeOnResult Exit from iframe after a result. May be null.
-   * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
-   * @param use3ds Force enable/disable 3ds. Null to use default configured parameter.
+   * @param exitIframeOnResult    Exit from iframe after a result. May be null.
+   * @param exitIframeOn3ds       Exit from iframe when redirecting the user to 3DS. May be null.
+   * @param use3ds                Force enable/disable 3ds. Null to use default configured parameter.
    * @return FormContainer
    */
   public FormContainer generateAddCardParameters(String successUrl, String failureUrl,
@@ -187,19 +188,19 @@ public class FormBuilder {
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
         cancelUrl, language, requestId);
 
-    if(acceptCvcRequired != null) {
+    if (acceptCvcRequired != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
     }
-    if(skipFormNotifications != null) {
+    if (skipFormNotifications != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
     }
-    if(exitIframeOnResult != null) {
+    if (exitIframeOnResult != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
     }
-    if(exitIframeOn3ds != null) {
+    if (exitIframeOn3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
     }
-    if(use3ds != null) {
+    if (use3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
     }
 
@@ -214,13 +215,13 @@ public class FormBuilder {
   /**
    * Get parameters for Payment request.
    *
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param amount The amount to pay.
-   * @param currency In which currency is the amount, e.g. "EUR"
-   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language    The language the form is displayed in.
+   * @param amount      The amount to pay.
+   * @param currency    In which currency is the amount, e.g. "EUR"
+   * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
    * @param description Description of the payment shown in the form.
    * @return FormContainer
    */
@@ -230,7 +231,7 @@ public class FormBuilder {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+        cancelUrl, language, requestId);
 
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
@@ -251,17 +252,17 @@ public class FormBuilder {
    * <li>exit from iframe after a result</li>
    * <li>exit from iframe when redirecting the user to 3DS.</li>
    *
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param amount The amount to pay.
-   * @param currency In which currency is the amount, e.g. "EUR"
-   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
-   * @param description Description of the payment shown in the form.
+   * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl             The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language              The language the form is displayed in.
+   * @param amount                The amount to pay.
+   * @param currency              In which currency is the amount, e.g. "EUR"
+   * @param orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description           Description of the payment shown in the form.
    * @param skipFormNotifications Skip notifications displayed on the Payment Highway form. May be null.
-   * @param exitIframeOnResult Exit from iframe after a result. May be null.
-   * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
+   * @param exitIframeOnResult    Exit from iframe after a result. May be null.
+   * @param exitIframeOn3ds       Exit from iframe when redirecting the user to 3DS. May be null.
    * @return FormContainer
    */
   public FormContainer generatePaymentParameters(String successUrl, String failureUrl, String cancelUrl,
@@ -271,19 +272,19 @@ public class FormBuilder {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+        cancelUrl, language, requestId);
 
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
     nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
+    if (skipFormNotifications != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
     }
-    if(exitIframeOnResult != null) {
+    if (exitIframeOnResult != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
     }
-    if(exitIframeOn3ds != null) {
+    if (exitIframeOn3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
     }
 
@@ -302,24 +303,24 @@ public class FormBuilder {
    * <li>exit from iframe when redirecting the user to 3DS.</li>
    * <li>force enable/disable 3ds</li>
    *
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param amount The amount to pay.
-   * @param currency In which currency is the amount, e.g. "EUR"
-   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
-   * @param description Description of the payment shown in the form.
+   * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl             The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language              The language the form is displayed in.
+   * @param amount                The amount to pay.
+   * @param currency              In which currency is the amount, e.g. "EUR"
+   * @param orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description           Description of the payment shown in the form.
    * @param skipFormNotifications Skip notifications displayed on the Payment Highway form. May be null.
-   * @param exitIframeOnResult Exit from iframe after a result. May be null.
-   * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
-   * @param use3ds Force enable/disable 3ds. Null to use default configured parameter.
+   * @param exitIframeOnResult    Exit from iframe after a result. May be null.
+   * @param exitIframeOn3ds       Exit from iframe when redirecting the user to 3DS. May be null.
+   * @param use3ds                Force enable/disable 3ds. Null to use default configured parameter.
    * @return FormContainer
    */
   public FormContainer generatePaymentParameters(String successUrl, String failureUrl, String cancelUrl,
-      String language, String amount, String currency, String orderId,
-      String description, Boolean skipFormNotifications,
-      Boolean exitIframeOnResult, Boolean exitIframeOn3ds, Boolean use3ds) {
+                                                 String language, String amount, String currency, String orderId,
+                                                 String description, Boolean skipFormNotifications,
+                                                 Boolean exitIframeOnResult, Boolean exitIframeOn3ds, Boolean use3ds) {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
@@ -329,16 +330,16 @@ public class FormBuilder {
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
     nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
+    if (skipFormNotifications != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
     }
-    if(exitIframeOnResult != null) {
+    if (exitIframeOnResult != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
     }
-    if(exitIframeOn3ds != null) {
+    if (exitIframeOn3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
     }
-    if(use3ds != null) {
+    if (use3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
     }
 
@@ -353,13 +354,13 @@ public class FormBuilder {
   /**
    * Get parameters for Add Card and Pay request.
    *
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param amount The amount to pay.
-   * @param currency In which currency is the amount, e.g. "EUR"
-   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language    The language the form is displayed in.
+   * @param amount      The amount to pay.
+   * @param currency    In which currency is the amount, e.g. "EUR"
+   * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
    * @param description Description of the payment shown in the form.
    * @return FormContainer
    */
@@ -369,7 +370,7 @@ public class FormBuilder {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+        cancelUrl, language, requestId);
 
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
@@ -390,17 +391,17 @@ public class FormBuilder {
    * <li>exit from iframe after a result</li>
    * <li>exit from iframe when redirecting the user to 3DS.</li>
    *
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param amount The amount to pay.
-   * @param currency In which currency is the amount, e.g. "EUR"
-   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
-   * @param description Description of the payment shown in the form.
+   * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl             The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language              The language the form is displayed in.
+   * @param amount                The amount to pay.
+   * @param currency              In which currency is the amount, e.g. "EUR"
+   * @param orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description           Description of the payment shown in the form.
    * @param skipFormNotifications Skip notifications displayed on the Payment Highway form. May be null.
-   * @param exitIframeOnResult Exit from iframe after a result. May be null.
-   * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
+   * @param exitIframeOnResult    Exit from iframe after a result. May be null.
+   * @param exitIframeOn3ds       Exit from iframe when redirecting the user to 3DS. May be null.
    * @return FormContainer
    */
   public FormContainer generateAddCardAndPaymentParameters(String successUrl, String failureUrl, String cancelUrl,
@@ -411,19 +412,19 @@ public class FormBuilder {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+        cancelUrl, language, requestId);
 
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
     nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
+    if (skipFormNotifications != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
     }
-    if(exitIframeOnResult != null) {
+    if (exitIframeOnResult != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
     }
-    if(exitIframeOn3ds != null) {
+    if (exitIframeOn3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
     }
 
@@ -442,25 +443,25 @@ public class FormBuilder {
    * <li>exit from iframe when redirecting the user to 3DS.</li>
    * <li>force enable/disable 3ds</li>
    *
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param amount The amount to pay.
-   * @param currency In which currency is the amount, e.g. "EUR"
-   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
-   * @param description Description of the payment shown in the form.
+   * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl             The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language              The language the form is displayed in.
+   * @param amount                The amount to pay.
+   * @param currency              In which currency is the amount, e.g. "EUR"
+   * @param orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description           Description of the payment shown in the form.
    * @param skipFormNotifications Skip notifications displayed on the Payment Highway form. May be null.
-   * @param exitIframeOnResult Exit from iframe after a result. May be null.
-   * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
-   * @param use3ds Force enable/disable 3ds. Null to use default configured parameter.
+   * @param exitIframeOnResult    Exit from iframe after a result. May be null.
+   * @param exitIframeOn3ds       Exit from iframe when redirecting the user to 3DS. May be null.
+   * @param use3ds                Force enable/disable 3ds. Null to use default configured parameter.
    * @return FormContainer
    */
   public FormContainer generateAddCardAndPaymentParameters(String successUrl, String failureUrl, String cancelUrl,
-      String language, String amount, String currency,
-      String orderId, String description,
-      Boolean skipFormNotifications, Boolean exitIframeOnResult,
-      Boolean exitIframeOn3ds, Boolean use3ds) {
+                                                           String language, String amount, String currency,
+                                                           String orderId, String description,
+                                                           Boolean skipFormNotifications, Boolean exitIframeOnResult,
+                                                           Boolean exitIframeOn3ds, Boolean use3ds) {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
@@ -470,16 +471,16 @@ public class FormBuilder {
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
     nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
+    if (skipFormNotifications != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
     }
-    if(exitIframeOnResult != null) {
+    if (exitIframeOnResult != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
     }
-    if(exitIframeOn3ds != null) {
+    if (exitIframeOn3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
     }
-    if(use3ds != null) {
+    if (use3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
     }
 
@@ -494,14 +495,14 @@ public class FormBuilder {
   /**
    * Get parameters for Pay with Token and CVC request.
    *
-   * @param token The card token to charge from.
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param amount The amount to pay.
-   * @param currency In which currency is the amount, e.g. "EUR"
-   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param token       The card token to charge from.
+   * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language    The language the form is displayed in.
+   * @param amount      The amount to pay.
+   * @param currency    In which currency is the amount, e.g. "EUR"
+   * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
    * @param description Description of the payment shown in the form.
    * @return
    */
@@ -511,7 +512,7 @@ public class FormBuilder {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+        cancelUrl, language, requestId);
 
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
@@ -533,18 +534,18 @@ public class FormBuilder {
    * <li>exit from iframe after a result</li>
    * <li>exit from iframe when redirecting the user to 3DS.</li>
    *
-   * @param token The card token to charge from.
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param amount The amount to pay.
-   * @param currency In which currency is the amount, e.g. "EUR"
-   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
-   * @param description Description of the payment shown in the form.
+   * @param token                 The card token to charge from.
+   * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl             The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language              The language the form is displayed in.
+   * @param amount                The amount to pay.
+   * @param currency              In which currency is the amount, e.g. "EUR"
+   * @param orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description           Description of the payment shown in the form.
    * @param skipFormNotifications Skip notifications displayed on the Payment Highway form. May be null.
-   * @param exitIframeOnResult Exit from iframe after a result. May be null.
-   * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
+   * @param exitIframeOnResult    Exit from iframe after a result. May be null.
+   * @param exitIframeOn3ds       Exit from iframe when redirecting the user to 3DS. May be null.
    * @return
    */
   public FormContainer generatePayWithTokenAndCvcParameters(UUID token, String successUrl, String failureUrl,
@@ -555,20 +556,20 @@ public class FormBuilder {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-            cancelUrl, language, requestId);
+        cancelUrl, language, requestId);
 
     nameValuePairs.add(new BasicNameValuePair(SPH_AMOUNT, amount));
     nameValuePairs.add(new BasicNameValuePair(SPH_CURRENCY, currency));
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
     nameValuePairs.add(new BasicNameValuePair(SPH_TOKEN, token.toString()));
     nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
+    if (skipFormNotifications != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
     }
-    if(exitIframeOnResult != null) {
+    if (exitIframeOnResult != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
     }
-    if(exitIframeOn3ds != null) {
+    if (exitIframeOn3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
     }
 
@@ -587,26 +588,26 @@ public class FormBuilder {
    * <li>exit from iframe when redirecting the user to 3DS.</li>
    * <li>force enable/disable 3ds</li>
    *
-   * @param token The card token to charge from.
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param amount The amount to pay.
-   * @param currency In which currency is the amount, e.g. "EUR"
-   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
-   * @param description Description of the payment shown in the form.
+   * @param token                 The card token to charge from.
+   * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl             The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language              The language the form is displayed in.
+   * @param amount                The amount to pay.
+   * @param currency              In which currency is the amount, e.g. "EUR"
+   * @param orderId               A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description           Description of the payment shown in the form.
    * @param skipFormNotifications Skip notifications displayed on the Payment Highway form. May be null.
-   * @param exitIframeOnResult Exit from iframe after a result. May be null.
-   * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS. May be null.
-   * @param use3ds Force enable/disable 3ds. Null to use default configured parameter.
+   * @param exitIframeOnResult    Exit from iframe after a result. May be null.
+   * @param exitIframeOn3ds       Exit from iframe when redirecting the user to 3DS. May be null.
+   * @param use3ds                Force enable/disable 3ds. Null to use default configured parameter.
    * @return
    */
   public FormContainer generatePayWithTokenAndCvcParameters(UUID token, String successUrl, String failureUrl,
-      String cancelUrl, String language, String amount,
-      String currency, String orderId, String description,
-      Boolean skipFormNotifications, Boolean exitIframeOnResult,
-      Boolean exitIframeOn3ds, Boolean use3ds) {
+                                                            String cancelUrl, String language, String amount,
+                                                            String currency, String orderId, String description,
+                                                            Boolean skipFormNotifications, Boolean exitIframeOnResult,
+                                                            Boolean exitIframeOn3ds, Boolean use3ds) {
 
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
@@ -617,16 +618,16 @@ public class FormBuilder {
     nameValuePairs.add(new BasicNameValuePair(SPH_ORDER, orderId));
     nameValuePairs.add(new BasicNameValuePair(SPH_TOKEN, token.toString()));
     nameValuePairs.add(new BasicNameValuePair(DESCRIPTION, description));
-    if(skipFormNotifications != null) {
+    if (skipFormNotifications != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
     }
-    if(exitIframeOnResult != null) {
+    if (exitIframeOnResult != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
     }
-    if(exitIframeOn3ds != null) {
+    if (exitIframeOn3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
     }
-    if(use3ds != null) {
+    if (use3ds != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_USE_THREE_D_SECURE, use3ds.toString()));
     }
 
@@ -641,14 +642,14 @@ public class FormBuilder {
   /**
    * Get parameters for MobilePay request.
    *
-   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
-   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
-   * @param cancelUrl The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language The language the form is displayed in.
-   * @param amount The amount to pay.
-   * @param currency In which currency is the amount, e.g. "EUR"
-   * @param orderId A generated order ID, may for example be always unique or used multiple times for recurring transactions.
-   * @param description Description of the payment shown in the form.
+   * @param successUrl         The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl         The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl          The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language           The language the form is displayed in.
+   * @param amount             The amount to pay.
+   * @param currency           In which currency is the amount, e.g. "EUR"
+   * @param orderId            A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description        Description of the payment shown in the form.
    * @param exitIframeOnResult Exit from iframe after a result. May be null.
    * @return FormContainer
    */
@@ -663,6 +664,36 @@ public class FormBuilder {
       String description,
       Boolean exitIframeOnResult
   ) {
+    return this.generatePayWithMobilePayParameters(successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description, exitIframeOnResult, null);
+  }
+
+  /**
+   * Get parameters for MobilePay request.
+   *
+   * @param successUrl         The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl         The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl          The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language           The language the form is displayed in.
+   * @param amount             The amount to pay.
+   * @param currency           In which currency is the amount, e.g. "EUR"
+   * @param orderId            A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description        Description of the payment shown in the form.
+   * @param exitIframeOnResult Exit from iframe after a result. May be null.
+   * @param shopLogoUrl        The logo must be 250x250 pixel in .png format and must be hosted on a HTTPS (secure) server. Optional.
+   * @return FormContainer
+   */
+  public FormContainer generatePayWithMobilePayParameters(
+      String successUrl,
+      String failureUrl,
+      String cancelUrl,
+      String language,
+      String amount,
+      String currency,
+      String orderId,
+      String description,
+      Boolean exitIframeOnResult,
+      String shopLogoUrl
+  ) {
     String requestId = PaymentHighwayUtility.createRequestId();
     List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl, cancelUrl, language, requestId);
 
@@ -673,6 +704,9 @@ public class FormBuilder {
 
     if (exitIframeOnResult != null) {
       nameValuePairs.add(new BasicNameValuePair(SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+    }
+    if (shopLogoUrl != null) {
+      nameValuePairs.add(new BasicNameValuePair(SPH_SHOP_LOGO_URL, shopLogoUrl));
     }
 
     String mobilePayUri = "/form/view/mobilepay";
