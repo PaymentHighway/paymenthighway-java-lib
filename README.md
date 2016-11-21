@@ -175,6 +175,7 @@ Example MobilePay form payment
     String currency = "EUR";
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
+    String shopLogoUrl = "https://foo.bar/biz.png";
 
     FormContainer formContainer = formBuilder.generatePayWithMobilePayParameters(
       successUrl,
@@ -185,7 +186,8 @@ Example MobilePay form payment
       currency,
       orderId,
       description,
-      null
+      null,
+      shopLogoUrl
     );
 
     // read form parameters
@@ -201,6 +203,14 @@ Example MobilePay form payment
     }
 
 _MobilePay payment is to be committed as any other Form Payment_
+
+##### About shop logo in MobilePay
+* The logo must be 250x250 pixel in .png format. 
+* MPO will show a default logo in the app if this is empty or the image location doesn’t exist. 
+* Once a ShopLogoURL has been sent to MPOnline the .png-file on that URL must never be changed. If the shop wants a new (or more than one) logo, a new ShopLogoURL must be used. 
+* The logo must be hosted on a HTTPS (secure) server.
+
+---
 
 Each method returns a FormContainer object which provides required hidden fields for the HTML form to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, which are included in the FormContainer fields.
 
