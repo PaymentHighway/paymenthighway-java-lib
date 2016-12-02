@@ -12,8 +12,8 @@ public class PayWithTokenAndCvcParameters extends GenericPaymentParametersBuilde
                                       String orderId, String description, UUID token) {
     super(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl, failureUrl, cancelUrl, language,
         amount, currency, orderId, description);
-    this.nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_TOKEN, token.toString()));
-    this.serviceUri = "/form/view/pay_with_token_and_cvc";
+    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_TOKEN, token.toString()));
+    serviceUri = "/form/view/pay_with_token_and_cvc";
   }
 
   public PayWithTokenAndCvcParameters use3ds(Boolean x) {
