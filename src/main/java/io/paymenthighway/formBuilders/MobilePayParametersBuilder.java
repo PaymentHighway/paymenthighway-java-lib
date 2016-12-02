@@ -42,7 +42,7 @@ public class MobilePayParametersBuilder extends GenericPaymentParametersBuilder 
     }
 
     /**
-     * @param shopName Name of the shop/merchant. MobilePay app displays this under the shop logo.
+     * @param shopName Max 100 AN. Name of the shop/merchant. MobilePay app displays this under the shop logo.  If omitted, the merchant name from PH is used.
      * @return MobilePayParametersBuilder
      */
     public MobilePayParametersBuilder shopName(String shopName) {
