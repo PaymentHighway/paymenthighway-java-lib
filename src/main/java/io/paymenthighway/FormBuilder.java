@@ -45,25 +45,73 @@ public class FormBuilder {
     this.ss = new SecureSigner(signatureKeyId, signatureSecret);
   }
 
+  /**
+   * Get parameters for Add Card request
+   *
+   * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl  The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language   The language the form is displayed in.
+   * @return AddCardParameters
+   */
   public AddCardParameters addCardParameters(String successUrl, String failureUrl,
                                              String cancelUrl, String language) {
     return new AddCardParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
         failureUrl, cancelUrl, language);
   }
 
+  /**
+   * Get parameters for Payment request.
+   *
+   * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language    The language the form is displayed in.
+   * @param amount      The amount to pay.
+   * @param currency    In which currency is the amount, e.g. "EUR"
+   * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description Description of the payment shown in the form.
+   * @return PaymentParameters
+   */
   public PaymentParameters paymentParameters(String successUrl, String failureUrl, String cancelUrl, String language,
                                              String amount, String currency, String orderId, String description) {
     return new PaymentParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
         failureUrl, cancelUrl, language, amount, currency, orderId, description);
   }
 
+  /**
+   * Get parameters for Add Card and Pay request.
+   *
+   * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language    The language the form is displayed in.
+   * @param amount      The amount to pay.
+   * @param currency    In which currency is the amount, e.g. "EUR"
+   * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description Description of the payment shown in the form.
+   * @return AddCardAndPaymentParameters
+   */
   public AddCardAndPaymentParameters addCardAndPaymentParameters(String successUrl, String failureUrl, String cancelUrl,
                                                                  String language, String amount, String currency,
                                                                  String orderId, String description) {
     return new AddCardAndPaymentParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
         failureUrl, cancelUrl, language, amount, currency, orderId, description);
   }
-
+  /**
+   * Get parameters for Pay with Token and CVC request.
+   *
+   * @param token       The card token to charge from.
+   * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language    The language the form is displayed in.
+   * @param amount      The amount to pay.
+   * @param currency    In which currency is the amount, e.g. "EUR"
+   * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description Description of the payment shown in the form.
+   * @return PayWithTokenAndCvcParameters
+   */
   public PayWithTokenAndCvcParameters payWithTokenAndCvcParameters(String successUrl, String failureUrl, String cancelUrl,
                                                                    String language, String amount, String currency,
                                                                    String orderId, String description, UUID token) {
@@ -71,6 +119,19 @@ public class FormBuilder {
         failureUrl, cancelUrl, language, amount, currency, orderId, description, token);
   }
 
+  /**
+   * Get parameters for MobilePay request.
+   *
+   * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param language    The language the form is displayed in.
+   * @param amount      The amount to pay.
+   * @param currency    In which currency is the amount, e.g. "EUR"
+   * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description Description of the payment shown in the form.
+   * @return MobilePayParametersBuilder
+   */
   public MobilePayParametersBuilder mobilePayParametersBuilder(String successUrl, String failureUrl, String cancelUrl,
                                                                String language, String amount, String currency,
                                                                String orderId, String description) {

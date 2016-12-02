@@ -15,10 +15,4 @@ public class PayWithTokenAndCvcParameters extends GenericPaymentParametersBuilde
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_TOKEN, token.toString()));
     serviceUri = "/form/view/pay_with_token_and_cvc";
   }
-
-  public PayWithTokenAndCvcParameters use3ds(Boolean x) {
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_USE_THREE_D_SECURE, x.toString()));
-    return this;
-  }
-
 }

@@ -59,6 +59,11 @@ public class GenericFormBuilder {
     return nameValuePairs;
   }
 
+  /**
+   * Builds form parameters
+   *
+   * @return FormContainer
+   */
   public FormContainer build() {
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, createSignature()));
     return new FormContainer(this.method, this.baseUrl, serviceUri, nameValuePairs, requestId);
