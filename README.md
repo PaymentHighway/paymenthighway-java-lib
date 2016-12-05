@@ -9,6 +9,9 @@ For full documentation on the PaymentHighway API visit our developer website: ht
 
 The Java Client is a Maven project built so that it will work on Java 1.7 and Java 1.8. It requires the following third party frameworks: Apache HttpComponents and Jackson JSON. It also uses JUnit test packages.
 
+**_Note:_**
+At version 1.5 we changed `FormBuilder` to use _bulder pattern_. Old methods are deprecated. From now on optional parameters can be added to forms more easily. 
+
 ## Installation
 
 ### Maven
@@ -32,7 +35,7 @@ Add as dependency:
         <dependency>
             <groupId>io.paymenthighway</groupId>
             <artifactId>paymenthighway</artifactId>
-            <version>1.4-SNAPSHOT</version>
+            <version>1.5-SNAPSHOT</version>
         </dependency>
     </dependencies>
 ```
@@ -66,6 +69,7 @@ Contains classes that take care of keys and signatures.
 
 # Overview
 
+## FormBuilder
 Start with building the HTTP form parameters by using the FormParameterBuilder. 
 
 - `FormBuilder`
@@ -74,7 +78,7 @@ Create an instance of the builder, then use the generate methods to receive a li
 
     import io.paymenthighway.FormBuilder;
 
-Initializing the builder
+### Initializing the builder
 
 
     String method = "POST";
@@ -86,14 +90,14 @@ Initializing the builder
 
     FormBuilder formBuilder = new FormBuilder(method, signatureKeyId, signatureSecret, account, merchant, serviceUrl);
     
-Example common parameters for the following form generation functions
+### Example common parameters for the following form generation functions
  
     String successUrl = "https://example.com/success";
     String failureUrl = "https://example.com/failure";
     String cancelUrl = "https://example.com/cancel";
     String language = "EN";
 
-Example generateAddCardParameters
+### Example add card parameters
 
     FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl, language).build()
 
@@ -108,8 +112,24 @@ Example generateAddCardParameters
         field.getName();
         field.getValue();
     }
+#### Optional parameters
+ Parameter | type 
+-----------|------
+acceptCvcRequired | bool
+skipFormNotifications | bool
+exitIframeOnResult | bool
+exitIframeOn3ds | bool
+use3ds | bool
 
-Example generatePaymentParameters 
+**_Example: How to use optional parameters_**
+    
+    FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl, language)
+        .skipFormNotifications(true)
+        .exitIframeOnResult(true)
+        .use3ds(false)
+        .build()
+    
+### Example payment parameters 
 
     String amount = "1990";
     String currency = "EUR";
@@ -131,8 +151,15 @@ Example generatePaymentParameters
         field.getName();
         field.getValue();
     }
-        	
-Example generateGetAddCardAndPaymentParameters
+#### Optional parameters
+ Parameter | type 
+-----------|------
+skipFormNotifications | bool
+exitIframeOnResult | bool
+exitIframeOn3ds | bool
+use3ds | bool        	
+
+### Example add card and payment parameters
 
     String amount = "1990";
     String currency = "EUR";
@@ -154,8 +181,46 @@ Example generateGetAddCardAndPaymentParameters
         field.getName();
         field.getValue();
     }
+#### Optional parameters
+ Parameter | type 
+-----------|------
+skipFormNotifications | bool
+exitIframeOnResult | bool
+exitIframeOn3ds | bool
+use3ds | bool        
 
-Example MobilePay form payment
+### Example pay with token and CVC
+    String amount = "1990";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String description = "A Box of Dreams. 19,90€";
+    UUID token = UUID.fromString("*TOKEN*");
+    
+    FormContainer formContainer = formBuilder.payWithTokenAndCvcParameters(
+                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description, token)
+                .build();
+
+    // read form parameters
+    String httpMethod = formContainer.getMethod();
+    String actionUrl = formContainer.getAction();
+    List<NameValuePair> fields = formContainer.getFields();
+
+    System.out.println("Initialized form with request-id: " + formContainer.getRequestId());
+
+    for (NameValuePair field : fields) {
+        field.getName();
+        field.getValue();
+    }
+    
+#### Optional parameters
+ Parameter | type 
+-----------|------
+skipFormNotifications | bool
+exitIframeOnResult | bool
+exitIframeOn3ds | bool
+use3ds | bool         
+
+### Example MobilePay form payment
 
     String amount = "1990";
     String currency = "EUR";
@@ -177,6 +242,15 @@ Example MobilePay form payment
         field.getName();
         field.getValue();
     }
+#### Optional parameters
+ Parameter | type |
+-----------|------| -------
+exitIframeOnResult | bool |
+shopLogoUrl | string | The logo must be 250x250 pixel in .png format and must be hosted on a HTTPS (secure) server.
+phoneNumber | string | Customer phone number with country code e.q. +358449876543.
+shopName | string |  Max 100 AN. If omitted, the merchant name from PH is used.
+subMerchantId | string | Max 15 AN. Should only be used by a Payment Facilitator customer
+subMerchantName | string | Max 21 AN. Should only be used by a Payment Facilitator customer
 
 _MobilePay payment is to be committed as any other Form Payment_
 
@@ -186,7 +260,7 @@ In order to charge a card given in the Form API, the corresponding transaction i
 
 In addition, after the user is redirected to one of your provided success, failure or cancel URLs, you should validate the request parameters and the signature.
 
-Example validateFormRedirect
+### Example validateFormRedirect
 
     SecureSigner secureSigner = new SecureSigner(signatureKeyId, signatureSecret);
 
@@ -195,7 +269,7 @@ Example validateFormRedirect
     }
 
 
-- `PaymentApi`
+## PaymentApi
 
 In order to do safe transactions, an execution model is used where the first call to /transaction acquires a financial transaction handle, later referred as “ID”, which ensures the transaction is executed exactly once. Afterwards it is possible to execute a debit transaction by using the received id handle. If the execution fails, the command can be repeated in order to confirm the transaction with the particular id has been processed. After executing the command, the status of the transaction can be checked by executing the PaymentAPI.transactionStatus("id") request. 
 
@@ -203,7 +277,7 @@ In order to be sure that a tokenized card is valid and is able to process paymen
 
     import io.paymenthighway.PaymentAPI;
 
-Initializing the Payment API
+### Initializing the Payment API
 
     String serviceUrl = "https://v1-hub-staging.sph-test-solinor.com";
     String signatureKeyId = "testKey";
@@ -215,22 +289,22 @@ Initializing the Payment API
         // Payment API usage
     }
         
-Example Commit Form Transaction
+### Example Commit Form Transaction
 
     String transactionId = ""; // get sph-transaction-id as a GET parameter
     String amount = "1999";
     String currency = "EUR";
     CommitTransactionResponse response = paymentAPI.commitTransaction(transactionId, amount, currency);
 
-Example Init transaction
+### Example Init transaction
 
 	InitTransactionResponse initResponse = paymentAPI.initTransaction();
 	
-Example Tokenize (get the actual card token by using token id)
+### Example Tokenize (get the actual card token by using token id)
 
 	TokenizationResponse tokenResponse = paymentAPI.tokenize("tokenizationId");
 			
-Example Debit with Token
+### Example Debit with Token
 
     Token token = new Token("id");
     long amount = 1095;
@@ -238,19 +312,19 @@ Example Debit with Token
     TransactionRequest transaction = new TransactionRequest.Builder(token, amount, currency).build();
     TransactionResponse response = paymentAPI.debitTransaction("transactionId", transaction);
 
-Example Revert
+### Example Revert
 
 	TransactionResponse response = paymentAPI.revertTransaction("transactionId", "amount");
 
-Example Transaction Status
+### Example Transaction Status
 
 	TransactionStatusResponse status = paymentAPI.transactionStatus("transactionId");
 	
-Example Daily Batch Report
+### Example Daily Batch Report
 
 	ReportResponse report = paymentAPI.fetchDailyReport("yyyyMMdd");
 	
-Example Order Status
+### Example Order Status
 
     OrderSearchResponse orderSearchResponse = paymentAPI.searchOrders("order");
 	
