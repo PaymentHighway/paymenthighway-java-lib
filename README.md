@@ -95,7 +95,7 @@ Example common parameters for the following form generation functions
 
 Example generateAddCardParameters
 
-	FormContainer formContainer = formBuilder.generateAddCardParameters(successUrl, failureUrl, cancelUrl, language);
+    FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl, language).build()
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
@@ -116,16 +116,9 @@ Example generatePaymentParameters
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
 
-    FormContainer formContainer = formBuilder.generatePaymentParameters(
-      successUrl,
-      failureUrl,
-      cancelUrl,
-      language,
-      amount,
-      currency,
-      orderId,
-      description
-    );
+     FormContainer formContainer = formBuilder.paymentParameters(
+                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                .build();
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
@@ -146,16 +139,9 @@ Example generateGetAddCardAndPaymentParameters
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
 
-    FormContainer formContainer = formBuilder.generateAddCardAndPaymentParameters(
-      successUrl,
-      failureUrl,
-      cancelUrl,
-      language,
-      amount,
-      currency,
-      orderId,
-      description
-    );
+    FormContainer formContainer = formBuilder.addCardAndPaymentParameters(
+                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                .build();
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
@@ -176,17 +162,9 @@ Example MobilePay form payment
     String orderId = "1000123A";
     String description = "A Box of Dreams. 19,90€";
 
-    FormContainer formContainer = formBuilder.generatePayWithMobilePayParameters(
-      successUrl,
-      failureUrl,
-      cancelUrl,
-      language,
-      amount,
-      currency,
-      orderId,
-      description,
-      null
-    );
+    FormContainer formContainer = formBuilder.mobilePayParametersBuilder(successUrl, failureUrl, cancelUrl,
+                language, amount, currency, orderId, description)
+                .build();
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
