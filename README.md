@@ -243,8 +243,8 @@ use3ds | bool
         field.getValue();
     }
 #### Optional parameters
- Parameter | type |
------------|------| -------
+ Parameter | type | |
+-----------|------| ------- |
 exitIframeOnResult | bool |
 shopLogoUrl | string | The logo must be 250x250 pixel in .png format and must be hosted on a HTTPS (secure) server.
 phoneNumber | string | Customer phone number with country code e.q. +358449876543.
