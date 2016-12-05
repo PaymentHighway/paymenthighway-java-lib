@@ -10,7 +10,7 @@ For full documentation on the PaymentHighway API visit our developer website: ht
 The Java Client is a Maven project built so that it will work on Java 1.7 and Java 1.8. It requires the following third party frameworks: Apache HttpComponents and Jackson JSON. It also uses JUnit test packages.
 
 **_Note:_**
-At version 1.5 we changed `FormBuilder` to use _bulder pattern_. Old methods are deprecated. From now on optional parameters can be added to forms more easily (see [Example: How to use optional parameters](#Example: How to use optional parameters)). 
+At version 1.5 we changed `FormBuilder` to use _bulder pattern_. Old methods are deprecated. From now on optional parameters can be added to forms more easily (see [Example: How to use optional parameters](#example)). 
 
 ## Installation
 
@@ -121,7 +121,7 @@ exitIframeOnResult | bool
 exitIframeOn3ds | bool
 use3ds | bool
 
-#### Example: How to use optional parameters
+#### <a name="example"></a> Example: How to use optional parameters
     
     FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl, language)
         .skipFormNotifications(true)
