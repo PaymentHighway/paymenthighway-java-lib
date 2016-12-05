@@ -25,6 +25,6 @@ public final class FormBuilderConstants {
   public final static String SPH_SHOP_LOGO_URL = "sph-shop-logo-url";
   public final static String SPH_MOBILEPAY_PHONE_NUMBER = "sph-mobilepay-phone-number";
   public final static String SPH_MOBILEPAY_SHOP_NAME = "sph-mobilepay-shop-name";
-  public final static String SPH_SUB_MERCHANT_NAME = "sph-sub.merchant-name";
-  public final static String SPH_SUB_MERCHANT_ID = "sph-sub.merchant-id";
+  public final static String SPH_SUB_MERCHANT_NAME = "sph-sub-merchant-name";
+  public final static String SPH_SUB_MERCHANT_ID = "sph-sub-merchant-id";
 }
