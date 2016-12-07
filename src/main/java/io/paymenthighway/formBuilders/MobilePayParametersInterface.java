@@ -3,7 +3,6 @@ package io.paymenthighway.formBuilders;
 import io.paymenthighway.FormContainer;
 
 public interface MobilePayParametersInterface {
-    MobilePayParametersInterface skipFormNotifications(Boolean skipFormNotifications);
     /**
      * Exit from iframe after a result
      *

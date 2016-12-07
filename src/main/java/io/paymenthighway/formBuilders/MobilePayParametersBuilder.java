@@ -2,14 +2,28 @@ package io.paymenthighway.formBuilders;
 
 import org.apache.http.message.BasicNameValuePair;
 
-public class MobilePayParametersBuilder extends GenericPaymentParametersBuilder<MobilePayParametersBuilder> implements MobilePayParametersInterface{
+public class MobilePayParametersBuilder extends GenericFormBuilder<MobilePayParametersBuilder> implements MobilePayParametersInterface{
 
     public MobilePayParametersBuilder(String method, String signatureKeyId, String signatureSecret, String account, String merchant,
                                       String baseUrl, String successUrl, String failureUrl, String cancelUrl,
                                       String amount, String currency, String orderId, String description) {
-        super(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl, failureUrl, cancelUrl,
-                amount, currency, orderId, description);
+        super(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl, failureUrl, cancelUrl);
+        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
+        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
+        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
+        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
         serviceUri = "/form/view/mobilepay";
+    }
+
+    /**
+     * Exit from iframe after a result
+     *
+     * @param exitIframeOnResult Exit from iframe after a result.
+     * @return GenericCardFormBuilder
+     */
+    public MobilePayParametersInterface exitIframeOnResult(Boolean exitIframeOnResult) {
+        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+        return this;
     }
 
     /**
