@@ -51,13 +51,11 @@ public class FormBuilder {
    * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
    * @param cancelUrl  The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language   The language the form is displayed in.
-   * @return AddCardParameters
+   * @return AddCardParametersInterface
    */
-  public AddCardParameters addCardParameters(String successUrl, String failureUrl,
-                                             String cancelUrl, String language) {
+  public AddCardParametersInterface addCardParameters(String successUrl, String failureUrl, String cancelUrl) {
     return new AddCardParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
-        failureUrl, cancelUrl, language);
+        failureUrl, cancelUrl);
   }
 
   /**
@@ -66,17 +64,16 @@ public class FormBuilder {
    * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
    * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language    The language the form is displayed in.
    * @param amount      The amount to pay.
    * @param currency    In which currency is the amount, e.g. "EUR"
    * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
    * @param description Description of the payment shown in the form.
-   * @return PaymentParameters
+   * @return CardFormParametersInterface
    */
-  public PaymentParameters paymentParameters(String successUrl, String failureUrl, String cancelUrl, String language,
-                                             String amount, String currency, String orderId, String description) {
+  public CardFormParametersInterface paymentParameters(String successUrl, String failureUrl, String cancelUrl, String amount,
+                                             String currency, String orderId, String description) {
     return new PaymentParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
-        failureUrl, cancelUrl, language, amount, currency, orderId, description);
+        failureUrl, cancelUrl, amount, currency, orderId, description);
   }
 
   /**
@@ -85,18 +82,16 @@ public class FormBuilder {
    * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
    * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language    The language the form is displayed in.
    * @param amount      The amount to pay.
    * @param currency    In which currency is the amount, e.g. "EUR"
    * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
    * @param description Description of the payment shown in the form.
-   * @return AddCardAndPaymentParameters
+   * @return CardFormParametersInterface
    */
-  public AddCardAndPaymentParameters addCardAndPaymentParameters(String successUrl, String failureUrl, String cancelUrl,
-                                                                 String language, String amount, String currency,
-                                                                 String orderId, String description) {
+  public CardFormParametersInterface addCardAndPaymentParameters(String successUrl, String failureUrl, String cancelUrl,
+                                                                 String amount, String currency, String orderId, String description) {
     return new AddCardAndPaymentParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
-        failureUrl, cancelUrl, language, amount, currency, orderId, description);
+        failureUrl, cancelUrl, amount, currency, orderId, description);
   }
   /**
    * Get parameters for Pay with Token and CVC request.
@@ -105,18 +100,17 @@ public class FormBuilder {
    * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
    * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language    The language the form is displayed in.
    * @param amount      The amount to pay.
    * @param currency    In which currency is the amount, e.g. "EUR"
    * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
    * @param description Description of the payment shown in the form.
-   * @return PayWithTokenAndCvcParameters
+   * @return CardFormParametersInterface
    */
-  public PayWithTokenAndCvcParameters payWithTokenAndCvcParameters(String successUrl, String failureUrl, String cancelUrl,
-                                                                   String language, String amount, String currency,
-                                                                   String orderId, String description, UUID token) {
+  public CardFormParametersInterface payWithTokenAndCvcParameters(String successUrl, String failureUrl, String cancelUrl,
+                                                                   String amount, String currency, String orderId,
+                                                                   String description, UUID token) {
     return new PayWithTokenAndCvcParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
-        failureUrl, cancelUrl, language, amount, currency, orderId, description, token);
+        failureUrl, cancelUrl, amount, currency, orderId, description, token);
   }
 
   /**
@@ -125,18 +119,16 @@ public class FormBuilder {
    * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
    * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
-   * @param language    The language the form is displayed in.
    * @param amount      The amount to pay.
    * @param currency    In which currency is the amount, e.g. "EUR"
    * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
    * @param description Description of the payment shown in the form.
-   * @return MobilePayParametersBuilder
+   * @return MobilePayParametersInterface
    */
-  public MobilePayParametersBuilder mobilePayParametersBuilder(String successUrl, String failureUrl, String cancelUrl,
-                                                               String language, String amount, String currency,
-                                                               String orderId, String description) {
+  public MobilePayParametersInterface mobilePayParametersBuilder(String successUrl, String failureUrl, String cancelUrl,
+                                                               String amount, String currency, String orderId, String description) {
     return new MobilePayParametersBuilder(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
-        failureUrl, cancelUrl, language, amount, currency, orderId, description);
+        failureUrl, cancelUrl, amount, currency, orderId, description);
   }
 
   /**

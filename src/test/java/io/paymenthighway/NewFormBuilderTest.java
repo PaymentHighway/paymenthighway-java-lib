@@ -3,7 +3,6 @@ package io.paymenthighway;
 
 import io.paymenthighway.connect.FormAPIConnection;
 import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.junit.*;
 
 import java.io.IOException;
@@ -74,14 +73,13 @@ public class NewFormBuilderTest {
         String successUrl = "https://www.paymenthighway.fi/";
         String failureUrl = "https://paymenthighway.fi/index-en.html";
         String cancelUrl = "https://solinor.fi";
-        String language = "EN";
         Boolean acceptCvcRequired = false;
 
         FormBuilder formBuilder = new FormBuilder(method,
                 this.signatureKeyId, this.signatureSecret, account, merchant,
                 this.serviceUrl);
 
-        FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl, language)
+        FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl)
                 .acceptCvcRequired(acceptCvcRequired)
                 .build();
 
@@ -121,8 +119,9 @@ public class NewFormBuilderTest {
                 this.signatureKeyId, this.signatureSecret, account, merchant,
                 this.serviceUrl);
 
-        FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl, language)
+        FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl)
                 .acceptCvcRequired(acceptCvcRequired)
+                .language(language)
                 .build();
 
         FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
@@ -153,7 +152,6 @@ public class NewFormBuilderTest {
         String successUrl = "https://www.paymenthighway.fi/";
         String failureUrl = "http://www.solinor.com";
         String cancelUrl = "https://solinor.fi";
-        String language = "EN";
         Boolean acceptCvcRequired = true;
         Boolean skipFormNotifications = true;
         Boolean exitIframeOnResult = true;
@@ -163,7 +161,7 @@ public class NewFormBuilderTest {
                 this.signatureKeyId, this.signatureSecret, account, merchant,
                 this.serviceUrl);
 
-        FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl, language)
+        FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl)
                 .acceptCvcRequired(acceptCvcRequired)
                 .skipFormNotifications(skipFormNotifications)
                 .exitIframeOnResult(exitIframeOnResult)
@@ -202,7 +200,8 @@ public class NewFormBuilderTest {
                 this.signatureKeyId, this.signatureSecret, account, merchant,
                 this.serviceUrl);
 
-        FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl, language)
+        FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl)
+                .language(language)
                 .use3ds(use3ds)
                 .build();
 
@@ -233,14 +232,13 @@ public class NewFormBuilderTest {
         String successUrl = "https://www.paymenthighway.fi/";
         String failureUrl = "https://paymenthighway.fi/index-en.html";
         String cancelUrl = "https://solinor.fi";
-        String language = "EN";
 
         // create the payment highway request parameters
         FormBuilder formBuilder = new FormBuilder(method,
                 this.signatureKeyId, this.signatureSecret, account, merchant,
                 this.serviceUrl);
 
-        FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl, language).build();
+        FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl).build();
 
         List<NameValuePair> nameValuePairs = formContainer.getFields();
 
@@ -280,7 +278,8 @@ public class NewFormBuilderTest {
                 this.serviceUrl);
 
         FormContainer formContainer = formBuilder.paymentParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
+                .language(language)
                 .build();
 
         // test that the result has a signature
@@ -314,7 +313,6 @@ public class NewFormBuilderTest {
         String successUrl = "https://www.paymenthighway.fi/";
         String failureUrl = "http://www.solinor.com";
         String cancelUrl = "https://solinor.fi";
-        String language = "EN";
         String description = "this is payment description";
 
         // create the payment highway request parameters
@@ -323,7 +321,7 @@ public class NewFormBuilderTest {
                 this.serviceUrl);
 
         FormContainer formContainer = formBuilder.paymentParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
                 .build();
 
         // test that Payment Highway accepts this as a request
@@ -368,8 +366,9 @@ public class NewFormBuilderTest {
                 this.serviceUrl);
 
         FormContainer formContainer = formBuilder.paymentParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
                 .skipFormNotifications(skipFormNotifications)
+                .language(language)
                 .exitIframeOnResult(exitIframeOnResult)
                 .exitIframeOn3ds(exitIframeOn3ds)
                 .build();
@@ -410,8 +409,9 @@ public class NewFormBuilderTest {
                 this.serviceUrl);
 
         FormContainer formContainer = formBuilder.paymentParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
                 .use3ds(use3ds)
+                .language(language)
                 .build();
 
         FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
@@ -440,7 +440,6 @@ public class NewFormBuilderTest {
         String successUrl = "https://www.paymenthighway.fi/";
         String failureUrl = "https://paymenthighway.fi/index-en.html";
         String cancelUrl = "https://solinor.fi";
-        String language = "EN";
         String description = "this is payment description";
 
         // create the payment highway request parameters
@@ -449,7 +448,7 @@ public class NewFormBuilderTest {
                 this.serviceUrl);
 
         FormContainer formContainer = formBuilder.addCardAndPaymentParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
                 .build();
 
         // test that the result has a signature
@@ -493,7 +492,8 @@ public class NewFormBuilderTest {
                 this.serviceUrl);
 
         FormContainer formContainer = formBuilder.addCardAndPaymentParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
+                .language(language)
                 .build();
 
         // test that Payment Highway accepts this as a request
@@ -538,10 +538,11 @@ public class NewFormBuilderTest {
                 this.serviceUrl);
 
         FormContainer formContainer = formBuilder.addCardAndPaymentParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
                 .skipFormNotifications(skipFormNotifications)
                 .exitIframeOnResult(exitIframeOnResult)
                 .exitIframeOn3ds(exitIframeOn3ds)
+                .language(language)
                 .build();
 
         // test that Payment Highway accepts this as a request
@@ -571,7 +572,6 @@ public class NewFormBuilderTest {
         String successUrl = "https://www.paymenthighway.fi/";
         String failureUrl = "http://www.solinor.com";
         String cancelUrl = "https://solinor.fi";
-        String language = "EN";
         String description = "this is payment description";
         Boolean skipFormNotifications = true;
         Boolean exitIframeOnResult = true;
@@ -584,7 +584,7 @@ public class NewFormBuilderTest {
                 this.serviceUrl);
 
         FormContainer formContainer = formBuilder.addCardAndPaymentParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
                 .skipFormNotifications(skipFormNotifications)
                 .exitIframeOnResult(exitIframeOnResult)
                 .exitIframeOn3ds(exitIframeOn3ds)
@@ -631,7 +631,8 @@ public class NewFormBuilderTest {
                 this.serviceUrl);
 
         FormContainer formContainer = formBuilder.payWithTokenAndCvcParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description, token)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description, token)
+                .language(language)
                 .build();
 
         // test that Payment Highway accepts this as a request
@@ -664,7 +665,6 @@ public class NewFormBuilderTest {
         String successUrl = "https://www.paymenthighway.fi/";
         String failureUrl = "http://www.solinor.com";
         String cancelUrl = "https://solinor.fi";
-        String language = "EN";
         String description = "this is payment description";
         UUID token = UUID.fromString("71435029-fbb6-4506-aa86-8529efb640b0");
         Boolean skipFormNotifications = true;
@@ -677,7 +677,7 @@ public class NewFormBuilderTest {
                 this.serviceUrl);
 
         FormContainer formContainer = formBuilder.payWithTokenAndCvcParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description, token)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description, token)
                 .skipFormNotifications(skipFormNotifications)
                 .exitIframeOnResult(exitIframeOnResult)
                 .exitIframeOn3ds(exitIframeOn3ds)
@@ -722,7 +722,8 @@ public class NewFormBuilderTest {
                 this.serviceUrl);
 
         FormContainer formContainer = formBuilder.payWithTokenAndCvcParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description, token)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description, token)
+                .language(language)
                 .skipFormNotifications(skipFormNotifications)
                 .exitIframeOn3ds(exitIframeOn3ds)
                 .use3ds(use3ds)
@@ -754,16 +755,15 @@ public class NewFormBuilderTest {
         String successUrl = "https://www.paymenthighway.fi/";
         String failureUrl = "http://www.solinor.com";
         String cancelUrl = "https://solinor.fi";
-        String language = "EN";
         String description = "this is payment description";
 
         FormBuilder formBuilder = new FormBuilder(method,
                 this.signatureKeyId, this.signatureSecret, account, merchant,
                 this.serviceUrl);
         FormContainer formContainer = formBuilder.mobilePayParametersBuilder(successUrl, failureUrl, cancelUrl,
-                language, amount, currency, orderId, description)
+                amount, currency, orderId, description)
                 .build();
-        assertTrue(formContainer.getFields().size() == 14);
+        assertTrue(formContainer.getFields().size() == 13);
     }
 
 
@@ -792,7 +792,8 @@ public class NewFormBuilderTest {
                 this.signatureKeyId, this.signatureSecret, account, merchant,
                 this.serviceUrl);
         FormContainer formContainer = formBuilder.mobilePayParametersBuilder(successUrl, failureUrl, cancelUrl,
-                language, amount, currency, orderId, description)
+                amount, currency, orderId, description)
+                .language(language)
                 .exitIframeOnResult(exitIframeOnResult)
                 .shopLogoUrl(logoUrl)
                 .phoneNumber(phoneNumber)

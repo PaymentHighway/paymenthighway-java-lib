@@ -3,12 +3,11 @@ package io.paymenthighway.formBuilders;
 
 import org.apache.http.message.BasicNameValuePair;
 
-public class GenericCardFormBuilder extends GenericFormBuilder {
+public class GenericCardFormBuilder<T> extends GenericFormBuilder<T> {
 
     public GenericCardFormBuilder(String method, String signatureKeyId, String signatureSecret, String account,
-                                  String merchant, String baseUrl, String successUrl, String failureUrl, String cancelUrl,
-                                  String language) {
-        super(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl, failureUrl, cancelUrl, language);
+                                  String merchant, String baseUrl, String successUrl, String failureUrl, String cancelUrl) {
+        super(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl, failureUrl, cancelUrl);
     }
 
     /**
@@ -17,9 +16,9 @@ public class GenericCardFormBuilder extends GenericFormBuilder {
      * @param skipFormNotifications Skip notifications displayed on the Payment Highway form.
      * @return GenericCardFormBuilder
      */
-    public GenericCardFormBuilder skipFormNotifications(Boolean skipFormNotifications) {
+    public T skipFormNotifications(Boolean skipFormNotifications) {
         nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
-        return this;
+        return (T) this;
     }
 
     /**
@@ -28,9 +27,9 @@ public class GenericCardFormBuilder extends GenericFormBuilder {
      * @param exitIframeOnResult Exit from iframe after a result.
      * @return GenericCardFormBuilder
      */
-    public GenericCardFormBuilder exitIframeOnResult(Boolean exitIframeOnResult) {
+    public T exitIframeOnResult(Boolean exitIframeOnResult) {
         nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
-        return this;
+        return(T) this;
     }
 
     /**
@@ -39,9 +38,9 @@ public class GenericCardFormBuilder extends GenericFormBuilder {
      * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS.
      * @return GenericCardFormBuilder
      */
-    public GenericCardFormBuilder exitIframeOn3ds(Boolean exitIframeOn3ds) {
+    public T exitIframeOn3ds(Boolean exitIframeOn3ds) {
         nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
-        return this;
+        return (T) this;
     }
 
     /**
@@ -50,8 +49,8 @@ public class GenericCardFormBuilder extends GenericFormBuilder {
      * @param use3ds Force enable/disable 3ds.
      * @return GenericCardFormBuilder
      */
-    public GenericCardFormBuilder use3ds(Boolean use3ds) {
+    public T use3ds(Boolean use3ds) {
         nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_USE_THREE_D_SECURE, use3ds.toString()));
-        return this;
+        return (T) this;
     }
 }

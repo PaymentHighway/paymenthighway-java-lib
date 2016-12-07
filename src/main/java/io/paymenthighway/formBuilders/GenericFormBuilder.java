@@ -9,7 +9,7 @@ import org.apache.http.message.BasicNameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenericFormBuilder {
+public class GenericFormBuilder<T> {
   protected String method;
   protected String signatureKeyId;
   protected String signatureSecret;
@@ -27,7 +27,7 @@ public class GenericFormBuilder {
   private String requestId;
 
   public GenericFormBuilder(String method, String signatureKeyId, String signatureSecret, String account, String merchant,
-                            String baseUrl, String successUrl, String failureUrl, String cancelUrl, String language) {
+                            String baseUrl, String successUrl, String failureUrl, String cancelUrl) {
     this.method = method;
     this.signatureKeyId = signatureKeyId;
     this.signatureSecret = signatureSecret;
@@ -37,13 +37,12 @@ public class GenericFormBuilder {
     this.successUrl = successUrl;
     this.failureUrl = failureUrl;
     this.cancelUrl = cancelUrl;
-    this.language = language;
     this.requestId = PaymentHighwayUtility.createRequestId();
     this.ss = new SecureSigner(signatureKeyId, signatureSecret);
-    this.nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl, cancelUrl, language, requestId);
+    this.nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl, cancelUrl, requestId);
   }
 
-  protected List<NameValuePair> createCommonNameValuePairs(String successUrl, String failureUrl, String cancelUrl, String language, String requestId) {
+  protected List<NameValuePair> createCommonNameValuePairs(String successUrl, String failureUrl, String cancelUrl, String requestId) {
 
     List<NameValuePair> nameValuePairs = new ArrayList<>();
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_API_VERSION, "20151028"));
@@ -54,9 +53,19 @@ public class GenericFormBuilder {
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_FAILURE_URL, failureUrl));
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SUCCESS_URL, successUrl));
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_REQUEST_ID, requestId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.LANGUAGE, language));
 
     return nameValuePairs;
+  }
+
+  /**
+   * Set PaymentHighway form language
+   *
+   * @param language Two character language code e.q. FI or EN. If omitted, default language from user's browser's settings is used.
+   * @return GenericFormBuilder
+   */
+  public T language(String language) {
+    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.LANGUAGE, language));
+    return (T) this;
   }
 
   /**
