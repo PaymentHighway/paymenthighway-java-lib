@@ -95,11 +95,10 @@ Create an instance of the builder, then use the generate methods to receive a li
     String successUrl = "https://example.com/success";
     String failureUrl = "https://example.com/failure";
     String cancelUrl = "https://example.com/cancel";
-    String language = "EN";
 
 ### Example add card parameters
 
-    FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl, language).build()
+    FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl).build()
 
     // read form parameters
     String httpMethod = formContainer.getMethod();
@@ -123,7 +122,8 @@ use3ds | bool
 
 #### <a name="example"></a> Example: How to use optional parameters
     
-    FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl, language)
+    FormContainer formContainer = formBuilder.addCardParameters(successUrl, failureUrl, cancelUrl)
+        .language("EN")
         .skipFormNotifications(true)
         .exitIframeOnResult(true)
         .use3ds(false)
@@ -137,7 +137,7 @@ use3ds | bool
     String description = "A Box of Dreams. 19,90€";
 
      FormContainer formContainer = formBuilder.paymentParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
                 .build();
 
     // read form parameters
@@ -167,7 +167,7 @@ use3ds | bool
     String description = "A Box of Dreams. 19,90€";
 
     FormContainer formContainer = formBuilder.addCardAndPaymentParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
                 .build();
 
     // read form parameters
@@ -197,7 +197,7 @@ use3ds | bool
     UUID token = UUID.fromString("*TOKEN*");
     
     FormContainer formContainer = formBuilder.payWithTokenAndCvcParameters(
-                successUrl, failureUrl, cancelUrl, language, amount, currency, orderId, description, token)
+                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description, token)
                 .build();
 
     // read form parameters
@@ -228,7 +228,7 @@ use3ds | bool
     String description = "A Box of Dreams. 19,90€";
 
     FormContainer formContainer = formBuilder.mobilePayParametersBuilder(successUrl, failureUrl, cancelUrl,
-                language, amount, currency, orderId, description)
+                amount, currency, orderId, description)
                 .build();
 
     // read form parameters
