@@ -61,7 +61,7 @@ public class GenericFormBuilder<T> {
    * Set PaymentHighway form language
    *
    * @param language Two character language code e.q. FI or EN. If omitted, default language from user's browser's settings is used.
-   * @return GenericFormBuilder
+   * @return
    */
   public T language(String language) {
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.LANGUAGE, language));

@@ -19,7 +19,7 @@ public class MobilePayParametersBuilder extends GenericFormBuilder<MobilePayPara
      * Exit from iframe after a result
      *
      * @param exitIframeOnResult Exit from iframe after a result.
-     * @return GenericCardFormBuilder
+     * @return MobilePayParametersInterface
      */
     public MobilePayParametersInterface exitIframeOnResult(Boolean exitIframeOnResult) {
         nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));

@@ -14,7 +14,7 @@ public class AddCardParameters extends GenericCardFormBuilder<AddCardParameters>
      * Get parameters for Add Card request with the possibility to accept cards that require CVC.
      *
      * @param acceptCvcRequired Accept a payment card token even if the card requires CVC for payments.
-     * @return AddCardParameters
+     * @return AddCardParametersInterface
      */
     public AddCardParametersInterface acceptCvcRequired(Boolean acceptCvcRequired) {
         nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
