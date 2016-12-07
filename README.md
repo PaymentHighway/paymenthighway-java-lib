@@ -254,6 +254,14 @@ subMerchantName | string | Max 21 AN. Should only be used by a Payment Facilitat
 
 _MobilePay payment is to be committed as any other Form Payment_
 
+##### About shop logo in MobilePay
+* The logo must be 250x250 pixel in .png format. 
+* MPO will show a default logo in the app if this is empty or the image location doesn’t exist. 
+* Once a ShopLogoURL has been sent to MPOnline the .png-file on that URL must never be changed. If the shop wants a new (or more than one) logo, a new ShopLogoURL must be used. 
+* The logo must be hosted on a HTTPS (secure) server.
+
+---
+
 Each method returns a FormContainer object which provides required hidden fields for the HTML form to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, which are included in the FormContainer fields.
 
 In order to charge a card given in the Form API, the corresponding transaction id must be committed by using Payment API.
