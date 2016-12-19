@@ -498,7 +498,7 @@ public class PaymentAPIConnectionTest {
     TokenizationResponse tokenResponse = createAndTestTokenizationId("4324643990016048", "11", "2017", "048");
 
     assertEquals("yes", tokenResponse.getCard().getCvcRequired());
-    assertEquals("unknown", tokenResponse.getCard().getFunding());
+    assertEquals("debit", tokenResponse.getCard().getFunding());
     assertEquals("unknown", tokenResponse.getCard().getCategory());
 
     UUID transactionId = createAndTestTransactionInit();
