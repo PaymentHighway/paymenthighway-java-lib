@@ -4,9 +4,12 @@
   <groupId>io.paymenthighway</groupId>
   <artifactId>paymenthighway</artifactId>
   <packaging>jar</packaging>
-  <version>1.5-SNAPSHOT</version>
+  <version>1.5</version>
 
   <name>Payment Highway Java Library</name>
+
+  <description>Payment Highway Java Library</description>
+
   <url>https://www.paymenthighway.fi/en/</url>
 
   <scm>
@@ -37,6 +40,13 @@
       <url>https://github.com/Kostersson</url>
     </developer>
   </developers>
+
+  <licenses>
+    <license>
+      <name>MIT</name>
+      <url>https://github.com/solinor/paymenthighway-java-lib/blob/master/LICENSE</url>
+    </license>
+  </licenses>
 
   <properties>
     <maven.compiler.source>1.7</maven.compiler.source>
@@ -98,6 +108,7 @@
           <executions>
             <execution>
               <id>attach-sources</id>
+              <phase>deploy</phase>
               <goals>
                 <goal>jar</goal>
               </goals>
@@ -116,7 +127,7 @@
           <executions>
             <execution>
               <id>bundle-sources</id>
-              <phase>package</phase>
+              <phase>deploy</phase>
               <goals>
                 <goal>jar</goal>
               </goals>
@@ -126,7 +137,7 @@
         <plugin>
           <groupId>org.sonatype.plugins</groupId>
           <artifactId>nexus-staging-maven-plugin</artifactId>
-          <version>1.6.3</version>
+          <version>1.6.7</version>
           <extensions>true</extensions>
           <configuration>
             <serverId>ossrh</serverId>
@@ -134,6 +145,31 @@
             <autoReleaseAfterClose>false</autoReleaseAfterClose>
           </configuration>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin> 
+         <!-- explicitly define maven-deploy-plugin after other to force exec order -->
+         <artifactId>maven-deploy-plugin</artifactId> 
+         <executions> 
+           <execution> 
+             <id>deploy</id>
+             <phase>deploy</phase>
+             <goals><goal>deploy</goal></goals> 
+           </execution> 
+         </executions> 
+       </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -144,5 +180,9 @@
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
   </distributionManagement>
 </project>
