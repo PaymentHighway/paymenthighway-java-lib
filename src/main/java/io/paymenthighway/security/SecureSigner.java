@@ -34,8 +34,8 @@ public class SecureSigner {
   /**
    * Constructor
    *
-   * @param id
-   * @param key
+   * @param id account secret key ID used in authentication
+   * @param key account secret key used in authentication
    */
   public SecureSigner(String id, String key) {
     this.secretKeyId = id;
@@ -77,9 +77,10 @@ public class SecureSigner {
   /**
    * Create signature
    *
-   * @param method
-   * @param uri
-   * @param body
+   * @param method Request method, e.g. POST or GET
+   * @param uri The address after the base URL, e.g. /transaction/id
+   * @param keyValues header or get parameter key value pairs
+   * @param body Message body if used e.g. with POST request
    * @return String eg:
    * "SPH1 testKey 51dcbaf5a9323daed24c0cdc5bb5d344f321aa84435b64e5da3d8f6c49370532"
    */
@@ -91,9 +92,10 @@ public class SecureSigner {
   /**
    * Create signature
    *
-   * @param method
-   * @param uri
-   * @param body
+   * @param method Request method, e.g. POST or GET
+   * @param uri The address after the base URL, e.g. /transaction/id
+   * @param keyValues header or get parameter key value pairs
+   * @param body Message body if used e.g. with POST request
    * @return String eg:
    * "SPH1 testKey 51dcbaf5a9323daed24c0cdc5bb5d344f321aa84435b64e5da3d8f6c49370532"
    */
@@ -104,9 +106,10 @@ public class SecureSigner {
   /**
    * Create signature String from the actual parameters
    *
-   * @param method
-   * @param uri
-   * @param body
+   * @param method Request method, e.g. POST or GET
+   * @param uri The address after the base URL, e.g. /transaction/id
+   * @param keyValues header or get parameter key value pairs
+   * @param body Message body if used e.g. with POST request
    * @return String signature
    */
   private String sign(String method, String uri, List<NameValuePair> keyValues, String body) {
@@ -126,7 +129,7 @@ public class SecureSigner {
   /**
    * Sort alphabetically per key
    *
-   * @param nameValuePairs
+   * @param nameValuePairs header or get parameter name value pairs
    * @return List<NameValuePair> sorted list
    */
   private static List<NameValuePair> sortParameters(List<NameValuePair> nameValuePairs) {
@@ -161,7 +164,7 @@ public class SecureSigner {
   /**
    * Concanate key values into key:param\n String
    *
-   * @param keyValues
+   * @param keyValues header or get parameter key value pairs
    * @return String
    */
   private String concatenateKeyValues(List<NameValuePair> keyValues) {

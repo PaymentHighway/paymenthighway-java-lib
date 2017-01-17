@@ -36,9 +36,9 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Init Transaction
    *
    * @return InitTransactionResponse from Payment Highway
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Something went south with the Http Request / Response
+   * @throws AuthenticationException Authentication error, e.g. invalid signature
+   * @throws IOException Other IO Exceptions
    */
   public InitTransactionResponse initTransaction() throws IOException {
 
@@ -48,12 +48,12 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Debit Transaction
    *
-   * @param transactionId
-   * @param request
+   * @param transactionId Payment Highway transaction ID
+   * @param request Transaction Request
    * @return TransactionResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Something went south with the Http Request / Response
+   * @throws AuthenticationException Authentication error, e.g. invalid signature
+   * @throws IOException Other IO Exceptions
    */
   public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
@@ -63,11 +63,11 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Revert Transaction with amount
    *
-   * @param transactionId
+   * @param transactionId Payment Highway transaction ID
    * @return TransactionResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Something went south with the Http Request / Response
+   * @throws AuthenticationException Authentication error, e.g. invalid signature
+   * @throws IOException Other IO Exceptions
    */
   public TransactionResponse revertTransaction(UUID transactionId) throws IOException {
 
@@ -79,12 +79,12 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Revert Transaction with amount
    *
-   * @param transactionId
-   * @param amount
+   * @param transactionId Payment Highway transaction ID
+   * @param amount The amount to revert, may be full or partial
    * @return TransactionResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Something went south with the Http Request / Response
+   * @throws AuthenticationException Authentication error, e.g. invalid signature
+   * @throws IOException Other IO Exceptions
    */
   public TransactionResponse revertTransaction(UUID transactionId, String amount) throws IOException {
 
@@ -96,11 +96,11 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Transaction Status Request
    *
-   * @param transactionId
+   * @param transactionId Payment Highway transaction ID
    * @return TransactionStatusResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Something went south with the Http Request / Response
+   * @throws AuthenticationException Authentication error, e.g. invalid signature
+   * @throws IOException Other IO Exceptions
    */
   public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
 
@@ -112,7 +112,7 @@ public class PaymentAPI implements Closeable {
    *
    * @param order The ID of the order whose transactions should be searched for
    * @return OrderSearchResponse
-   * @throws IOException
+   * @throws IOException Other IO Exceptions
    */
   public OrderSearchResponse searchOrders(String order) throws IOException {
 
@@ -124,13 +124,13 @@ public class PaymentAPI implements Closeable {
    * Used to commit (capture) the transaction.
    * In order to find out the result of the transaction without committing it, use Transaction Result request instead.
    *
-   * @param transactionId
+   * @param transactionId Payment Highway transaction ID
    * @param amount The amount to commit, must be less or equal than the initial transaction amount
    * @param currency The original transaction currency
    * @return CommitTransactionResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Something went south with the Http Request / Response
+   * @throws AuthenticationException Authentication error, e.g. invalid signature
+   * @throws IOException Other IO Exceptions
    */
   public CommitTransactionResponse commitTransaction(UUID transactionId, String amount, String currency) throws IOException {
 
@@ -143,11 +143,11 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Transaction Result Request
    * Used to find out whether or not an uncommitted transaction succeeded, without actually committing (capturing) it.
    *
-   * @param transactionId
+   * @param transactionId Payment Highway transaction ID
    * @return TransactionResultResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Something went south with the Http Request / Response
+   * @throws AuthenticationException Authentication error, e.g. invalid signature
+   * @throws IOException Other IO Exceptions
    */
   public TransactionResultResponse transactionResult(UUID transactionId) throws IOException {
 
@@ -157,10 +157,11 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Tokenize Request
    *
+   * @param tokenizationId Payment Highway tokenization ID
    * @return TokenizationResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Something went south with the Http Request / Response
+   * @throws AuthenticationException Authentication error, e.g. invalid signature
+   * @throws IOException Other IO Exceptions
    */
   public TokenizationResponse tokenize(UUID tokenizationId) throws IOException {
 
@@ -170,10 +171,11 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Daily Report Request
    *
+   * @param date the date to fetch batch report for, format: yyyyMMdd
    * @return ReportResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Something went south with the Http Request / Response
+   * @throws AuthenticationException Authentication error, e.g. invalid signature
+   * @throws IOException Other IO Exceptions
    */
   public ReportResponse fetchDailyReport(String date) throws IOException {
 
@@ -183,11 +185,11 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Reconciliation Report Request
    *
-   * @param date The date to fetch the reconciliation report for.
+   * @param date The date to fetch the reconciliation report for, format: yyyyMMdd
    * @return ReconciliationReportResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Something went south with the Http Request / Response
+   * @throws AuthenticationException Authentication error, e.g. invalid signature
+   * @throws IOException Other IO Exceptions
    */
   public ReconciliationReportResponse fetchReconciliationReport(String date) throws IOException {
 
@@ -199,12 +201,12 @@ public class PaymentAPI implements Closeable {
    *
    * Deprecated: use of the default behaviour (useDateProcessed=false) is encouraged to be used instead
    *
-   * @param date The date to fetch the reconciliation report for.
+   * @param date The date to fetch the reconciliation report for, format: format: yyyyMMdd
    * @param useDateProcessed True for using the Euroline processing date (legacy style), instead of the report's fetching date. May result in changes in the past.
    * @return ReconciliationReportResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Something went south with the Http Request / Response
+   * @throws AuthenticationException Authentication error, e.g. invalid signature
+   * @throws IOException Other IO Exceptions
    */
   @Deprecated
   public ReconciliationReportResponse fetchReconciliationReport(String date, Boolean useDateProcessed) throws IOException {

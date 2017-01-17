@@ -14,7 +14,7 @@ public class GenericCardFormBuilder<T> extends GenericFormBuilder<T> {
      * Skip notifications displayed on the Payment Highway form
      *
      * @param skipFormNotifications Skip notifications displayed on the Payment Highway form.
-     * @return
+     * @return T
      */
     public T skipFormNotifications(Boolean skipFormNotifications) {
         nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
@@ -25,7 +25,7 @@ public class GenericCardFormBuilder<T> extends GenericFormBuilder<T> {
      * Exit from iframe after a result
      *
      * @param exitIframeOnResult Exit from iframe after a result.
-     * @return
+     * @return T
      */
     public T exitIframeOnResult(Boolean exitIframeOnResult) {
         nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
@@ -36,7 +36,7 @@ public class GenericCardFormBuilder<T> extends GenericFormBuilder<T> {
      * Exit from iframe when redirecting the user to 3DS.
      *
      * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS.
-     * @return
+     * @return T
      */
     public T exitIframeOn3ds(Boolean exitIframeOn3ds) {
         nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
@@ -47,7 +47,7 @@ public class GenericCardFormBuilder<T> extends GenericFormBuilder<T> {
      * Force enable/disable 3ds
      *
      * @param use3ds Force enable/disable 3ds.
-     * @return
+     * @return T
      */
     public T use3ds(Boolean use3ds) {
         nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_USE_THREE_D_SECURE, use3ds.toString()));
