@@ -484,6 +484,113 @@ public class NewFormBuilderTest {
         assertTrue(formContainer.getFields().size() == 20);
     }
 
+    @Test
+    public void testAddCardWebhookParameters() {
+        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
+            .language(this.language)
+            .webhookSuccessUrl(this.webhookSuccessUrl)
+            .webhookFailureUrl(this.webhookFailureUrl)
+            .webhookCancelUrl(this.webhookCancelUrl)
+            .webhookDelay(this.webhookDelay)
+            .build();
+
+        String signature = this.findSignature(formContainer.getFields());
+        assertNotNull(signature);
+        assertTrue(signature.startsWith("SPH1"));
+
+        this.validateWebhookParameters(formContainer.getFields(), false);
+    }
+
+    @Test
+    public void testPaymentWebhookParameters() {
+        FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+            this.amount, this.currency, this.orderId, this.description)
+            .language(this.language)
+            .webhookSuccessUrl(this.webhookSuccessUrl)
+            .webhookFailureUrl(this.webhookFailureUrl)
+            .webhookCancelUrl(this.webhookCancelUrl)
+            .webhookDelay(this.webhookDelay)
+            .build();
+
+        String signature = this.findSignature(formContainer.getFields());
+        assertNotNull(signature);
+        assertTrue(signature.startsWith("SPH1"));
+
+        this.validateWebhookParameters(formContainer.getFields(), false);
+    }
+
+    @Test
+    public void testAddCardAndPaymentWebhookParameters() {
+        FormContainer formContainer = this.formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+            this.amount, this.currency, this.orderId, this.description)
+            .language(this.language)
+            .webhookSuccessUrl(this.webhookSuccessUrl)
+            .webhookFailureUrl(this.webhookFailureUrl)
+            .webhookCancelUrl(this.webhookCancelUrl)
+            .webhookDelay(this.webhookDelay)
+            .build();
+
+        String signature = this.findSignature(formContainer.getFields());
+        assertNotNull(signature);
+        assertTrue(signature.startsWith("SPH1"));
+
+        this.validateWebhookParameters(formContainer.getFields(), false);
+    }
+
+    @Test
+    public void testPayWithTokenAndCvcWebhookParameters() {
+        FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+            this.amount, this.currency, this.orderId, this.description, this.token)
+            .language(this.language)
+            .webhookSuccessUrl(this.webhookSuccessUrl)
+            .webhookFailureUrl(this.webhookFailureUrl)
+            .webhookCancelUrl(this.webhookCancelUrl)
+            .webhookDelay(this.webhookDelay)
+            .build();
+
+        String signature = this.findSignature(formContainer.getFields());
+        assertNotNull(signature);
+        assertTrue(signature.startsWith("SPH1"));
+
+        this.validateWebhookParameters(formContainer.getFields(), false);
+    }
+
+    @Test
+    public void testMobilePayWebhookParameters() {
+        FormContainer formContainer = this.formBuilder.mobilePayParametersBuilder(this.successUrl, this.failureUrl, this.cancelUrl,
+            this.amount, this.currency, this.orderId, this.description)
+            .language(this.language)
+            .webhookSuccessUrl(this.webhookSuccessUrl)
+            .webhookFailureUrl(this.webhookFailureUrl)
+            .webhookCancelUrl(this.webhookCancelUrl)
+            .webhookDelay(this.webhookDelay)
+            .build();
+
+        String signature = this.findSignature(formContainer.getFields());
+        assertNotNull(signature);
+        assertTrue(signature.startsWith("SPH1"));
+
+        this.validateWebhookParameters(formContainer.getFields(), false);
+    }
+
+    @Test
+    public void testMasterpassWebhookParameters() {
+        FormContainer formContainer = this.formBuilder.masterpassParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+            this.amount, this.currency, this.orderId, this.description)
+            .language(this.language)
+            .webhookSuccessUrl(this.webhookSuccessUrl)
+            .webhookFailureUrl(this.webhookFailureUrl)
+            .webhookCancelUrl(this.webhookCancelUrl)
+            .webhookDelay(this.webhookDelay)
+            .build();
+
+        String signature = this.findSignature(formContainer.getFields());
+        assertNotNull(signature);
+        assertTrue(signature.startsWith("SPH1"));
+
+        this.validateWebhookParameters(formContainer.getFields(), false);
+    }
+
     private String findSignature(List<NameValuePair> nameValuePairs) {
         Iterator<NameValuePair> it = nameValuePairs.iterator();
         String signature = null;

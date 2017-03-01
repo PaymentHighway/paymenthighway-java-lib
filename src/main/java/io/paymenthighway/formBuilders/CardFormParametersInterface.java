@@ -44,6 +44,34 @@ public interface CardFormParametersInterface {
     CardFormParametersInterface language(String language);
 
     /**
+     * The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
+     * @param successUrl
+     * @return CardFormParametersInterface
+     */
+    CardFormParametersInterface webhookSuccessUrl(String successUrl);
+
+    /**
+     * The URL the PH server makes request after a failure such as an authentication or connectivity error.
+     * @param failureUrl
+     * @return CardFormParametersInterface
+     */
+    CardFormParametersInterface webhookFailureUrl(String failureUrl);
+
+    /**
+     * The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
+     * @param cancelUrl
+     * @return CardFormParametersInterface
+     */
+    CardFormParametersInterface webhookCancelUrl(String cancelUrl);
+
+    /**
+     * Delay for webhook in seconds. Between 0-900
+     * @param delay
+     * @return CardFormParametersInterface
+     */
+    CardFormParametersInterface webhookDelay(Integer delay);
+
+    /**
      * Builds form parameters
      *
      * @return FormContainer
