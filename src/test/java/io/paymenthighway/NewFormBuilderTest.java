@@ -2,6 +2,7 @@ package io.paymenthighway;
 
 
 import io.paymenthighway.connect.FormAPIConnection;
+import io.paymenthighway.formBuilders.FormBuilderConstants;
 import org.apache.http.NameValuePair;
 import org.junit.*;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 
 public class NewFormBuilderTest {
@@ -32,6 +34,13 @@ public class NewFormBuilderTest {
     private String orderId;
     private String language;
     private String description;
+    private String webhookSuccessUrl;
+    private String webhookFailureUrl;
+    private String webhookCancelUrl;
+    private Integer webhookDelay;
+    private UUID token;
+    private FormBuilder formBuilder;
+    private FormAPIConnection formApi;
 
     /**
      * @throws java.lang.Exception
@@ -74,6 +83,17 @@ public class NewFormBuilderTest {
         this.orderId = "1000123A";
         this.language = "EN";
         this.description = "this is payment description";
+        this.webhookSuccessUrl = "http://example.com/?success";
+        this.webhookFailureUrl = "http://example.com/?failure";
+        this.webhookCancelUrl = "http://example.com/?cancel";
+        this.webhookDelay = 0;
+        this.token = UUID.fromString("71435029-fbb6-4506-aa86-8529efb640b0");
+        this.formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
+            this.merchant, this.serviceUrl);
+        this.formApi = new FormAPIConnection(this.serviceUrl,
+            this.signatureKeyId, this.signatureSecret);
+
+
     }
 
     /**
@@ -91,26 +111,12 @@ public class NewFormBuilderTest {
 
         Boolean acceptCvcRequired = false;
 
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
+        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
             .acceptCvcRequired(acceptCvcRequired)
             .build();
 
-        List<NameValuePair> nameValuePairs = formContainer.getFields();
 
-        // test that the result has a signature
-        Iterator<NameValuePair> it = nameValuePairs.iterator();
-        String signature = null;
-        while (it.hasNext()) {
-            NameValuePair nameValuePair = it.next();
-            String name = nameValuePair.getName();
-
-            if (name.equalsIgnoreCase("signature")) {
-                signature = nameValuePair.getValue();
-            }
-        }
+        String signature = this.findSignature(formContainer.getFields());
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
     }
@@ -123,20 +129,14 @@ public class NewFormBuilderTest {
 
         Boolean acceptCvcRequired = true;
 
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
+        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
             .acceptCvcRequired(acceptCvcRequired)
             .language(this.language)
             .build();
 
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
-            this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.addCardRequest(formContainer.getFields());
+            response = this.formApi.addCardRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -158,23 +158,16 @@ public class NewFormBuilderTest {
         Boolean exitIframeOnResult = true;
         Boolean exitIframeOn3ds = true;
 
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
+        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
             .acceptCvcRequired(acceptCvcRequired)
             .skipFormNotifications(skipFormNotifications)
             .exitIframeOnResult(exitIframeOnResult)
             .exitIframeOn3ds(exitIframeOn3ds)
             .build();
 
-        // test that Payment Highway accepts this as a request
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
-            this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.addCardRequest(formContainer.getFields());
+            response = this.formApi.addCardRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -189,20 +182,14 @@ public class NewFormBuilderTest {
 
         Boolean use3ds = false;
 
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
+        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
             .language(this.language)
             .use3ds(use3ds)
             .build();
 
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
-            this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.addCardRequest(formContainer.getFields());
+            response = this.formApi.addCardRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -217,53 +204,21 @@ public class NewFormBuilderTest {
      */
     @Test
     public void testAddCardParameters4() {
+        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl).build();
 
-        // create the payment highway request parameters
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl).build();
-
-        List<NameValuePair> nameValuePairs = formContainer.getFields();
-
-        // test that the result has a signature
-        Iterator<NameValuePair> it = nameValuePairs.iterator();
-        String signature = null;
-        while (it.hasNext()) {
-            NameValuePair nameValuePair = it.next();
-            String name = nameValuePair.getName();
-
-            if (name.equalsIgnoreCase("signature")) {
-                signature = nameValuePair.getValue();
-            }
-        }
+        String signature = this.findSignature(formContainer.getFields());
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
     }
 
     @Test
     public void testPaymentParameters() {
-
-        // create the payment highway request parameters
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+        FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
             .language(this.language)
             .build();
 
-        // test that the result has a signature
-        Iterator<NameValuePair> it = formContainer.getFields().iterator();
-        String signature = null;
-        while (it.hasNext()) {
-            NameValuePair nameValuePair = it.next();
-            String name = nameValuePair.getName();
-
-            if (name.equalsIgnoreCase("signature")) {
-                signature = nameValuePair.getValue();
-            }
-        }
+        String signature = this.findSignature(formContainer.getFields());
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
     }
@@ -274,21 +229,13 @@ public class NewFormBuilderTest {
 
     @Test
     public void testGetPaymentParameters2() {
-
-        // create the payment highway request parameters
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+        FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
             .build();
 
-        // test that Payment Highway accepts this as a request
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.paymentRequest(formContainer.getFields());
+            response = this.formApi.paymentRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -306,11 +253,7 @@ public class NewFormBuilderTest {
         Boolean exitIframeOnResult = true;
         Boolean exitIframeOn3ds = true;
 
-        // create the payment highway request parameters
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+        FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
             .skipFormNotifications(skipFormNotifications)
             .language(this.language)
@@ -318,12 +261,9 @@ public class NewFormBuilderTest {
             .exitIframeOn3ds(exitIframeOn3ds)
             .build();
 
-        // test that Payment Highway accepts this as a request
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.paymentRequest(formContainer.getFields());
+            response = this.formApi.paymentRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -334,23 +274,17 @@ public class NewFormBuilderTest {
 
     @Test
     public void testGetPaymentFormWithUse3ds() {
-
         Boolean use3ds = true;
 
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+        FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
             .use3ds(use3ds)
             .language(this.language)
             .build();
 
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.paymentRequest(formContainer.getFields());
+            response = this.formApi.paymentRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -361,26 +295,11 @@ public class NewFormBuilderTest {
 
     @Test
     public void testGetAddCardAndPaymentParameters() {
-
-        // create the payment highway request parameters
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+        FormContainer formContainer = this.formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
             .build();
 
-        // test that the result has a signature
-        Iterator<NameValuePair> it = formContainer.getFields().iterator();
-        String signature = null;
-        while (it.hasNext()) {
-            NameValuePair nameValuePair = it.next();
-            String name = nameValuePair.getName();
-
-            if (name.equalsIgnoreCase("signature")) {
-                signature = nameValuePair.getValue();
-            }
-        }
+        String signature = this.findSignature(formContainer.getFields());
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
     }
@@ -392,22 +311,14 @@ public class NewFormBuilderTest {
 
     @Test
     public void testGetAddCardAndPaymentParameters2() {
-
-        // create the payment highway request parameters
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+        FormContainer formContainer = this.formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
             .language(this.language)
             .build();
 
-        // test that Payment Highway accepts this as a request
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.addCardAndPayRequest(formContainer.getFields());
+            response = this.formApi.addCardAndPayRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -421,16 +332,11 @@ public class NewFormBuilderTest {
 
     @Test
     public void testGetAddCardAndPaymentParameters3() {
-
         Boolean skipFormNotifications = true;
         Boolean exitIframeOnResult = true;
         Boolean exitIframeOn3ds = true;
 
-        // create the payment highway request parameters
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+        FormContainer formContainer = this.formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
             .skipFormNotifications(skipFormNotifications)
             .exitIframeOnResult(exitIframeOnResult)
@@ -438,12 +344,9 @@ public class NewFormBuilderTest {
             .language(this.language)
             .build();
 
-        // test that Payment Highway accepts this as a request
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.addCardAndPayRequest(formContainer.getFields());
+            response = this.formApi.addCardAndPayRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -454,18 +357,12 @@ public class NewFormBuilderTest {
 
     @Test
     public void testGetAddCardAndPaymentWithUse3ds() {
-
         Boolean skipFormNotifications = true;
         Boolean exitIframeOnResult = true;
         Boolean exitIframeOn3ds = true;
         Boolean use3ds = true;
 
-        // create the payment highway request parameters
-        FormBuilder formBuilder = new FormBuilder(this.method,
-            this.signatureKeyId, this.signatureSecret, this.account, this.merchant,
-            this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+        FormContainer formContainer = this.formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
             .skipFormNotifications(skipFormNotifications)
             .exitIframeOnResult(exitIframeOnResult)
@@ -473,12 +370,9 @@ public class NewFormBuilderTest {
             .use3ds(use3ds)
             .build();
 
-        // test that Payment Highway accepts this as a request
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.addCardAndPayRequest(formContainer.getFields());
+            response = this.formApi.addCardAndPayRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -492,25 +386,14 @@ public class NewFormBuilderTest {
 
     @Test
     public void testGetPayWithTokenAndCvcParameters() {
-
-        UUID token = UUID.fromString("71435029-fbb6-4506-aa86-8529efb640b0");
-
-        // create the payment highway request parameters
-        FormBuilder formBuilder = new FormBuilder(this.method,
-            this.signatureKeyId, this.signatureSecret, this.account, this.merchant,
-            this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description, token)
+        FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+            this.amount, this.currency, this.orderId, this.description, this.token)
             .language(this.language)
             .build();
 
-        // test that Payment Highway accepts this as a request
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.payWithTokenAndCvcRequest(formContainer.getFields());
+            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -524,29 +407,20 @@ public class NewFormBuilderTest {
 
     @Test
     public void testGetPayWithTokenAndCvcParameters2() {
-
-        UUID token = UUID.fromString("71435029-fbb6-4506-aa86-8529efb640b0");
         Boolean skipFormNotifications = true;
         Boolean exitIframeOnResult = true;
         Boolean exitIframeOn3ds = true;
 
-        // create the payment highway request parameters
-        FormBuilder formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description, token)
+        FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+            this.amount, this.currency, this.orderId, this.description, this.token)
             .skipFormNotifications(skipFormNotifications)
             .exitIframeOnResult(exitIframeOnResult)
             .exitIframeOn3ds(exitIframeOn3ds)
             .build();
 
-        // test that Payment Highway accepts this as a request
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.payWithTokenAndCvcRequest(formContainer.getFields());
+            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -556,32 +430,21 @@ public class NewFormBuilderTest {
 
     @Test
     public void testGetPayWithTokenAndCvcWithUse3ds() {
-
-        UUID token = UUID.fromString("71435029-fbb6-4506-aa86-8529efb640b0");
         Boolean skipFormNotifications = false;
         Boolean exitIframeOn3ds = false;
         Boolean use3ds = false;
 
-        // create the payment highway request parameters
-        FormBuilder formBuilder = new FormBuilder(this.method,
-            this.signatureKeyId, this.signatureSecret, this.account, this.merchant,
-            this.serviceUrl);
-
-        FormContainer formContainer = formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description, token)
+        FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+            this.amount, this.currency, this.orderId, this.description, this.token)
             .language(this.language)
             .skipFormNotifications(skipFormNotifications)
             .exitIframeOn3ds(exitIframeOn3ds)
             .use3ds(use3ds)
             .build();
 
-        // test that Payment Highway accepts this as a request
-        FormAPIConnection formApi = new FormAPIConnection(this.serviceUrl,
-            this.signatureKeyId, this.signatureSecret);
-
         String response = null;
         try {
-            response = formApi.payWithTokenAndCvcRequest(formContainer.getFields());
+            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -592,11 +455,7 @@ public class NewFormBuilderTest {
 
     @Test
     public void testMobilePayForm() {
-
-        FormBuilder formBuilder = new FormBuilder(this.method,
-            this.signatureKeyId, this.signatureSecret, this.account, this.merchant,
-            this.serviceUrl);
-        FormContainer formContainer = formBuilder.mobilePayParametersBuilder(this.successUrl, this.failureUrl, this.cancelUrl,
+        FormContainer formContainer = this.formBuilder.mobilePayParametersBuilder(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
             .build();
         assertTrue(formContainer.getFields().size() == 13);
@@ -605,7 +464,6 @@ public class NewFormBuilderTest {
 
     @Test
     public void testMobilePayFormWithOptionalParameters() {
-
         String logoUrl = "https://foo.bar";
         Boolean exitIframeOnResult = true;
         String phoneNumber = "+35844123465";
@@ -613,10 +471,7 @@ public class NewFormBuilderTest {
         String submerchantId = "submerchantId";
         String submerchantName = "submerchantName";
 
-        FormBuilder formBuilder = new FormBuilder(this.method,
-            this.signatureKeyId, this.signatureSecret, this.account, this.merchant,
-            this.serviceUrl);
-        FormContainer formContainer = formBuilder.mobilePayParametersBuilder(this.successUrl, this.failureUrl, this.cancelUrl,
+        FormContainer formContainer = this.formBuilder.mobilePayParametersBuilder(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
             .language(this.language)
             .exitIframeOnResult(exitIframeOnResult)
@@ -629,5 +484,35 @@ public class NewFormBuilderTest {
         assertTrue(formContainer.getFields().size() == 20);
     }
 
+    private String findSignature(List<NameValuePair> nameValuePairs) {
+        Iterator<NameValuePair> it = nameValuePairs.iterator();
+        String signature = null;
+        while (it.hasNext()) {
+            NameValuePair nameValuePair = it.next();
+            String name = nameValuePair.getName();
+
+            if (name.equalsIgnoreCase("signature")) {
+                signature = nameValuePair.getValue();
+            }
+        }
+        return signature;
+    }
+
+    private void validateWebhookParameters(List<NameValuePair> nameValuePairs, boolean ignoreDelay) {
+        Iterator<NameValuePair> it = nameValuePairs.iterator();
+        while (it.hasNext()) {
+            NameValuePair nameValuePair = it.next();
+            String name = nameValuePair.getName();
+            if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_SUCCESS_URL)) {
+                assertEquals(nameValuePair.getValue(), this.webhookSuccessUrl);
+            } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_FAILURE_URL)) {
+                assertEquals(nameValuePair.getValue(), this.webhookFailureUrl);
+            } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_CANCEL_URL)) {
+                assertEquals(nameValuePair.getValue(), this.webhookCancelUrl);
+            } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_DELAY) && !ignoreDelay) {
+                assertEquals(nameValuePair.getValue(), this.webhookDelay.toString());
+            }
+        }
+    }
 }
 
