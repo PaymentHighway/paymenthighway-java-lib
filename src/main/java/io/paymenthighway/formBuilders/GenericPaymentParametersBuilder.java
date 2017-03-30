@@ -19,4 +19,15 @@ public class GenericPaymentParametersBuilder<T> extends GenericCardFormBuilder<T
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
   }
+
+  /**
+   * Skip payment method selection page.
+   *
+   * @param skip Skip payment method selection page.
+   * @return T
+   */
+  public T skipPaymentMethodSelectionPage(Boolean skip) {
+    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SKIP_PAYMENT_METHOD_SELECTOR, skip.toString()));
+    return (T) this;
+  }
 }

@@ -255,6 +255,7 @@ public class NewFormBuilderTest {
 
         FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
+            .skipPaymentMethodSelectionPage(true)
             .skipFormNotifications(skipFormNotifications)
             .language(this.language)
             .exitIframeOnResult(exitIframeOnResult)
