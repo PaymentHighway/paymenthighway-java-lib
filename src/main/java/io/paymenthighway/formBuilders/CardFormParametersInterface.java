@@ -72,6 +72,14 @@ public interface CardFormParametersInterface {
     CardFormParametersInterface webhookDelay(Integer delay);
 
     /**
+     * Skip payment method selection page.
+     *
+     * @param skip Skip payment method selection page.
+     * @return CardFormParametersInterface
+     */
+    CardFormParametersInterface skipPaymentMethodSelectionPage(Boolean skip);
+
+    /**
      * Builds form parameters
      *
      * @return FormContainer

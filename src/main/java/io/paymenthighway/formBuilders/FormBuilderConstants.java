@@ -31,4 +31,5 @@ public final class FormBuilderConstants {
   public final static String SPH_WEBHOOK_FAILURE_URL = "sph-webhook-failure-url";
   public final static String SPH_WEBHOOK_CANCEL_URL = "sph-webhook-cancel-url";
   public final static String SPH_WEBHOOK_DELAY = "sph-webhook-delay";
+  public final static String SPH_SKIP_PAYMENT_METHOD_SELECTOR = "sph-skip-payment-method-selector";
 }

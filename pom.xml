@@ -4,7 +4,7 @@
   <groupId>io.paymenthighway</groupId>
   <artifactId>paymenthighway</artifactId>
   <packaging>jar</packaging>
-  <version>1.5-SNAPSHOT</version>
+  <version>1.6-SNAPSHOT</version>
 
   <name>Payment Highway Java Library</name>
   <url>https://www.paymenthighway.fi/en/</url>
