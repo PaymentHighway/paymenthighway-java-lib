@@ -136,7 +136,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.addCardRequest(formContainer.getFields());
+            response = this.formApi.addCardRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -167,7 +167,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.addCardRequest(formContainer.getFields());
+            response = this.formApi.addCardRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -189,7 +189,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.addCardRequest(formContainer.getFields());
+            response = this.formApi.addCardRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -235,7 +235,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.paymentRequest(formContainer.getFields());
+            response = this.formApi.paymentRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -255,7 +255,7 @@ public class NewFormBuilderTest {
 
         FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
             this.amount, this.currency, this.orderId, this.description)
-            .skipPaymentMethodSelectionPage(true)
+            .showPaymentMethodSelectionPage(false)
             .skipFormNotifications(skipFormNotifications)
             .language(this.language)
             .exitIframeOnResult(exitIframeOnResult)
@@ -264,7 +264,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.paymentRequest(formContainer.getFields());
+            response = this.formApi.paymentRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -285,7 +285,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.paymentRequest(formContainer.getFields());
+            response = this.formApi.paymentRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -319,7 +319,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.addCardAndPayRequest(formContainer.getFields());
+            response = this.formApi.paymentRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -347,7 +347,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.addCardAndPayRequest(formContainer.getFields());
+            response = this.formApi.paymentRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -373,7 +373,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.addCardAndPayRequest(formContainer.getFields());
+            response = this.formApi.paymentRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -394,7 +394,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields());
+            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -421,7 +421,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields());
+            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -445,7 +445,7 @@ public class NewFormBuilderTest {
 
         String response = null;
         try {
-            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields());
+            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields(), false);
         } catch (IOException e) {
             e.printStackTrace();
         }

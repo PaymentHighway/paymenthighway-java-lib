@@ -72,12 +72,20 @@ public interface CardFormParametersInterface {
     CardFormParametersInterface webhookDelay(Integer delay);
 
     /**
-     * Skip payment method selection page.
+     * Show payment method selection page.
      *
-     * @param skip Skip payment method selection page.
+     * @param show Show payment method selection page.
      * @return CardFormParametersInterface
      */
-    CardFormParametersInterface skipPaymentMethodSelectionPage(Boolean skip);
+    CardFormParametersInterface showPaymentMethodSelectionPage(Boolean show);
+
+    /**
+     * Tokenize card or mobile wallet.
+     *
+     * @param tokenize Tokenize card or mobile wallet.
+     * @return CardFormParametersInterface
+     */
+    CardFormParametersInterface tokenize(Boolean tokenize);
 
     /**
      * Builds form parameters

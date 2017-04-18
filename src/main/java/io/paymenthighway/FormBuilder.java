@@ -90,8 +90,8 @@ public class FormBuilder {
    */
   public CardFormParametersInterface addCardAndPaymentParameters(String successUrl, String failureUrl, String cancelUrl,
                                                                  String amount, String currency, String orderId, String description) {
-    return new AddCardAndPaymentParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
-        failureUrl, cancelUrl, amount, currency, orderId, description);
+    return new PaymentParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
+        failureUrl, cancelUrl, amount, currency, orderId, description).tokenize(true);
   }
   /**
    * Get parameters for Pay with Token and CVC request.

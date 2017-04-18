@@ -45,8 +45,17 @@ public class FormAPIConnection {
    * @return Response body
    */
   public String addCardRequest(List<NameValuePair> nameValuePairs) throws IOException {
+    return this.addCardRequest(nameValuePairs, true);
+  }
+
+  /**
+   * Form API call to add card
+   *
+   * @return Response body
+   */
+  public String addCardRequest(List<NameValuePair> nameValuePairs, Boolean calculateSignature) throws IOException {
     final String formUri = "/form/view/add_card";
-    return makeRequest(formUri, nameValuePairs);
+    return makeRequest(formUri, nameValuePairs, calculateSignature);
   }
 
   /**
@@ -55,8 +64,17 @@ public class FormAPIConnection {
    * @return Response body
    */
   public String paymentRequest(List<NameValuePair> nameValuePairs) throws IOException {
+    return this.paymentRequest(nameValuePairs, true);
+  }
+
+  /**
+   * Form API call to make a payment
+   *
+   * @return Response body
+   */
+  public String paymentRequest(List<NameValuePair> nameValuePairs, Boolean calculateSignature) throws IOException {
     final String formPaymentUri = "/form/view/pay_with_card";
-    return makeRequest(formPaymentUri, nameValuePairs);
+    return makeRequest(formPaymentUri, nameValuePairs, calculateSignature);
   }
 
   /**
@@ -65,8 +83,17 @@ public class FormAPIConnection {
    * @return Response body
    */
   public String addCardAndPayRequest(List<NameValuePair> nameValuePairs) throws IOException {
+    return addCardAndPayRequest(nameValuePairs, true);
+  }
+
+  /**
+   * Form API call to add card and make a payment
+   *
+   * @return Response body
+   */
+  public String addCardAndPayRequest(List<NameValuePair> nameValuePairs, Boolean calculateSignature) throws IOException {
     final String formPaymentUri = "/form/view/add_and_pay_with_card";
-    return makeRequest(formPaymentUri, nameValuePairs);
+    return makeRequest(formPaymentUri, nameValuePairs, calculateSignature);
   }
 
   /**
@@ -76,8 +103,19 @@ public class FormAPIConnection {
    * @return Response body
    */
   public String payWithTokenAndCvcRequest(List<NameValuePair> nameValuePairs) throws IOException {
+    return this.payWithTokenAndCvcRequest(nameValuePairs, true);
+  }
+
+  /**
+   * Form API call to pay with a tokenized card and a CVC
+   *
+   * @param nameValuePairs The Form API http parameters
+   * @param calculateSignature Calculate form signature
+   * @return Response body
+   */
+  public String payWithTokenAndCvcRequest(List<NameValuePair> nameValuePairs, Boolean calculateSignature) throws IOException {
     final String formPaymentUri = "/form/view/pay_with_token_and_cvc";
-    return makeRequest(formPaymentUri, nameValuePairs);
+    return makeRequest(formPaymentUri, nameValuePairs, calculateSignature);
   }
 
   /**
@@ -86,13 +124,24 @@ public class FormAPIConnection {
    * @param nameValuePairs
    * @return
    */
-  private String makeRequest(String formUri, List<NameValuePair> nameValuePairs) throws  IOException {
+  private String makeRequest(String formUri, List<NameValuePair> nameValuePairs) throws IOException {
+    return this.makeRequest(formUri, nameValuePairs, true);
+  }
+
+  /**
+   *
+   * @param formUri
+   * @param nameValuePairs
+   * @return
+   */
+  private String makeRequest(String formUri, List<NameValuePair> nameValuePairs, Boolean calculateSignature) throws  IOException {
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
       HttpPost httpPost = new HttpPost(this.serviceUrl + formUri);
 
-      String signature = this.createSignature(METHOD_POST, formUri, nameValuePairs);
-      nameValuePairs.add(new BasicNameValuePair("signature", signature));
-
+      if(calculateSignature) {
+        String signature = this.createSignature(METHOD_POST, formUri, nameValuePairs);
+        nameValuePairs.add(new BasicNameValuePair("signature", signature));
+      }
       this.addHeaders(httpPost);
 
       httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
