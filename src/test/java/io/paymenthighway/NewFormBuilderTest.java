@@ -34,10 +34,6 @@ public class NewFormBuilderTest {
     private String orderId;
     private String language;
     private String description;
-    private String webhookSuccessUrl;
-    private String webhookFailureUrl;
-    private String webhookCancelUrl;
-    private Integer webhookDelay;
     private UUID token;
     private FormBuilder formBuilder;
     private FormAPIConnection formApi;
@@ -83,10 +79,6 @@ public class NewFormBuilderTest {
         this.orderId = "1000123A";
         this.language = "EN";
         this.description = "this is payment description";
-        this.webhookSuccessUrl = "http://example.com/?success";
-        this.webhookFailureUrl = "http://example.com/?failure";
-        this.webhookCancelUrl = "http://example.com/?cancel";
-        this.webhookDelay = 0;
         this.token = UUID.fromString("71435029-fbb6-4506-aa86-8529efb640b0");
         this.formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
             this.merchant, this.serviceUrl);
@@ -497,23 +489,6 @@ public class NewFormBuilderTest {
             }
         }
         return signature;
-    }
-
-    private void validateWebhookParameters(List<NameValuePair> nameValuePairs, boolean ignoreDelay) {
-        Iterator<NameValuePair> it = nameValuePairs.iterator();
-        while (it.hasNext()) {
-            NameValuePair nameValuePair = it.next();
-            String name = nameValuePair.getName();
-            if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_SUCCESS_URL)) {
-                assertEquals(nameValuePair.getValue(), this.webhookSuccessUrl);
-            } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_FAILURE_URL)) {
-                assertEquals(nameValuePair.getValue(), this.webhookFailureUrl);
-            } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_CANCEL_URL)) {
-                assertEquals(nameValuePair.getValue(), this.webhookCancelUrl);
-            } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_DELAY) && !ignoreDelay) {
-                assertEquals(nameValuePair.getValue(), this.webhookDelay.toString());
-            }
-        }
     }
 }
 
