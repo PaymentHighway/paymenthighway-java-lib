@@ -477,6 +477,18 @@ public class NewFormBuilderTest {
         assertTrue(formContainer.getFields().size() == 20);
     }
 
+    @Test
+    public void testMasterpassParameters() {
+        FormContainer formContainer = this.formBuilder.masterpassParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+            this.amount, this.currency, this.orderId, this.description)
+            .language(this.language)
+            .build();
+
+        String signature = this.findSignature(formContainer.getFields());
+        assertNotNull(signature);
+        assertTrue(signature.startsWith("SPH1"));
+    }
+
     private String findSignature(List<NameValuePair> nameValuePairs) {
         Iterator<NameValuePair> it = nameValuePairs.iterator();
         String signature = null;
