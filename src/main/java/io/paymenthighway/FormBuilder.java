@@ -76,7 +76,6 @@ public class FormBuilder {
         failureUrl, cancelUrl, amount, currency, orderId, description);
   }
 
-  @Deprecated
   /**
    * Get parameters for Add Card and Pay request.
    *
@@ -89,6 +88,7 @@ public class FormBuilder {
    * @param description Description of the payment shown in the form.
    * @return Form builder
    */
+  @Deprecated
   public CardFormParametersInterface addCardAndPaymentParameters(String successUrl, String failureUrl, String cancelUrl,
                                                                  String amount, String currency, String orderId, String description) {
     return new PaymentParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
