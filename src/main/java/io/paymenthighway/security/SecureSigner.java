@@ -34,8 +34,8 @@ public class SecureSigner {
   /**
    * Constructor
    *
-   * @param id
-   * @param key
+   * @param id Secret key ID
+   * @param key Secret key
    */
   public SecureSigner(String id, String key) {
     this.secretKeyId = id;
@@ -77,9 +77,10 @@ public class SecureSigner {
   /**
    * Create signature
    *
-   * @param method
-   * @param uri
-   * @param body
+   * @param method HTTP method
+   * @param uri URI
+   * @param keyValues Name value pairs
+   * @param body Body
    * @return String eg:
    * "SPH1 testKey 51dcbaf5a9323daed24c0cdc5bb5d344f321aa84435b64e5da3d8f6c49370532"
    */
@@ -91,9 +92,10 @@ public class SecureSigner {
   /**
    * Create signature
    *
-   * @param method
-   * @param uri
-   * @param body
+   * @param method HTTP method
+   * @param uri URI
+   * @param keyValues Name value pairs
+   * @param body Body
    * @return String eg:
    * "SPH1 testKey 51dcbaf5a9323daed24c0cdc5bb5d344f321aa84435b64e5da3d8f6c49370532"
    */
@@ -104,9 +106,10 @@ public class SecureSigner {
   /**
    * Create signature String from the actual parameters
    *
-   * @param method
-   * @param uri
-   * @param body
+   * @param method HTTP method
+   * @param uri URI
+   * @param keyValues Name value pairs
+   * @param body Body
    * @return String signature
    */
   private String sign(String method, String uri, List<NameValuePair> keyValues, String body) {
@@ -126,8 +129,8 @@ public class SecureSigner {
   /**
    * Sort alphabetically per key
    *
-   * @param nameValuePairs
-   * @return List<NameValuePair> sorted list
+   * @param nameValuePairs Name value pairs
+   * @return List<NameValuePair> Sorted list
    */
   private static List<NameValuePair> sortParameters(List<NameValuePair> nameValuePairs) {
     Comparator<NameValuePair> comp = new Comparator<NameValuePair>() {
@@ -161,7 +164,7 @@ public class SecureSigner {
   /**
    * Concanate key values into key:param\n String
    *
-   * @param keyValues
+   * @param keyValues Name value pairs
    * @return String
    */
   private String concatenateKeyValues(List<NameValuePair> keyValues) {

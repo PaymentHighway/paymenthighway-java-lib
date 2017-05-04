@@ -34,8 +34,8 @@ public class PaymentHighwayUtility {
 
   /**
    * Convert map to list of name value pairs.
-   * @param map
-   * @return List<NameValuePair>
+   * @param map Map of name value pairs
+   * @return List
    */
   public static List<NameValuePair> mapToList(final Map<String,String> map) {
     List<NameValuePair> pairs=new ArrayList<>();
@@ -49,7 +49,7 @@ public class PaymentHighwayUtility {
    * Read properties from file
    *
    * @return Properties
-   * @throws IOException
+   * @throws IOException Exception
    */
   public static Properties getProperties() throws IOException {
 

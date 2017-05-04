@@ -18,6 +18,10 @@ public class CommitTransactionRequest extends Request {
    * If the blocking parameter is set to false,
    * call will return immediately, without waiting
    * for the transaction to be fully processed.
+   *
+   * @param amount Amount
+   * @param currency Currency code
+   * @param blocking Is call blocking
    */
   public CommitTransactionRequest(String amount, String currency, boolean blocking) {
     this.amount = amount;

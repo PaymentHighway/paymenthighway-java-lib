@@ -12,7 +12,6 @@ import java.util.UUID;
 /**
  * Creates parameters that can used on the form that sends them to
  * Payment Highway.
- * <p/>
  * Creates a request id, timestamp and signature based on request parameters.
  */
 public class FormBuilder {
@@ -204,10 +203,10 @@ public class FormBuilder {
 
   /**
    * Get parameters for Add Card request with the possibility to
-   * <li>accept cards that require CVC</li>
-   * <li>skip notifications displayed on the Payment Highway form</li>
-   * <li>exit from iframe after a result</li>
-   * <li>exit from iframe when redirecting the user to 3DS.</li>
+   * accept cards that require CVC
+   * skip notifications displayed on the Payment Highway form
+   * exit from iframe after a result
+   * exit from iframe when redirecting the user to 3DS.
    *
    * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
@@ -252,11 +251,11 @@ public class FormBuilder {
 
   /**
    * Get parameters for Add Card request with the possibility to
-   * <li>accept cards that require CVC</li>
-   * <li>skip notifications displayed on the Payment Highway form</li>
-   * <li>exit from iframe after a result</li>
-   * <li>exit from iframe when redirecting the user to 3DS.</li>
-   * <li>force enable/disable 3ds</li>
+   * accept cards that require CVC
+   * skip notifications displayed on the Payment Highway form
+   * exit from iframe after a result
+   * exit from iframe when redirecting the user to 3DS.
+   * force enable/disable 3ds
    *
    * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
@@ -340,9 +339,9 @@ public class FormBuilder {
 
   /**
    * Get parameters for Payment request with the possibility to
-   * <li>skip notifications displayed on the Payment Highway form</li>
-   * <li>exit from iframe after a result</li>
-   * <li>exit from iframe when redirecting the user to 3DS.</li>
+   * skip notifications displayed on the Payment Highway form
+   * exit from iframe after a result
+   * exit from iframe when redirecting the user to 3DS.
    *
    * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
@@ -391,10 +390,10 @@ public class FormBuilder {
 
   /**
    * Get parameters for Payment request with the possibility to
-   * <li>skip notifications displayed on the Payment Highway form</li>
-   * <li>exit from iframe after a result</li>
-   * <li>exit from iframe when redirecting the user to 3DS.</li>
-   * <li>force enable/disable 3ds</li>
+   * skip notifications displayed on the Payment Highway form
+   * exit from iframe after a result
+   * exit from iframe when redirecting the user to 3DS.
+   * force enable/disable 3ds
    *
    * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
@@ -482,9 +481,9 @@ public class FormBuilder {
 
   /**
    * Get parameters for Add Card and Pay request with the possibility to
-   * <li>skip notifications displayed on the Payment Highway form</li>
-   * <li>exit from iframe after a result</li>
-   * <li>exit from iframe when redirecting the user to 3DS.</li>
+   * skip notifications displayed on the Payment Highway form
+   * exit from iframe after a result
+   * exit from iframe when redirecting the user to 3DS.
    *
    * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
@@ -534,10 +533,10 @@ public class FormBuilder {
 
   /**
    * Get parameters for Add Card and Pay request with the possibility to
-   * <li>skip notifications displayed on the Payment Highway form</li>
-   * <li>exit from iframe after a result</li>
-   * <li>exit from iframe when redirecting the user to 3DS.</li>
-   * <li>force enable/disable 3ds</li>
+   * skip notifications displayed on the Payment Highway form
+   * exit from iframe after a result
+   * exit from iframe when redirecting the user to 3DS.
+   * force enable/disable 3ds
    *
    * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl            The URL the user is redirected after a failure such as an authentication or connectivity error.
@@ -601,7 +600,7 @@ public class FormBuilder {
    * @param currency    In which currency is the amount, e.g. "EUR"
    * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
    * @param description Description of the payment shown in the form.
-   * @return
+   * @return FromContainer
    */
   @Deprecated
   public FormContainer generatePayWithTokenAndCvcParameters(UUID token, String successUrl, String failureUrl,
@@ -628,9 +627,9 @@ public class FormBuilder {
 
   /**
    * Get parameters for Pay with Token and CVC request with the possibility to
-   * <li>skip notifications displayed on the Payment Highway form</li>
-   * <li>exit from iframe after a result</li>
-   * <li>exit from iframe when redirecting the user to 3DS.</li>
+   * skip notifications displayed on the Payment Highway form
+   * exit from iframe after a result
+   * exit from iframe when redirecting the user to 3DS.
    *
    * @param token                 The card token to charge from.
    * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
@@ -644,7 +643,7 @@ public class FormBuilder {
    * @param skipFormNotifications Skip notifications displayed on the Payment Highway form. May be null.
    * @param exitIframeOnResult    Exit from iframe after a result. May be null.
    * @param exitIframeOn3ds       Exit from iframe when redirecting the user to 3DS. May be null.
-   * @return
+   * @return FormContainer
    */
   @Deprecated
   public FormContainer generatePayWithTokenAndCvcParameters(UUID token, String successUrl, String failureUrl,
@@ -682,10 +681,10 @@ public class FormBuilder {
 
   /**
    * Get parameters for Pay with Token and CVC request with the possibility to
-   * <li>skip notifications displayed on the Payment Highway form</li>
-   * <li>exit from iframe after a result</li>
-   * <li>exit from iframe when redirecting the user to 3DS.</li>
-   * <li>force enable/disable 3ds</li>
+   * skip notifications displayed on the Payment Highway form
+   * exit from iframe after a result
+   * exit from iframe when redirecting the user to 3DS.
+   * force enable/disable 3ds
    *
    * @param token                 The card token to charge from.
    * @param successUrl            The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
@@ -700,7 +699,7 @@ public class FormBuilder {
    * @param exitIframeOnResult    Exit from iframe after a result. May be null.
    * @param exitIframeOn3ds       Exit from iframe when redirecting the user to 3DS. May be null.
    * @param use3ds                Force enable/disable 3ds. Null to use default configured parameter.
-   * @return
+   * @return FormContainer
    */
   @Deprecated
   public FormContainer generatePayWithTokenAndCvcParameters(UUID token, String successUrl, String failureUrl,
