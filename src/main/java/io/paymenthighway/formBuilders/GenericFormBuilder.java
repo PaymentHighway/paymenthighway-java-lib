@@ -61,7 +61,7 @@ public class GenericFormBuilder<T> {
    * Set PaymentHighway form language
    *
    * @param language Two character language code e.q. FI or EN. If omitted, default language from user's browser's settings is used.
-   * @return T
+   * @return Form builder
    */
   public T language(String language) {
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.LANGUAGE, language));
@@ -71,7 +71,7 @@ public class GenericFormBuilder<T> {
   /**
    * Builds form parameters
    *
-   * @return FormContainer
+   * @return Form container
    */
   public FormContainer build() {
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, createSignature()));

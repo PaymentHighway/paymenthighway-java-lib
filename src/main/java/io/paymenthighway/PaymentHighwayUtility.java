@@ -35,7 +35,7 @@ public class PaymentHighwayUtility {
   /**
    * Convert map to list of name value pairs.
    * @param map Map of name value pairs
-   * @return List
+   * @return List of name value pairs
    */
   public static List<NameValuePair> mapToList(final Map<String,String> map) {
     List<NameValuePair> pairs=new ArrayList<>();

@@ -50,7 +50,7 @@ public class PaymentAPI implements Closeable {
    *
    * @param transactionId Transaction id
    * @param request Transaction request
-   * @return TransactionResponse
+   * @return Transaction response
    * @throws HttpResponseException Exception
    * @throws AuthenticationException Exception
    * @throws IOException Exception
@@ -64,7 +64,7 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Revert Transaction with amount
    *
    * @param transactionId Transaction id
-   * @return TransactionResponse
+   * @return Transaction response
    * @throws HttpResponseException Exception
    * @throws AuthenticationException Exception
    * @throws IOException Exception
@@ -81,7 +81,7 @@ public class PaymentAPI implements Closeable {
    *
    * @param transactionId Transaction id
    * @param amount Amount to revert
-   * @return TransactionResponse
+   * @return Transaction response
    * @throws HttpResponseException Exception
    * @throws AuthenticationException Exception
    * @throws IOException Exception
@@ -97,7 +97,7 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Transaction Status Request
    *
    * @param transactionId Transaction id
-   * @return TransactionStatusResponse
+   * @return Transaction status response
    * @throws HttpResponseException Exception
    * @throws AuthenticationException Exception
    * @throws IOException Exception
@@ -111,7 +111,7 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Order Status Request
    *
    * @param order The ID of the order whose transactions should be searched for
-   * @return OrderSearchResponse
+   * @return Order search response
    * @throws IOException Exception
    */
   public OrderSearchResponse searchOrders(String order) throws IOException {
@@ -127,7 +127,7 @@ public class PaymentAPI implements Closeable {
    * @param transactionId Transaction id
    * @param amount The amount to commit, must be less or equal than the initial transaction amount
    * @param currency The original transaction currency
-   * @return CommitTransactionResponse
+   * @return Commit transaction response
    * @throws HttpResponseException Exception
    * @throws AuthenticationException Exception
    * @throws IOException Exception
@@ -144,7 +144,7 @@ public class PaymentAPI implements Closeable {
    * Used to find out whether or not an uncommitted transaction succeeded, without actually committing (capturing) it.
    *
    * @param transactionId Transaction id
-   * @return TransactionResultResponse
+   * @return Transaction result response
    * @throws HttpResponseException Exception
    * @throws AuthenticationException Exception
    * @throws IOException Exception
@@ -158,7 +158,7 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Tokenize Request
    *
    * @param tokenizationId Tokenization id
-   * @return TokenizationResponse
+   * @return Tokenization response
    * @throws HttpResponseException Exception
    * @throws AuthenticationException Exception
    * @throws IOException Exception
@@ -172,7 +172,7 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Daily Report Request
    *
    * @param date Date
-   * @return ReportResponse
+   * @return Report response
    * @throws HttpResponseException Exception
    * @throws AuthenticationException Exception
    * @throws IOException Exception
@@ -186,7 +186,7 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Reconciliation Report Request
    *
    * @param date The date to fetch the reconciliation report for.
-   * @return ReconciliationReportResponse
+   * @return Reconciliation report response
    * @throws HttpResponseException Exception
    * @throws AuthenticationException Exception
    * @throws IOException Exception
@@ -203,7 +203,7 @@ public class PaymentAPI implements Closeable {
    *
    * @param date The date to fetch the reconciliation report for.
    * @param useDateProcessed True for using the Euroline processing date (legacy style), instead of the report's fetching date. May result in changes in the past.
-   * @return ReconciliationReportResponse
+   * @return Reconciliation report response
    * @throws HttpResponseException Exception
    * @throws AuthenticationException Exception
    * @throws IOException Exception
