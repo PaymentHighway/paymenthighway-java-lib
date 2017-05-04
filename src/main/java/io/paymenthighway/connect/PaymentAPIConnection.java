@@ -48,11 +48,11 @@ public class PaymentAPIConnection implements Closeable {
   /**
    * Constructor
    *
-   * @param serviceUrl
-   * @param account
-   * @param merchant
-   * @param signatureKeyId
-   * @param signatureSecret
+   * @param serviceUrl Service url
+   * @param account Account
+   * @param merchant Merchant
+   * @param signatureKeyId Signature key id
+   * @param signatureSecret Signature secret
    */
   public PaymentAPIConnection(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant) {
 

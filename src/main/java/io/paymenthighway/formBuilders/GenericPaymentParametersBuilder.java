@@ -24,7 +24,7 @@ public class GenericPaymentParametersBuilder<T> extends GenericCardFormBuilder<T
    * Skip payment method selection page.
    *
    * @param show Show payment method selection page.
-   * @return T
+   * @return Form builder
    */
   public T showPaymentMethodSelectionPage(Boolean show) {
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SHOW_PAYMENT_METHOD_SELECTOR, show.toString()));
@@ -35,7 +35,7 @@ public class GenericPaymentParametersBuilder<T> extends GenericCardFormBuilder<T
    * Tokenize card or mobile wallet.
    *
    * @param tokenize Tokenize card or mobile wallet.
-   * @return T
+   * @return Form builder
    */
   public T tokenize(Boolean tokenize) {
     nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_TOKENIZE, tokenize.toString()));

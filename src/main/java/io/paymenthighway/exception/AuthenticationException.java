@@ -4,7 +4,6 @@ import org.apache.http.client.ClientProtocolException;
 
 /**
  * Payment Highway Authentication Exception
- * <p/>
  * Raised when message signature from Payment Highway doesn't match
  */
 public class AuthenticationException extends ClientProtocolException {
@@ -19,22 +18,22 @@ public class AuthenticationException extends ClientProtocolException {
   }
 
   /**
-   * @param s
+   * @param s Exception string
    */
   public AuthenticationException(String s) {
     super(s);
   }
 
   /**
-   * @param cause
+   * @param cause Throwable exception
    */
   public AuthenticationException(Throwable cause) {
     super(cause);
   }
 
   /**
-   * @param message
-   * @param cause
+   * @param message Exception message
+   * @param cause Throwable exception
    */
   public AuthenticationException(String message, Throwable cause) {
     super(message, cause);

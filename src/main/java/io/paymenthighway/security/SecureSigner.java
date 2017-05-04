@@ -34,8 +34,8 @@ public class SecureSigner {
   /**
    * Constructor
    *
-   * @param id
-   * @param key
+   * @param id Secret key ID
+   * @param key Secret key
    */
   public SecureSigner(String id, String key) {
     this.secretKeyId = id;
@@ -77,9 +77,10 @@ public class SecureSigner {
   /**
    * Create signature
    *
-   * @param method
-   * @param uri
-   * @param body
+   * @param method HTTP method
+   * @param uri URI
+   * @param keyValues Name value pairs
+   * @param body Body
    * @return String eg:
    * "SPH1 testKey 51dcbaf5a9323daed24c0cdc5bb5d344f321aa84435b64e5da3d8f6c49370532"
    */
@@ -91,9 +92,10 @@ public class SecureSigner {
   /**
    * Create signature
    *
-   * @param method
-   * @param uri
-   * @param body
+   * @param method HTTP method
+   * @param uri URI
+   * @param keyValues Name value pairs
+   * @param body Body
    * @return String eg:
    * "SPH1 testKey 51dcbaf5a9323daed24c0cdc5bb5d344f321aa84435b64e5da3d8f6c49370532"
    */
@@ -104,9 +106,10 @@ public class SecureSigner {
   /**
    * Create signature String from the actual parameters
    *
-   * @param method
-   * @param uri
-   * @param body
+   * @param method HTTP method
+   * @param uri URI
+   * @param keyValues Name value pairs
+   * @param body Body
    * @return String signature
    */
   private String sign(String method, String uri, List<NameValuePair> keyValues, String body) {
@@ -126,8 +129,8 @@ public class SecureSigner {
   /**
    * Sort alphabetically per key
    *
-   * @param nameValuePairs
-   * @return List<NameValuePair> sorted list
+   * @param nameValuePairs Name value pairs
+   * @return Sorted list
    */
   private static List<NameValuePair> sortParameters(List<NameValuePair> nameValuePairs) {
     Comparator<NameValuePair> comp = new Comparator<NameValuePair>() {
@@ -145,7 +148,7 @@ public class SecureSigner {
    * remove other parameters from the signature param set.
    *
    * @param map that may include all params
-   * @return List<NameValuePair> with only params starting "sph-"
+   * @return List of name value pairs with only params starting "sph-"
    */
   private static List<NameValuePair> parseSphParameters(List<NameValuePair> map) {
 
@@ -161,8 +164,8 @@ public class SecureSigner {
   /**
    * Concanate key values into key:param\n String
    *
-   * @param keyValues
-   * @return String
+   * @param keyValues Name value pairs
+   * @return String of concatenated key value pairs
    */
   private String concatenateKeyValues(List<NameValuePair> keyValues) {
 
@@ -182,7 +185,7 @@ public class SecureSigner {
   /**
    * Validates the response redirection by checking the provided signature against the calculated one.
    * @param keyValues The request parameters from the redirection
-   * @return boolean
+   * @return True if form redirect was valid
    */
   public boolean validateFormRedirect(Map<String, String> keyValues) {
     List<NameValuePair> keyValuesList = PaymentHighwayUtility.mapToList(keyValues);
@@ -192,7 +195,7 @@ public class SecureSigner {
   /**
    * Validates the response redirection by checking the provided signature against the calculated one.
    * @param keyValues The request parameters from the redirection
-   * @return boolean
+   * @return True if form redirect was valid
    */
   public boolean validateFormRedirect(List<NameValuePair> keyValues) {
     return validateSignature("GET", "", keyValues, "");
@@ -205,7 +208,7 @@ public class SecureSigner {
    * @param uri The request URI
    * @param keyValues The key value pairs of headers or request parameters
    * @param content The body content
-   * @return boolean true if signature is found and matches the calculated one
+   * @return True if signature is found and matches the calculated one
    */
   public boolean validateSignature(String method, String uri, Map<String, String> keyValues, String content) {
     List<NameValuePair> keyValuesList = PaymentHighwayUtility.mapToList(keyValues);
@@ -219,7 +222,7 @@ public class SecureSigner {
    * @param uri The request URI
    * @param response The key value pairs of headers
    * @param content The body content
-   * @return boolean true if signature is found and matches the calculated one
+   * @return True if signature is found and matches the calculated one
    */
   public boolean validateSignature(String method, String uri, HttpResponse response, String content) {
     List<NameValuePair> nameValuePairs = this.getHeadersAsNameValuePairs(response.getAllHeaders());
@@ -233,7 +236,7 @@ public class SecureSigner {
    * @param uri The request URI
    * @param keyValues The key value pairs of headers or request parameters
    * @param content The body content
-   * @return boolean true if signature is found and matches the calculated one
+   * @return True if signature is found and matches the calculated one
    */
   public boolean validateSignature(String method, String uri, List<NameValuePair> keyValues, String content) {
 
