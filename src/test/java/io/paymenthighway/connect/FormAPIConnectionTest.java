@@ -110,7 +110,7 @@ public class FormAPIConnectionTest {
       e.printStackTrace();
     }
     assertNotNull(response);
-    assertTrue(response.contains("XXXX XXXX XXXX XXXX"));
+    assertTrue(response.contains("CARD NUMBER"));
     assertTrue(response.contains("viewport"));
     assertTrue(response.contains("Solinor Payment Highway"));
 
@@ -196,7 +196,7 @@ public class FormAPIConnectionTest {
     }
 
     assertNotNull(response);
-    assertTrue(response.contains("XXXX XXXX XXXX XXXX"));
+    assertTrue(response.contains("CARD NUMBER"));
     assertTrue(response.contains("viewport"));
     assertTrue(response.contains("Solinor Payment Highway"));
     assertTrue(response.contains("Payment Information"));
@@ -231,7 +231,7 @@ public class FormAPIConnectionTest {
     }
 
     assertNotNull(response);
-    assertTrue(response.contains("XXXX XXXX XXXX XXXX"));
+    assertTrue(response.contains("CARD NUMBER"));
     assertTrue(response.contains("viewport"));
     assertTrue(response.contains("Solinor Payment Highway"));
     assertTrue(response.contains("Payment Information"));

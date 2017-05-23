@@ -43,6 +43,23 @@ public interface CardFormParametersInterface {
      */
     CardFormParametersInterface language(String language);
 
+
+    /**
+     * Show payment method selection page.
+     *
+     * @param show Show payment method selection page.
+     * @return CardFormParametersInterface
+     */
+    CardFormParametersInterface showPaymentMethodSelectionPage(Boolean show);
+
+    /**
+     * Tokenize card or mobile wallet.
+     *
+     * @param tokenize Tokenize card or mobile wallet.
+     * @return CardFormParametersInterface
+     */
+    CardFormParametersInterface tokenize(Boolean tokenize);
+
     /**
      * The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
      * @param successUrl

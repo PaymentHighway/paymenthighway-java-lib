@@ -36,9 +36,9 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Init Transaction
    *
    * @return InitTransactionResponse from Payment Highway
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
    */
   public InitTransactionResponse initTransaction() throws IOException {
 
@@ -48,12 +48,12 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Debit Transaction
    *
-   * @param transactionId
-   * @param request
-   * @return TransactionResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @param transactionId Transaction id
+   * @param request Transaction request
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
    */
   public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
@@ -63,11 +63,11 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Revert Transaction with amount
    *
-   * @param transactionId
-   * @return TransactionResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @param transactionId Transaction id
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
    */
   public TransactionResponse revertTransaction(UUID transactionId) throws IOException {
 
@@ -79,12 +79,12 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Revert Transaction with amount
    *
-   * @param transactionId
-   * @param amount
-   * @return TransactionResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @param transactionId Transaction id
+   * @param amount Amount to revert
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
    */
   public TransactionResponse revertTransaction(UUID transactionId, String amount) throws IOException {
 
@@ -96,11 +96,11 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Transaction Status Request
    *
-   * @param transactionId
-   * @return TransactionStatusResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @param transactionId Transaction id
+   * @return Transaction status response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
    */
   public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
 
@@ -111,8 +111,8 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Order Status Request
    *
    * @param order The ID of the order whose transactions should be searched for
-   * @return OrderSearchResponse
-   * @throws IOException
+   * @return Order search response
+   * @throws IOException Exception
    */
   public OrderSearchResponse searchOrders(String order) throws IOException {
 
@@ -124,13 +124,13 @@ public class PaymentAPI implements Closeable {
    * Used to commit (capture) the transaction.
    * In order to find out the result of the transaction without committing it, use Transaction Result request instead.
    *
-   * @param transactionId
+   * @param transactionId Transaction id
    * @param amount The amount to commit, must be less or equal than the initial transaction amount
    * @param currency The original transaction currency
-   * @return CommitTransactionResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @return Commit transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
    */
   public CommitTransactionResponse commitTransaction(UUID transactionId, String amount, String currency) throws IOException {
 
@@ -143,11 +143,11 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Transaction Result Request
    * Used to find out whether or not an uncommitted transaction succeeded, without actually committing (capturing) it.
    *
-   * @param transactionId
-   * @return TransactionResultResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @param transactionId Transaction id
+   * @return Transaction result response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
    */
   public TransactionResultResponse transactionResult(UUID transactionId) throws IOException {
 
@@ -157,10 +157,11 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Tokenize Request
    *
-   * @return TokenizationResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @param tokenizationId Tokenization id
+   * @return Tokenization response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
    */
   public TokenizationResponse tokenize(UUID tokenizationId) throws IOException {
 
@@ -170,10 +171,11 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway Daily Report Request
    *
-   * @return ReportResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @param date Date
+   * @return Report response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
    */
   public ReportResponse fetchDailyReport(String date) throws IOException {
 
@@ -184,10 +186,10 @@ public class PaymentAPI implements Closeable {
    * Payment Highway Reconciliation Report Request
    *
    * @param date The date to fetch the reconciliation report for.
-   * @return ReconciliationReportResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @return Reconciliation report response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
    */
   public ReconciliationReportResponse fetchReconciliationReport(String date) throws IOException {
 
@@ -201,10 +203,10 @@ public class PaymentAPI implements Closeable {
    *
    * @param date The date to fetch the reconciliation report for.
    * @param useDateProcessed True for using the Euroline processing date (legacy style), instead of the report's fetching date. May result in changes in the past.
-   * @return ReconciliationReportResponse
-   * @throws HttpResponseException
-   * @throws AuthenticationException
-   * @throws IOException
+   * @return Reconciliation report response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
    */
   @Deprecated
   public ReconciliationReportResponse fetchReconciliationReport(String date, Boolean useDateProcessed) throws IOException {

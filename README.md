@@ -35,7 +35,7 @@ Add as dependency:
         <dependency>
             <groupId>io.paymenthighway</groupId>
             <artifactId>paymenthighway</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <version>1.6-SNAPSHOT</version>
         </dependency>
     </dependencies>
 ```
@@ -119,6 +119,8 @@ skipFormNotifications | bool
 exitIframeOnResult | bool
 exitIframeOn3ds | bool
 use3ds | bool
+acceptCvcRequired | bool
+language | string (e.q. FI or EN)
 
 #### <a name="example"></a> Example: How to use optional parameters
     
@@ -158,36 +160,13 @@ skipFormNotifications | bool
 exitIframeOnResult | bool
 exitIframeOn3ds | bool
 use3ds | bool        	
+showPaymentMethodSelectionPage | bool
+tokenize | bool
+language | string (e.q. FI or EN)
 
 ### Example add card and payment parameters
 
-    String amount = "1990";
-    String currency = "EUR";
-    String orderId = "1000123A";
-    String description = "A Box of Dreams. 19,90€";
-
-    FormContainer formContainer = formBuilder.addCardAndPaymentParameters(
-                successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
-                .build();
-
-    // read form parameters
-    String httpMethod = formContainer.getMethod();
-    String actionUrl = formContainer.getAction();
-    List<NameValuePair> fields = formContainer.getFields();
-
-    System.out.println("Initialized form with request-id: " + formContainer.getRequestId());
-
-    for (NameValuePair field : fields) {
-        field.getName();
-        field.getValue();
-    }
-#### Optional parameters
- Parameter | type 
------------|------
-skipFormNotifications | bool
-exitIframeOnResult | bool
-exitIframeOn3ds | bool
-use3ds | bool        
+    Use payment parameters builder with '.tokenize(true)'.
 
 ### Example pay with token and CVC
     String amount = "1990";
@@ -218,7 +197,8 @@ use3ds | bool
 skipFormNotifications | bool
 exitIframeOnResult | bool
 exitIframeOn3ds | bool
-use3ds | bool         
+use3ds | bool        
+language | string (e.q. FI or EN)
 
 ### Example MobilePay form payment
 
@@ -251,6 +231,7 @@ phoneNumber | string | Customer phone number with country code e.q. +35844987654
 shopName | string |  Max 100 AN. If omitted, the merchant name from PH is used.
 subMerchantId | string | Max 15 AN. Should only be used by a Payment Facilitator customer
 subMerchantName | string | Max 21 AN. Should only be used by a Payment Facilitator customer
+language | string | 2 characters (e.q. FI or EN)
 
 _MobilePay payment is to be committed as any other Form Payment_
 
@@ -259,6 +240,39 @@ _MobilePay payment is to be committed as any other Form Payment_
 * MPO will show a default logo in the app if this is empty or the image location doesn’t exist. 
 * Once a ShopLogoURL has been sent to MPOnline the .png-file on that URL must never be changed. If the shop wants a new (or more than one) logo, a new ShopLogoURL must be used. 
 * The logo must be hosted on a HTTPS (secure) server.
+
+
+### Example Masterpass form payment
+
+    String amount = "1990";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String description = "A Box of Dreams. 19,90€";
+    String language = "EN";
+    
+    FormContainer formContainer = formBuilder.masterpassParameters(successUrl, failureUrl, cancelUrl,
+            amount, currency, orderId, description)
+            .language(language)
+            .build();
+    
+    // read form parameters
+    String httpMethod = formContainer.getMethod();
+    String actionUrl = formContainer.getAction();
+    List<NameValuePair> fields = formContainer.getFields();
+
+    System.out.println("Initialized form with request-id: " + formContainer.getRequestId());
+
+    for (NameValuePair field : fields) {
+        field.getName();
+        field.getValue();
+    }
+    
+#### Optional parameters
+ Parameter | type 
+-----------|------
+use3ds | bool        
+language | string (e.q. FI or EN)    
+tokenize | bool
 
 ---
 
