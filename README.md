@@ -88,13 +88,31 @@ Create an instance of the builder, then use the generate methods to receive a li
     String merchant = "test_merchantId";
     String serviceUrl = "https://v1-hub-staging.sph-test-solinor.com";
 
-    FormBuilder formBuilder = new FormBuilder(method, signatureKeyId, signatureSecret, account, merchant, serviceUrl);
+    FormBuilder formBuilder = new FormBuilder(
+    					method, 
+					signatureKeyId, 
+					signatureSecret, 
+					account, 
+					merchant, 
+					serviceUrl
+				);
     
 ### Example common parameters for the following form generation functions
  
     String successUrl = "https://example.com/success";
     String failureUrl = "https://example.com/failure";
     String cancelUrl = "https://example.com/cancel";
+    
+### Webhooks
+
+Webhooks are server to server requests with same parameters as success-, failure- or cancel requests. 
+
+Parameter | type | description
+-----------|------|---
+webhookSuccessUrl | String | The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
+webhookFailureUrl | String | The URL the PH server makes request after a failure such as an authentication or connectivity error.
+webhookCancelUrl | String | The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
+webhookDelay | Int | Delay for webhook in seconds. Between 0-900
 
 ### Example add card parameters
 
@@ -121,6 +139,10 @@ exitIframeOn3ds | bool
 use3ds | bool
 acceptCvcRequired | bool
 language | string (e.q. FI or EN)
+webhookSuccessUrl | String
+webhookFailureUrl | String
+webhookCancelUrl | String 
+webhookDelay | Int
 
 #### <a name="example"></a> Example: How to use optional parameters
     
@@ -163,6 +185,10 @@ use3ds | bool
 showPaymentMethodSelectionPage | bool
 tokenize | bool
 language | string (e.q. FI or EN)
+webhookSuccessUrl | String
+webhookFailureUrl | String
+webhookCancelUrl | String 
+webhookDelay | Int
 
 ### Example add card and payment parameters
 
@@ -199,6 +225,10 @@ exitIframeOnResult | bool
 exitIframeOn3ds | bool
 use3ds | bool        
 language | string (e.q. FI or EN)
+webhookSuccessUrl | String
+webhookFailureUrl | String
+webhookCancelUrl | String 
+webhookDelay | Int
 
 ### Example MobilePay form payment
 
@@ -232,6 +262,10 @@ shopName | string |  Max 100 AN. If omitted, the merchant name from PH is used.
 subMerchantId | string | Max 15 AN. Should only be used by a Payment Facilitator customer
 subMerchantName | string | Max 21 AN. Should only be used by a Payment Facilitator customer
 language | string | 2 characters (e.q. FI or EN)
+webhookSuccessUrl | String |
+webhookFailureUrl | String |
+webhookCancelUrl | String |
+webhookDelay | Int |
 
 _MobilePay payment is to be committed as any other Form Payment_
 
@@ -273,6 +307,10 @@ _MobilePay payment is to be committed as any other Form Payment_
 use3ds | bool        
 language | string (e.q. FI or EN)    
 tokenize | bool
+webhookSuccessUrl | String
+webhookFailureUrl | String
+webhookCancelUrl | String 
+webhookDelay | Int
 
 ---
 
