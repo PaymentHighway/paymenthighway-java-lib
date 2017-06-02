@@ -89,7 +89,7 @@ Create an instance of the builder, then use the generate methods to receive a li
     String serviceUrl = "https://v1-hub-staging.sph-test-solinor.com";
 
     FormBuilder formBuilder = new FormBuilder(
-    					method, 
+					method, 
 					signatureKeyId, 
 					signatureSecret, 
 					account, 
