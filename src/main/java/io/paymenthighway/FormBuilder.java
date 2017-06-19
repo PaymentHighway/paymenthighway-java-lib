@@ -779,7 +779,7 @@ public class FormBuilder {
    * @param currency    In which currency is the amount, e.g. "EUR"
    * @param orderId     A generated order ID, may for example be always unique or used multiple times for recurring transactions.
    * @param description Description of the payment shown in the form.
-   * @deprecated Use builder pattern with mobilePayParametersBuilder-method.mobilePayParametersBuilder
+   * @deprecated Use builder pattern with mobilePayParametersBuilder-method.
    * @return Form container
    */
   @Deprecated
@@ -808,7 +808,7 @@ public class FormBuilder {
    * @param orderId            A generated order ID, may for example be always unique or used multiple times for recurring transactions.
    * @param description        Description of the payment shown in the form.
    * @param exitIframeOnResult Exit from iframe after a result. May be null.
-   * @deprecated Use builder pattern with mobilePayParametersBuilder-method.mobilePayParametersBuilder
+   * @deprecated Use builder pattern with mobilePayParametersBuilder-method.
    * @return Form container
    */
   @Deprecated
@@ -839,7 +839,7 @@ public class FormBuilder {
    * @param description        Description of the payment shown in the form.
    * @param exitIframeOnResult Exit from iframe after a result. May be null.
    * @param shopLogoUrl        The logo must be 250x250 pixel in .png format and must be hosted on a HTTPS (secure) server. Optional.
-   * @deprecated Use builder pattern with mobilePayParametersBuilder-method.mobilePayParametersBuilder
+   * @deprecated Use builder pattern with mobilePayParametersBuilder-method.
    * @return Form container
    */
   @Deprecated
