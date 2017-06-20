@@ -499,7 +499,7 @@ public class PaymentAPIConnectionTest {
 
     assertEquals("yes", tokenResponse.getCard().getCvcRequired());
     assertEquals("debit", tokenResponse.getCard().getFunding());
-    assertEquals("unknown", tokenResponse.getCard().getCategory());
+    assertEquals("prepaid", tokenResponse.getCard().getCategory());
 
     UUID transactionId = createAndTestTransactionInit();
 
