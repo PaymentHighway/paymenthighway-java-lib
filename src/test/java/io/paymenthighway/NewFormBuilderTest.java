@@ -42,23 +42,14 @@ public class NewFormBuilderTest {
     private FormBuilder formBuilder;
     private FormAPIConnection formApi;
 
-    /**
-     * @throws java.lang.Exception
-     */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         // required system information and authentication credentials
@@ -96,9 +87,6 @@ public class NewFormBuilderTest {
 
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
     @After
     public void tearDown() throws Exception {
     }
@@ -116,7 +104,7 @@ public class NewFormBuilderTest {
             .build();
 
 
-        String signature = this.findSignature(formContainer.getFields());
+        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
     }
@@ -206,7 +194,7 @@ public class NewFormBuilderTest {
     public void testAddCardParameters4() {
         FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl).build();
 
-        String signature = this.findSignature(formContainer.getFields());
+        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
     }
@@ -218,7 +206,7 @@ public class NewFormBuilderTest {
             .language(this.language)
             .build();
 
-        String signature = this.findSignature(formContainer.getFields());
+        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
     }
@@ -300,7 +288,7 @@ public class NewFormBuilderTest {
             this.amount, this.currency, this.orderId, this.description)
             .build();
 
-        String signature = this.findSignature(formContainer.getFields());
+        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
     }
@@ -495,7 +483,7 @@ public class NewFormBuilderTest {
             .webhookDelay(this.webhookDelay)
             .build();
 
-        String signature = this.findSignature(formContainer.getFields());
+        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
 
@@ -513,7 +501,7 @@ public class NewFormBuilderTest {
             .webhookDelay(this.webhookDelay)
             .build();
 
-        String signature = this.findSignature(formContainer.getFields());
+        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
 
@@ -531,7 +519,7 @@ public class NewFormBuilderTest {
             .webhookDelay(this.webhookDelay)
             .build();
 
-        String signature = this.findSignature(formContainer.getFields());
+        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
 
@@ -549,7 +537,7 @@ public class NewFormBuilderTest {
             .webhookDelay(this.webhookDelay)
             .build();
 
-        String signature = this.findSignature(formContainer.getFields());
+        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
 
@@ -567,7 +555,7 @@ public class NewFormBuilderTest {
             .webhookDelay(this.webhookDelay)
             .build();
 
-        String signature = this.findSignature(formContainer.getFields());
+        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
 
@@ -576,40 +564,31 @@ public class NewFormBuilderTest {
 
     @Test
     public void testMasterpassWebhookParameters() {
-        FormContainer formContainer = this.formBuilder.masterpassParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .language(this.language)
-            .webhookSuccessUrl(this.webhookSuccessUrl)
-            .webhookFailureUrl(this.webhookFailureUrl)
-            .webhookCancelUrl(this.webhookCancelUrl)
-            .webhookDelay(this.webhookDelay)
-            .build();
+        FormContainer formContainer = this.formBuilder.masterpassParameters(
+          this.successUrl,
+          this.failureUrl,
+          this.cancelUrl,
+          Long.valueOf(this.amount),
+          this.currency,
+          this.orderId,
+          this.description
+        )
+          .language(this.language)
+          .webhookSuccessUrl(this.webhookSuccessUrl)
+          .webhookFailureUrl(this.webhookFailureUrl)
+          .webhookCancelUrl(this.webhookCancelUrl)
+          .webhookDelay(this.webhookDelay)
+          .build();
 
-        String signature = this.findSignature(formContainer.getFields());
+        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
         assertNotNull(signature);
         assertTrue(signature.startsWith("SPH1"));
 
         this.validateWebhookParameters(formContainer.getFields(), false);
     }
 
-    private String findSignature(List<NameValuePair> nameValuePairs) {
-        Iterator<NameValuePair> it = nameValuePairs.iterator();
-        String signature = null;
-        while (it.hasNext()) {
-            NameValuePair nameValuePair = it.next();
-            String name = nameValuePair.getName();
-
-            if (name.equalsIgnoreCase("signature")) {
-                signature = nameValuePair.getValue();
-            }
-        }
-        return signature;
-    }
-
     private void validateWebhookParameters(List<NameValuePair> nameValuePairs, boolean ignoreDelay) {
-        Iterator<NameValuePair> it = nameValuePairs.iterator();
-        while (it.hasNext()) {
-            NameValuePair nameValuePair = it.next();
+        for (NameValuePair nameValuePair : nameValuePairs) {
             String name = nameValuePair.getName();
             if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_SUCCESS_URL)) {
                 assertEquals(nameValuePair.getValue(), this.webhookSuccessUrl);

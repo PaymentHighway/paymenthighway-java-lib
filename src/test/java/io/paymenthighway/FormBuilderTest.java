@@ -1,6 +1,7 @@
 package io.paymenthighway;
 
 import io.paymenthighway.connect.FormAPIConnection;
+import io.paymenthighway.formBuilders.FormBuilderConstants;
 import org.apache.http.NameValuePair;
 import org.junit.*;
 
@@ -65,20 +66,7 @@ public class FormBuilderTest {
     return new FormBuilder(method, this.signatureKeyId, this.signatureSecret, account, merchant, this.serviceUrl);
   }
 
-  private NameValuePair assertFieldExists(List<NameValuePair> fields, String key) throws AssertionError {
-    NameValuePair found = null;
-    for (NameValuePair field: fields) {
-      if (field.getName().equals(key)) {
-        found = field;
-      }
-    }
 
-    if (found == null) {
-      Assert.fail(String.format("Could not find key '%s' from field list", key));
-    }
-
-    return found;
-  }
 
   /**
    * Test with acceptCvcRequired set to false.
@@ -106,7 +94,7 @@ public class FormBuilderTest {
 
     // test that the result has a signature
     Iterator<NameValuePair> it = nameValuePairs.iterator();
-    String signature = assertFieldExists(nameValuePairs, "signature").getValue();
+    String signature = Helper.assertFieldExists(nameValuePairs, FormBuilderConstants.SIGNATURE).getValue();
     assertNotNull(signature);
     assertTrue(signature.startsWith("SPH1"));
   }
@@ -248,7 +236,7 @@ public class FormBuilderTest {
 
     // test that the result has a signature
     Iterator<NameValuePair> it = nameValuePairs.iterator();
-    String signature = assertFieldExists(nameValuePairs, "signature").getValue();
+    String signature = Helper.assertFieldExists(nameValuePairs, FormBuilderConstants.SIGNATURE).getValue();
     assertNotNull(signature);
     assertTrue(signature.startsWith("SPH1"));
   }
@@ -276,16 +264,7 @@ public class FormBuilderTest {
       .build();
 
     // test that the result has a signature
-    Iterator<NameValuePair> it = formContainer.getFields().iterator();
-    String signature = null;
-    while (it.hasNext()) {
-      NameValuePair nameValuePair = it.next();
-      String name = nameValuePair.getName();
-
-      if (name.equalsIgnoreCase("signature")) {
-        signature = nameValuePair.getValue();
-      }
-    }
+    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
     assertNotNull(signature);
     assertTrue(signature.startsWith("SPH1"));
   }

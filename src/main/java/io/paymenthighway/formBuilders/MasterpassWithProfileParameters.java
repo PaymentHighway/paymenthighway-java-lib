@@ -14,7 +14,7 @@ public class MasterpassWithProfileParameters
       String successUrl,
       String failureUrl,
       String cancelUrl,
-      String amount,
+      long amount,
       String currency,
       String orderId,
       String description
@@ -29,7 +29,7 @@ public class MasterpassWithProfileParameters
           successUrl,
           failureUrl,
           cancelUrl,
-          amount,
+          Long.valueOf(amount).toString(),
           currency,
           orderId,
           description
