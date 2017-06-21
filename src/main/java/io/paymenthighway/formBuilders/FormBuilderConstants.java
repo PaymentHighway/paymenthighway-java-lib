@@ -33,4 +33,5 @@ public final class FormBuilderConstants {
   public final static String SPH_WEBHOOK_DELAY = "sph-webhook-delay";
   public final static String SPH_SHOW_PAYMENT_METHOD_SELECTOR = "sph-show-payment-method-selector";
   public final static String SPH_TOKENIZE = "sph-tokenize";
+  public final static String SPH_REQUEST_SHIPPING_ADDRESS = "sph-request-shipping-address";
 }

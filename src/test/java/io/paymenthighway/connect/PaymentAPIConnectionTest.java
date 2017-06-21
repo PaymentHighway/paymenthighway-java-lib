@@ -1,5 +1,6 @@
 package io.paymenthighway.connect;
 
+import io.paymenthighway.Constants;
 import io.paymenthighway.PaymentHighwayUtility;
 import io.paymenthighway.model.Token;
 import io.paymenthighway.model.request.*;
@@ -173,7 +174,7 @@ public class PaymentAPIConnectionTest {
 
     List<NameValuePair> sphHeaders = new ArrayList<>();
 
-    sphHeaders.add(new BasicNameValuePair("sph-api-version", "20151028"));
+    sphHeaders.add(new BasicNameValuePair("sph-api-version", Constants.API_VERSION));
     sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
     sphHeaders.add(new BasicNameValuePair("sph-amount", "9990"));
     sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));

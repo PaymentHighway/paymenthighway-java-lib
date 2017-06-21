@@ -1,10 +1,10 @@
 package io.paymenthighway.formBuilders;
 
-public class MasterpassParameters
-  extends GenericPaymentParametersBuilder<MasterpassParameters>
+public class MasterpassWithProfileParameters
+  extends GenericPaymentParametersBuilder<MasterpassWithProfileParameters>
   implements CardFormParametersInterface {
 
-    public MasterpassParameters(
+    public MasterpassWithProfileParameters(
       String method,
       String signatureKeyId,
       String signatureSecret,
@@ -34,7 +34,7 @@ public class MasterpassParameters
           orderId,
           description
         );
-        serviceUri = "/form/view/masterpass";
+        serviceUri = "/form/view/masterpass_with_profile";
     }
 
     /**
@@ -43,7 +43,7 @@ public class MasterpassParameters
      * @param requestShippingAddress Request shipping address from masterpass.
      * @return Form builder
      */
-    public MasterpassParameters requestShippingAddress(Boolean requestShippingAddress) {
+    public MasterpassWithProfileParameters requestShippingAddress(Boolean requestShippingAddress) {
         addNameValuePair(FormBuilderConstants.SPH_REQUEST_SHIPPING_ADDRESS, requestShippingAddress.toString());
         return this;
     }

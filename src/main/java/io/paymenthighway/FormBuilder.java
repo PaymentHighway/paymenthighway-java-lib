@@ -1,12 +1,7 @@
 package io.paymenthighway;
 
 import io.paymenthighway.formBuilders.*;
-import io.paymenthighway.security.SecureSigner;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,15 +12,12 @@ import java.util.UUID;
  */
 public class FormBuilder {
 
-
   private String method = FormBuilderConstants.METHOD_POST;
   private String baseUrl = null;
   private String account = null;
   private String merchant = null;
   private String signatureKeyId;
   private String signatureSecret;
-
-  SecureSigner ss = null;
 
   public FormBuilder(
       String method,
@@ -41,8 +33,6 @@ public class FormBuilder {
     this.account = account;
     this.merchant = merchant;
     this.baseUrl = baseUrl;
-
-    this.ss = new SecureSigner(signatureKeyId, signatureSecret);
   }
 
   /**
@@ -53,9 +43,18 @@ public class FormBuilder {
    * @param cancelUrl  The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
    * @return Form builder
    */
-  public AddCardParametersInterface addCardParameters(String successUrl, String failureUrl, String cancelUrl) {
-    return new AddCardParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
-        failureUrl, cancelUrl);
+  public AddCardParameters addCardParameters(String successUrl, String failureUrl, String cancelUrl) {
+    return new AddCardParameters(
+      method,
+      signatureKeyId,
+      signatureSecret,
+      account,
+      merchant,
+      baseUrl,
+      successUrl,
+      failureUrl,
+      cancelUrl
+    );
   }
 
   /**
@@ -70,7 +69,7 @@ public class FormBuilder {
    * @param description Description of the payment shown in the form.
    * @return Form builder
    */
-  public CardFormParametersInterface paymentParameters(String successUrl, String failureUrl, String cancelUrl, String amount,
+  public PaymentParameters paymentParameters(String successUrl, String failureUrl, String cancelUrl, String amount,
                                              String currency, String orderId, String description) {
     return new PaymentParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
         failureUrl, cancelUrl, amount, currency, orderId, description);
@@ -90,8 +89,8 @@ public class FormBuilder {
    * @return Form builder
    */
   @Deprecated
-  public CardFormParametersInterface addCardAndPaymentParameters(String successUrl, String failureUrl, String cancelUrl,
-                                                                 String amount, String currency, String orderId, String description) {
+  public PaymentParameters addCardAndPaymentParameters(String successUrl, String failureUrl, String cancelUrl,
+                                                       String amount, String currency, String orderId, String description) {
     return new PaymentParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
         failureUrl, cancelUrl, amount, currency, orderId, description).tokenize(true);
   }
@@ -108,7 +107,7 @@ public class FormBuilder {
    * @param description Description of the payment shown in the form.
    * @return Form builder
    */
-  public CardFormParametersInterface payWithTokenAndCvcParameters(String successUrl, String failureUrl, String cancelUrl,
+  public PayWithTokenAndCvcParameters payWithTokenAndCvcParameters(String successUrl, String failureUrl, String cancelUrl,
                                                                    String amount, String currency, String orderId,
                                                                    String description, UUID token) {
     return new PayWithTokenAndCvcParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
@@ -127,7 +126,7 @@ public class FormBuilder {
    * @param description Description of the payment shown in the form.
    * @return Form builder
    */
-  public MobilePayParametersInterface mobilePayParametersBuilder(String successUrl, String failureUrl, String cancelUrl,
+  public MobilePayParametersBuilder mobilePayParametersBuilder(String successUrl, String failureUrl, String cancelUrl,
                                                                String amount, String currency, String orderId, String description) {
     return new MobilePayParametersBuilder(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
         failureUrl, cancelUrl, amount, currency, orderId, description);
@@ -164,17 +163,9 @@ public class FormBuilder {
   @Deprecated
   public FormContainer generateAddCardParameters(String successUrl, String failureUrl,
                                                  String cancelUrl, String language) {
-
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
-
-    String addCardUri = "/form/view/add_card";
-    String signature = this.createSignature(addCardUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(this.method, this.baseUrl, addCardUri, nameValuePairs, requestId);
+    return addCardParameters(successUrl, failureUrl, cancelUrl)
+      .language(language)
+      .build();
   }
 
   /**
@@ -192,18 +183,10 @@ public class FormBuilder {
   public FormContainer generateAddCardParameters(String successUrl, String failureUrl,
                                                  String cancelUrl, String language, Boolean acceptCvcRequired) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
-
-    String addCardUri = "/form/view/add_card";
-    String signature = this.createSignature(addCardUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(this.method, this.baseUrl, addCardUri, nameValuePairs, requestId);
+    return addCardParameters(successUrl, failureUrl, cancelUrl)
+      .language(language)
+      .acceptCvcRequired(acceptCvcRequired)
+      .build();
   }
 
   /**
@@ -232,29 +215,23 @@ public class FormBuilder {
                                                  Boolean skipFormNotifications, Boolean exitIframeOnResult,
                                                  Boolean exitIframeOn3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
+    AddCardParameters builder = addCardParameters(successUrl, failureUrl, cancelUrl)
+      .language(language);
 
     if (acceptCvcRequired != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
+      builder.acceptCvcRequired(acceptCvcRequired);
     }
     if (skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+      builder.skipFormNotifications(skipFormNotifications);
     }
     if (exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+      builder.exitIframeOnResult(exitIframeOnResult);
     }
     if (exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+      builder.exitIframeOn3ds(exitIframeOn3ds);
     }
 
-    String addCardUri = "/form/view/add_card";
-    String signature = this.createSignature(addCardUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(this.method, this.baseUrl, addCardUri, nameValuePairs, requestId);
+    return builder.build();
   }
 
   /**
@@ -284,32 +261,26 @@ public class FormBuilder {
                                                  Boolean skipFormNotifications, Boolean exitIframeOnResult,
                                                  Boolean exitIframeOn3ds, Boolean use3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
+    AddCardParameters builder = addCardParameters(successUrl, failureUrl, cancelUrl)
+      .language(language);
 
     if (acceptCvcRequired != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString()));
+      builder.acceptCvcRequired(acceptCvcRequired);
     }
     if (skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+      builder.skipFormNotifications(skipFormNotifications);
     }
     if (exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+      builder.exitIframeOnResult(exitIframeOnResult);
     }
     if (exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+      builder.exitIframeOn3ds(exitIframeOn3ds);
     }
     if (use3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_USE_THREE_D_SECURE, use3ds.toString()));
+      builder.use3ds(use3ds);
     }
 
-    String addCardUri = "/form/view/add_card";
-    String signature = this.createSignature(addCardUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(this.method, this.baseUrl, addCardUri, nameValuePairs, requestId);
+    return builder.build();
   }
 
   /**
@@ -331,21 +302,9 @@ public class FormBuilder {
                                                  String language, String amount, String currency, String orderId,
                                                  String description) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
-
-    String payWithCardUri = "/form/view/pay_with_card";
-    String signature = this.createSignature(payWithCardUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(this.method, this.baseUrl, payWithCardUri, nameValuePairs, requestId);
+    return paymentParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
+      .language(language)
+      .build();
   }
 
   /**
@@ -375,30 +334,21 @@ public class FormBuilder {
                                                  String description, Boolean skipFormNotifications,
                                                  Boolean exitIframeOnResult, Boolean exitIframeOn3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
+    PaymentParameters builder =
+      paymentParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
+        .language(language);
 
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
     if (skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+      builder.skipFormNotifications(skipFormNotifications);
     }
     if (exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+      builder.exitIframeOnResult(exitIframeOnResult);
     }
     if (exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+      builder.exitIframeOn3ds(exitIframeOn3ds);
     }
 
-    String payWithCardUri = "/form/view/pay_with_card";
-    String signature = this.createSignature(payWithCardUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(this.method, this.baseUrl, payWithCardUri, nameValuePairs, requestId);
+    return builder.build();
   }
 
   /**
@@ -431,33 +381,24 @@ public class FormBuilder {
                                                  String description, Boolean skipFormNotifications,
                                                  Boolean exitIframeOnResult, Boolean exitIframeOn3ds, Boolean use3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
+    PaymentParameters builder =
+      paymentParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
+        .language(language);
 
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
     if (skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+      builder.skipFormNotifications(skipFormNotifications);
     }
     if (exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+      builder.exitIframeOnResult(exitIframeOnResult);
     }
     if (exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+      builder.exitIframeOn3ds(exitIframeOn3ds);
     }
     if (use3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_USE_THREE_D_SECURE, use3ds.toString()));
+      builder.use3ds(use3ds);
     }
 
-    String payWithCardUri = "/form/view/pay_with_card";
-    String signature = this.createSignature(payWithCardUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(this.method, this.baseUrl, payWithCardUri, nameValuePairs, requestId);
+    return builder.build();
   }
 
   /**
@@ -479,21 +420,10 @@ public class FormBuilder {
                                                            String language, String amount, String currency,
                                                            String orderId, String description) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
-
-    String addCardAndPayUri = "/form/view/add_and_pay_with_card";
-    String signature = this.createSignature(addCardAndPayUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(method, this.baseUrl, addCardAndPayUri, nameValuePairs, requestId);
+    return paymentParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
+      .language(language)
+      .tokenize(true)
+      .build();
   }
 
   /**
@@ -525,30 +455,22 @@ public class FormBuilder {
                                                            Boolean skipFormNotifications, Boolean exitIframeOnResult,
                                                            Boolean exitIframeOn3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
+    PaymentParameters builder =
+      paymentParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
+        .language(language)
+        .tokenize(true);
 
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
     if (skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+      builder.skipFormNotifications(skipFormNotifications);
     }
     if (exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+      builder.exitIframeOnResult(exitIframeOnResult);
     }
     if (exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+      builder.exitIframeOn3ds(exitIframeOn3ds);
     }
 
-    String addCardAndPayUri = "/form/view/add_and_pay_with_card";
-    String signature = this.createSignature(addCardAndPayUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(method, this.baseUrl, addCardAndPayUri, nameValuePairs, requestId);
+    return builder.build();
   }
 
   /**
@@ -581,34 +503,25 @@ public class FormBuilder {
                                                            String orderId, String description,
                                                            Boolean skipFormNotifications, Boolean exitIframeOnResult,
                                                            Boolean exitIframeOn3ds, Boolean use3ds) {
+    PaymentParameters builder =
+      paymentParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
+        .language(language)
+        .tokenize(true);
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
     if (skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+      builder.skipFormNotifications(skipFormNotifications);
     }
     if (exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+      builder.exitIframeOnResult(exitIframeOnResult);
     }
     if (exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+      builder.exitIframeOn3ds(exitIframeOn3ds);
     }
     if (use3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_USE_THREE_D_SECURE, use3ds.toString()));
+      builder.use3ds(use3ds);
     }
 
-    String addCardAndPayUri = "/form/view/add_and_pay_with_card";
-    String signature = this.createSignature(addCardAndPayUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(method, this.baseUrl, addCardAndPayUri, nameValuePairs, requestId);
+    return builder.build();
   }
 
   /**
@@ -631,22 +544,11 @@ public class FormBuilder {
                                                             String cancelUrl, String language, String amount,
                                                             String currency, String orderId, String description) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
+    PayWithTokenAndCvcParameters builder =
+      payWithTokenAndCvcParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description, token)
+        .language(language);
 
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_TOKEN, token.toString()));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
-
-    String payWithTokenAndCvcUri = "/form/view/pay_with_token_and_cvc";
-    String signature = this.createSignature(payWithTokenAndCvcUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(method, this.baseUrl, payWithTokenAndCvcUri, nameValuePairs, requestId);
+    return builder.build();
   }
 
   /**
@@ -679,31 +581,21 @@ public class FormBuilder {
                                                             Boolean skipFormNotifications, Boolean exitIframeOnResult,
                                                             Boolean exitIframeOn3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
+    PayWithTokenAndCvcParameters builder =
+      payWithTokenAndCvcParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description, token)
+        .language(language);
 
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_TOKEN, token.toString()));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
     if (skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+      builder.skipFormNotifications(skipFormNotifications);
     }
     if (exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+      builder.exitIframeOnResult(exitIframeOnResult);
     }
     if (exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+      builder.exitIframeOn3ds(exitIframeOn3ds);
     }
 
-    String payWithTokenAndCvcUri = "/form/view/pay_with_token_and_cvc";
-    String signature = this.createSignature(payWithTokenAndCvcUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(method, this.baseUrl, payWithTokenAndCvcUri, nameValuePairs, requestId);
+    return builder.build();
   }
 
   /**
@@ -738,34 +630,24 @@ public class FormBuilder {
                                                             Boolean skipFormNotifications, Boolean exitIframeOnResult,
                                                             Boolean exitIframeOn3ds, Boolean use3ds) {
 
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl,
-        cancelUrl, language, requestId);
+    PayWithTokenAndCvcParameters builder =
+      payWithTokenAndCvcParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description, token)
+        .language(language);
 
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_TOKEN, token.toString()));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
     if (skipFormNotifications != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString()));
+      builder.skipFormNotifications(skipFormNotifications);
     }
     if (exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+      builder.exitIframeOnResult(exitIframeOnResult);
     }
     if (exitIframeOn3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString()));
+      builder.exitIframeOn3ds(exitIframeOn3ds);
     }
     if (use3ds != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_USE_THREE_D_SECURE, use3ds.toString()));
+      builder.use3ds(use3ds);
     }
 
-    String payWithTokenAndCvcUri = "/form/view/pay_with_token_and_cvc";
-    String signature = this.createSignature(payWithTokenAndCvcUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(method, this.baseUrl, payWithTokenAndCvcUri, nameValuePairs, requestId);
+    return builder.build();
   }
 
   /**
@@ -855,49 +737,17 @@ public class FormBuilder {
       Boolean exitIframeOnResult,
       String shopLogoUrl
   ) {
-    String requestId = PaymentHighwayUtility.createRequestId();
-    List<NameValuePair> nameValuePairs = createCommonNameValuePairs(successUrl, failureUrl, cancelUrl, language, requestId);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
+    MobilePayParametersBuilder builder =
+      mobilePayParametersBuilder(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
+        .language(language);
 
     if (exitIframeOnResult != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+      builder.exitIframeOnResult(exitIframeOnResult);
     }
     if (shopLogoUrl != null) {
-      nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SHOP_LOGO_URL, shopLogoUrl));
+      builder.shopLogoUrl(shopLogoUrl);
     }
 
-    String mobilePayUri = "/form/view/mobilepay";
-    String signature = this.createSignature(mobilePayUri, nameValuePairs);
-
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SIGNATURE, signature));
-
-    return new FormContainer(method, this.baseUrl, mobilePayUri, nameValuePairs, requestId);
-  }
-
-  @Deprecated
-  private List<NameValuePair> createCommonNameValuePairs(String successUrl, String failureUrl, String cancelUrl, String language, String requestId) {
-
-    List<NameValuePair> nameValuePairs = new ArrayList<>();
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_API_VERSION, "20151028"));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ACCOUNT, account));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_MERCHANT, merchant));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_TIMESTAMP, PaymentHighwayUtility.getUtcTimestamp()));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CANCEL_URL, cancelUrl));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_FAILURE_URL, failureUrl));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SUCCESS_URL, successUrl));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_REQUEST_ID, requestId));
-    nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.LANGUAGE, language));
-
-    return nameValuePairs;
-  }
-
-  @Deprecated
-  private String createSignature(String uri, List<NameValuePair> nameValuePairs) {
-
-    return ss.createSignature(this.method, uri, nameValuePairs, "");
+    return builder.build();
   }
 }
