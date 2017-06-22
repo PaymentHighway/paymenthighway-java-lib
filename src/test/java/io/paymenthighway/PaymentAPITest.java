@@ -774,26 +774,23 @@ public class PaymentAPITest {
       userProfileResponse.getResult().getMessage()
     );
 
-    assertNotNull(userProfileResponse.getTransaction());
-    assertNotNull(userProfileResponse.getTransaction().getMasterpass());
 
-    assertEquals(100L, userProfileResponse.getTransaction().getMasterpass().getAmount());
-    assertEquals("EUR", userProfileResponse.getTransaction().getMasterpass().getCurrency());
-    assertEquals("101", userProfileResponse.getTransaction().getMasterpass().getMasterpassWalledId());
+    assertNotNull(userProfileResponse.getMasterpass());
 
-    assertNotNull(userProfileResponse.getTransaction().getProfile());
+    assertEquals(100L, userProfileResponse.getMasterpass().getAmount());
+    assertEquals("EUR", userProfileResponse.getMasterpass().getCurrency());
+    assertEquals("101", userProfileResponse.getMasterpass().getMasterpassWalledId());
 
-    assertNotNull(userProfileResponse.getTransaction().getProfile().getEmailAddress());
-    assertNotNull(userProfileResponse.getTransaction().getProfile().getBillingAddress());
-    assertNotNull(userProfileResponse.getTransaction().getProfile().getShippingAddress());
 
-    assertEquals(
-      "matti.meikalainen@gmail.com",
-      userProfileResponse.getTransaction().getProfile().getEmailAddress()
-    );
+    assertNotNull(userProfileResponse.getProfile());
+    assertNotNull(userProfileResponse.getProfile().getEmailAddress());
+    assertNotNull(userProfileResponse.getProfile().getBillingAddress());
+    assertNotNull(userProfileResponse.getProfile().getShippingAddress());
 
-    assertEquals("FI", userProfileResponse.getTransaction().getProfile().getBillingAddress().getCountry());
-    assertEquals("FI", userProfileResponse.getTransaction().getProfile().getShippingAddress().getCountry());
+    assertEquals("matti.meikalainen@gmail.com", userProfileResponse.getProfile().getEmailAddress());
+
+    assertEquals("FI", userProfileResponse.getProfile().getBillingAddress().getCountry());
+    assertEquals("FI", userProfileResponse.getProfile().getShippingAddress().getCountry());
 
 
     MasterpassTransactionRequest request = MasterpassTransactionRequest.Builder(50L, "EUR").build();
