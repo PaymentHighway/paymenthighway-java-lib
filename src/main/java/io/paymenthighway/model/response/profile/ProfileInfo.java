@@ -18,7 +18,7 @@ public class ProfileInfo {
   private String gender;
 
   @JsonProperty(value = "date_of_birth", required = false)
-  private DateOfBirth dob;
+  private DateOfBirth dateOfBirth;
 
   @JsonProperty(value = "national_id", required = false)
   private String nationalID;
@@ -71,8 +71,8 @@ public class ProfileInfo {
   /**
    * @return DOB. NOTE: Requires contract with MasterPass
    */
-  public DateOfBirth getDob() {
-    return dob;
+  public DateOfBirth getDateOfBirth() {
+    return dateOfBirth;
   }
 
   /**
