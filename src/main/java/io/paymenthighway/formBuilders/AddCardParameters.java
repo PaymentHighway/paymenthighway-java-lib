@@ -24,7 +24,7 @@ public class AddCardParameters extends GenericCardFormBuilder<AddCardParameters>
      * @return AddCardParameters
      */
     public AddCardParameters acceptCvcRequired(Boolean acceptCvcRequired) {
-        addNameValuePair(FormBuilderConstants.SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired.toString());
+        addNameValuePair(FormBuilderConstants.SPH_ACCEPT_CVC_REQUIRED, acceptCvcRequired);
         return this;
     }
 }

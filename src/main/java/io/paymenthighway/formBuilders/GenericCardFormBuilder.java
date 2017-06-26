@@ -25,7 +25,7 @@ public class GenericCardFormBuilder<T>
    */
   @SuppressWarnings("unchecked")
   public T skipFormNotifications(Boolean skipFormNotifications) {
-    addNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications.toString());
+    addNameValuePair(FormBuilderConstants.SPH_SKIP_FORM_NOTIFICATIONS, skipFormNotifications);
     return (T) this;
   }
 
@@ -37,7 +37,7 @@ public class GenericCardFormBuilder<T>
    */
   @SuppressWarnings("unchecked")
   public T exitIframeOnResult(Boolean exitIframeOnResult) {
-    addNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString());
+    addNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult);
     return(T) this;
   }
 
@@ -49,7 +49,7 @@ public class GenericCardFormBuilder<T>
    */
   @SuppressWarnings("unchecked")
   public T exitIframeOn3ds(Boolean exitIframeOn3ds) {
-    addNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds.toString());
+    addNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_THREE_D_SECURE, exitIframeOn3ds);
     return (T) this;
   }
 
@@ -61,7 +61,7 @@ public class GenericCardFormBuilder<T>
    */
   @SuppressWarnings("unchecked")
   public T use3ds(Boolean use3ds) {
-    addNameValuePair(FormBuilderConstants.SPH_USE_THREE_D_SECURE, use3ds.toString());
+    addNameValuePair(FormBuilderConstants.SPH_USE_THREE_D_SECURE, use3ds);
     return (T) this;
   }
 }

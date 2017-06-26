@@ -69,7 +69,7 @@ public class ProfileInfo {
   }
 
   /**
-   * @return DOB. NOTE: Requires contract with MasterPass
+   * @return Date of birth. NOTE: Requires contract with MasterPass
    */
   public DateOfBirth getDateOfBirth() {
     return dateOfBirth;

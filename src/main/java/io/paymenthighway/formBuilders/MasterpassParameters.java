@@ -14,7 +14,7 @@ public class MasterpassParameters
       String successUrl,
       String failureUrl,
       String cancelUrl,
-      long amount,
+      Long amount,
       String currency,
       String orderId,
       String description
@@ -29,7 +29,7 @@ public class MasterpassParameters
           successUrl,
           failureUrl,
           cancelUrl,
-          Long.valueOf(amount).toString(),
+          amount.toString(),
           currency,
           orderId,
           description
@@ -44,7 +44,7 @@ public class MasterpassParameters
      * @return Form builder
      */
     public MasterpassParameters requestShippingAddress(Boolean requestShippingAddress) {
-        addNameValuePair(FormBuilderConstants.SPH_REQUEST_SHIPPING_ADDRESS, requestShippingAddress.toString());
+        addNameValuePair(FormBuilderConstants.SPH_REQUEST_SHIPPING_ADDRESS, requestShippingAddress);
         return this;
     }
 }

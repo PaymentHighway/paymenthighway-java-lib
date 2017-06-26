@@ -40,7 +40,7 @@ public class GenericPaymentParametersBuilder<T>
    */
   @SuppressWarnings("unchecked")
   public T showPaymentMethodSelectionPage(Boolean show) {
-    addNameValuePair(FormBuilderConstants.SPH_SHOW_PAYMENT_METHOD_SELECTOR, show.toString());
+    addNameValuePair(FormBuilderConstants.SPH_SHOW_PAYMENT_METHOD_SELECTOR, show);
     return (T) this;
   }
 
@@ -52,7 +52,7 @@ public class GenericPaymentParametersBuilder<T>
    */
   @SuppressWarnings("unchecked")
   public T tokenize(Boolean tokenize) {
-    addNameValuePair(FormBuilderConstants.SPH_TOKENIZE, tokenize.toString());
+    addNameValuePair(FormBuilderConstants.SPH_TOKENIZE, tokenize);
     return (T) this;
   }
 }

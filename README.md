@@ -367,9 +367,10 @@ In order to be sure that a tokenized card is valid and is able to process paymen
 ### Example Debit with Token
 
     Token token = new Token("id");
-    long amount = 1095;
+    Long amount = 1095L;
     String currency = "EUR";
-    TransactionRequest transaction = new TransactionRequest.Builder(token, amount, currency).build();
+    TransactionRequest transaction = new TransactionRequest.Builder(token, amount, currency)
+      .build();
     TransactionResponse response = paymentAPI.debitTransaction("transactionId", transaction);
 
 ### Example Revert

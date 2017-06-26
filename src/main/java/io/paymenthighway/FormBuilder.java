@@ -144,7 +144,7 @@ public class FormBuilder {
    * @param description Description of the payment shown in the form.
    * @return Form builder
    */
-  public MasterpassParameters masterpassParameters(String successUrl, String failureUrl, String cancelUrl, long amount,
+  public MasterpassParameters masterpassParameters(String successUrl, String failureUrl, String cancelUrl, Long amount,
                                                        String currency, String orderId, String description) {
     return new MasterpassParameters(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl,
         failureUrl, cancelUrl, amount, currency, orderId, description);
@@ -166,7 +166,7 @@ public class FormBuilder {
     String successUrl,
     String failureUrl,
     String cancelUrl,
-    long amount,
+    Long amount,
     String currency,
     String orderId,
     String description

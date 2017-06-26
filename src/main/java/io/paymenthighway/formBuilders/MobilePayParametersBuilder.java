@@ -22,7 +22,7 @@ public class MobilePayParametersBuilder
      * @return MobilePayParametersInterface
      */
     public MobilePayParametersBuilder exitIframeOnResult(Boolean exitIframeOnResult) {
-        addNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString());
+        addNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult);
         return this;
     }
 

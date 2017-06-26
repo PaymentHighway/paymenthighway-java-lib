@@ -66,6 +66,10 @@ public class GenericFormBuilder<T> {
     addNameValuePair(FormBuilderConstants.SPH_REQUEST_ID, requestId);
   }
 
+  protected boolean addNameValuePair(String name, Boolean value) {
+    return nameValuePairs.add(new BasicNameValuePair(name, value.toString()));
+  }
+
   protected boolean addNameValuePair(String name, String value) {
     return nameValuePairs.add(new BasicNameValuePair(name, value));
   }
