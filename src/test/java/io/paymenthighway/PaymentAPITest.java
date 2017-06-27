@@ -779,7 +779,7 @@ public class PaymentAPITest {
 
     assertEquals(100L, userProfileResponse.getMasterpass().getAmount());
     assertEquals("EUR", userProfileResponse.getMasterpass().getCurrency());
-    assertEquals("101", userProfileResponse.getMasterpass().getMasterpassWalledId());
+    assertEquals("101", userProfileResponse.getMasterpass().getMasterpassWalletId());
 
 
     assertNotNull(userProfileResponse.getProfile());

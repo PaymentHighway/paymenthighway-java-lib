@@ -13,8 +13,8 @@ public class MasterpassInfo {
   private String checkoutOauthToken;
   @JsonProperty(value = "masterpass_transaction_id", required = true)
   private String masterpassTransactionId;
-  @JsonProperty(value = "masterpass_walled_id", required = true)
-  private String masterpassWalledId;
+  @JsonProperty(value = "masterpass_wallet_id", required = true)
+  private String masterpassWalletId;
 
   /**
    * Original amount given to masterpass
@@ -49,9 +49,9 @@ public class MasterpassInfo {
   }
 
   /**
-   * @return Masterpass walled id
+   * @return Masterpass wallet id
    */
-  public String getMasterpassWalledId() {
-    return masterpassWalledId;
+  public String getMasterpassWalletId() {
+    return masterpassWalletId;
   }
 }

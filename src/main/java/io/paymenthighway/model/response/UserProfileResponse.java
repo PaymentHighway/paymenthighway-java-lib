@@ -35,7 +35,7 @@ public class UserProfileResponse extends Response {
   }
 
   /**
-   * @return masterpass transaction information if masterpass walled was used
+   * @return masterpass transaction information if masterpass wallet was used
    */
   public MasterpassInfo getMasterpass() {
     return masterpass;
