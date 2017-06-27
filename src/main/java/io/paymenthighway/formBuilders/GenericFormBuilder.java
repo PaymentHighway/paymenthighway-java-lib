@@ -88,8 +88,9 @@ public class GenericFormBuilder<T> {
 
   /**
    * The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
-   * @param successUrl
-   * @return
+   *
+   * @param successUrl Webhook url to call when request is successfully handled
+   * @return Form builders
    */
   @SuppressWarnings("unchecked")
   public T webhookSuccessUrl(String successUrl) {
@@ -99,8 +100,9 @@ public class GenericFormBuilder<T> {
 
   /**
    * The URL the PH server makes request after a failure such as an authentication or connectivity error.
-   * @param failureUrl
-   * @return
+   *
+   * @param failureUrl Webhook url to call when request failed
+   * @return Form builder
    */
   @SuppressWarnings("unchecked")
   public T webhookFailureUrl(String failureUrl) {
@@ -110,8 +112,9 @@ public class GenericFormBuilder<T> {
 
   /**
    * The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
-   * @param cancelUrl
-   * @return
+   *
+   * @param cancelUrl Webhook url to call when user cancels request
+   * @return Form builder
    */
   @SuppressWarnings("unchecked")
   public T webhookCancelUrl(String cancelUrl) {
@@ -121,8 +124,9 @@ public class GenericFormBuilder<T> {
 
   /**
    * Delay for webhook in seconds. Between 0-900
-   * @param delay
-   * @return
+   *
+   * @param delay Webhook triggering delay in seconds
+   * @return Form builder
    */
   @SuppressWarnings("unchecked")
   public T webhookDelay(Integer delay) {
