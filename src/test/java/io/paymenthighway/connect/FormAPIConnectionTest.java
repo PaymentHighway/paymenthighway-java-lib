@@ -1,5 +1,6 @@
 package io.paymenthighway.connect;
 
+import io.paymenthighway.Constants;
 import io.paymenthighway.PaymentHighwayUtility;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.Header;
@@ -88,7 +89,7 @@ public class FormAPIConnectionTest {
     List<NameValuePair> formParameters = new ArrayList<>();
 
     formParameters.add(new BasicNameValuePair("sph-accept-cvc-required", "true"));
-    formParameters.add(new BasicNameValuePair("sph-api-version", "20151028"));
+    formParameters.add(new BasicNameValuePair("sph-api-version", Constants.API_VERSION));
     formParameters.add(new BasicNameValuePair("sph-amount", "990"));
     formParameters.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
     formParameters.add(new BasicNameValuePair("sph-cancel-url", "https://www.paymenthighway.fi/?cancel"));

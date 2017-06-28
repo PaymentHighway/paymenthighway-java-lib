@@ -1,5 +1,6 @@
 package io.paymenthighway.connect;
 
+import io.paymenthighway.Constants;
 import io.paymenthighway.PaymentHighwayUtility;
 import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.json.JsonGenerator;
@@ -35,7 +36,7 @@ public class PaymentAPIConnection implements Closeable {
   private static final String USER_AGENT = "PaymentHighway Java Lib";
   private static final String METHOD_POST = "POST";
   private static final String METHOD_GET = "GET";
-  private static final String SPH_API_VERSION = "20160630";
+  private static final String SPH_API_VERSION = Constants.API_VERSION;
 
   private String serviceUrl = "";
   private String signatureKeyId = null;
@@ -44,6 +45,8 @@ public class PaymentAPIConnection implements Closeable {
   private String merchant = null;
 
   private CloseableHttpClient httpclient;
+
+  private JsonParser jsonParser = new JsonParser();
 
   /**
    * Constructor
@@ -73,8 +76,7 @@ public class PaymentAPIConnection implements Closeable {
 
     String response = executePost(paymentUri, createNameValuePairs());
 
-    JsonParser jpar = new JsonParser();
-    return jpar.mapResponse(response, InitTransactionResponse.class);
+    return jsonParser.mapResponse(response, InitTransactionResponse.class);
   }
 
   public DebitTransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
@@ -85,8 +87,15 @@ public class PaymentAPIConnection implements Closeable {
 
     String response = executePost(debitUri, createNameValuePairs(), request);
 
-    JsonParser jpar = new JsonParser();
-    return jpar.mapResponse(response, DebitTransactionResponse.class);
+    return jsonParser.mapResponse(response, DebitTransactionResponse.class);
+  }
+
+  public DebitTransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
+    throws IOException {
+
+    String debitMasterpassUri = String.format("/transaction/%s/debit_masterpass", transactionId);
+    String response = executePost(debitMasterpassUri, createNameValuePairs(), request);
+    return jsonParser.mapResponse(response, DebitTransactionResponse.class);
   }
 
   public TransactionResponse creditTransaction(UUID transactionId, TransactionRequest request) throws IOException {
@@ -97,8 +106,7 @@ public class PaymentAPIConnection implements Closeable {
 
     String response = executePost(creditUri, createNameValuePairs(), request);
 
-    JsonParser jpar = new JsonParser();
-    return jpar.mapResponse(response, TransactionResponse.class);
+    return jsonParser.mapResponse(response, TransactionResponse.class);
   }
 
   public TransactionResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
@@ -109,8 +117,7 @@ public class PaymentAPIConnection implements Closeable {
 
     String response = executePost(revertUri, createNameValuePairs(), request);
 
-    JsonParser jpar = new JsonParser();
-    return jpar.mapResponse(response, TransactionResponse.class);
+    return jsonParser.mapResponse(response, TransactionResponse.class);
   }
 
   public CommitTransactionResponse commitTransaction(UUID transactionId, CommitTransactionRequest request) throws IOException {
@@ -121,8 +128,16 @@ public class PaymentAPIConnection implements Closeable {
 
     String response = executePost(commitUri, createNameValuePairs(), request);
 
-    JsonParser jpar = new JsonParser();
-    return jpar.mapResponse(response, CommitTransactionResponse.class);
+    return jsonParser.mapResponse(response, CommitTransactionResponse.class);
+  }
+
+  public UserProfileResponse userProfile(UUID transactionId) throws IOException {
+
+    String userProfileUri = String.format("/transaction/%s/user_profile", transactionId);
+
+    String response = executeGet(userProfileUri, createNameValuePairs());
+
+    return jsonParser.mapResponse(response, UserProfileResponse.class);
   }
 
   public TransactionResultResponse transactionResult(UUID transactionId) throws IOException {
@@ -133,8 +148,7 @@ public class PaymentAPIConnection implements Closeable {
 
     String response = executeGet(transactionResultUrl, createNameValuePairs());
 
-    JsonParser jpar = new JsonParser();
-    return jpar.mapResponse(response, TransactionResultResponse.class);
+    return jsonParser.mapResponse(response, TransactionResultResponse.class);
   }
 
   public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
@@ -145,8 +159,7 @@ public class PaymentAPIConnection implements Closeable {
 
     String response = executeGet(statusUri, createNameValuePairs());
 
-    JsonParser jpar = new JsonParser();
-    return jpar.mapResponse(response, TransactionStatusResponse.class);
+    return jsonParser.mapResponse(response, TransactionStatusResponse.class);
   }
 
   public OrderSearchResponse searchOrders(String order) throws IOException {
@@ -157,8 +170,7 @@ public class PaymentAPIConnection implements Closeable {
 
     String response = executeGet(searchUri, createNameValuePairs());
 
-    JsonParser jpar = new JsonParser();
-    return jpar.mapResponse(response, OrderSearchResponse.class);
+    return jsonParser.mapResponse(response, OrderSearchResponse.class);
   }
 
   public TokenizationResponse tokenization(UUID tokenizationId) throws IOException {
@@ -169,8 +181,7 @@ public class PaymentAPIConnection implements Closeable {
 
     String response = executeGet(tokenUri, createNameValuePairs());
 
-    JsonParser jpar = new JsonParser();
-    return jpar.mapResponse(response, TokenizationResponse.class);
+    return jsonParser.mapResponse(response, TokenizationResponse.class);
   }
 
   public ReportResponse fetchReport(String date) throws IOException {
@@ -181,8 +192,7 @@ public class PaymentAPIConnection implements Closeable {
 
     String response = executeGet(fetchUri, createNameValuePairs());
 
-    JsonParser jpar = new JsonParser();
-    return jpar.mapResponse(response, ReportResponse.class);
+    return jsonParser.mapResponse(response, ReportResponse.class);
   }
 
   public ReconciliationReportResponse fetchReconciliationReport(String date) throws IOException {
@@ -198,8 +208,7 @@ public class PaymentAPIConnection implements Closeable {
 
     String response = executeGet(fetchUri, createNameValuePairs());
 
-    JsonParser jpar = new JsonParser();
-    return jpar.mapResponse(response, ReconciliationReportResponse.class);
+    return jsonParser.mapResponse(response, ReconciliationReportResponse.class);
   }
 
   protected String executeGet(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {

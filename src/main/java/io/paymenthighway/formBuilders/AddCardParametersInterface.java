@@ -7,7 +7,7 @@ public interface AddCardParametersInterface {
      * Skip notifications displayed on the Payment Highway form
      *
      * @param skipFormNotifications Skip notifications displayed on the Payment Highway form.
-     * @return AddCardParametersInterface
+     * @return Form builder
      */
     AddCardParametersInterface skipFormNotifications(Boolean skipFormNotifications);
 
@@ -15,7 +15,7 @@ public interface AddCardParametersInterface {
      * Exit from iframe after a result
      *
      * @param exitIframeOnResult Exit from iframe after a result.
-     * @return AddCardParametersInterface
+     * @return Form builder
      */
     AddCardParametersInterface exitIframeOnResult(Boolean exitIframeOnResult);
 
@@ -23,7 +23,7 @@ public interface AddCardParametersInterface {
      * Exit from iframe when redirecting the user to 3DS.
      *
      * @param exitIframeOn3ds Exit from iframe when redirecting the user to 3DS.
-     * @return AddCardParametersInterface
+     * @return Form builder
      */
     AddCardParametersInterface exitIframeOn3ds(Boolean exitIframeOn3ds);
 
@@ -31,7 +31,7 @@ public interface AddCardParametersInterface {
      * Force enable/disable 3ds
      *
      * @param use3ds Force enable/disable 3ds.
-     * @return AddCardParametersInterface
+     * @return Form builder
      */
     AddCardParametersInterface use3ds(Boolean use3ds);
 
@@ -39,7 +39,7 @@ public interface AddCardParametersInterface {
      * Set PaymentHighway form language
      *
      * @param language Two character language code e.q. FI or EN. If omitted, default language from user's browser's settings is used.
-     * @return AddCardParametersInterface
+     * @return Form builder
      */
     AddCardParametersInterface language(String language);
 
@@ -53,29 +53,33 @@ public interface AddCardParametersInterface {
 
     /**
      * The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
-     * @param successUrl
-     * @return CardFormParametersInterface
+     *
+     * @param successUrl Webhook url to call when request is successfully handled
+     * @return Form builder
      */
     AddCardParametersInterface webhookSuccessUrl(String successUrl);
 
     /**
      * The URL the PH server makes request after a failure such as an authentication or connectivity error.
-     * @param failureUrl
-     * @return CardFormParametersInterface
+     *
+     * @param failureUrl Webhook url to call when request failed
+     * @return Form builder
      */
     AddCardParametersInterface webhookFailureUrl(String failureUrl);
 
     /**
      * The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
-     * @param cancelUrl
-     * @return CardFormParametersInterface
+     *
+     * @param cancelUrl Webhook url to call when user cancels request
+     * @return Form builder
      */
     AddCardParametersInterface webhookCancelUrl(String cancelUrl);
 
     /**
      * Delay for webhook in seconds. Between 0-900
-     * @param delay
-     * @return CardFormParametersInterface
+     *
+     * @param delay Webhook triggering delay in seconds
+     * @return Form builder
      */
     AddCardParametersInterface webhookDelay(Integer delay);
 

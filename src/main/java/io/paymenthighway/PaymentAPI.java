@@ -3,6 +3,7 @@ package io.paymenthighway;
 import io.paymenthighway.connect.PaymentAPIConnection;
 import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.model.request.CommitTransactionRequest;
+import io.paymenthighway.model.request.MasterpassTransactionRequest;
 import io.paymenthighway.model.request.RevertTransactionRequest;
 import io.paymenthighway.model.request.TransactionRequest;
 import io.paymenthighway.model.response.*;
@@ -58,6 +59,22 @@ public class PaymentAPI implements Closeable {
   public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
     return paymentApi.debitTransaction(transactionId, request);
+  }
+
+  /**
+   * Payment Highway Masterpass Debit Transaction
+   *
+   * @param transactionId Transaction id
+   * @param request Masterpass Debit Transaction request
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
+    throws IOException {
+
+    return paymentApi.debitMasterpassTransaction(transactionId, request);
   }
 
   /**
@@ -137,6 +154,22 @@ public class PaymentAPI implements Closeable {
     CommitTransactionRequest commitRequest = new CommitTransactionRequest(amount, currency);
 
     return paymentApi.commitTransaction(transactionId, commitRequest);
+  }
+
+  /**
+   * Payment Highway User profile information
+   *
+   * For now used to find user information from masterpass, example shipping address
+   *
+   * @param transactionId Transaction id
+   * @return User profile response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public UserProfileResponse userProfile(UUID transactionId) throws IOException {
+
+    return paymentApi.userProfile(transactionId);
   }
 
   /**

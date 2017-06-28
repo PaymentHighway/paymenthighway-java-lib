@@ -2,6 +2,7 @@ package io.paymenthighway;
 
 import io.paymenthighway.model.Token;
 import io.paymenthighway.model.request.Card;
+import io.paymenthighway.model.request.MasterpassTransactionRequest;
 import io.paymenthighway.model.request.TransactionRequest;
 import io.paymenthighway.model.response.*;
 import org.apache.http.NameValuePair;
@@ -37,23 +38,14 @@ public class PaymentAPITest {
   private String account;
   private String merchant;
 
-  /**
-   * @throws java.lang.Exception
-   */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @AfterClass
   public static void tearDownAfterClass() throws Exception {
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @Before
   public void setUp() throws Exception {
     // required system information and authentication credentials
@@ -71,18 +63,19 @@ public class PaymentAPITest {
     this.merchant = this.props.getProperty("sph-merchant");
   }
 
-  /**
-   * @throws java.lang.Exception
-   */
   @After
   public void tearDown() throws Exception {
+  }
+
+  private PaymentAPI createPaymentAPI() {
+    return new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
   }
 
   @Test
   public void testInitTransaction() {
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     InitTransactionResponse response = null;
 
@@ -102,8 +95,7 @@ public class PaymentAPITest {
   public void testDebitWithCard() {
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-        this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     InitTransactionResponse response = null;
 
@@ -121,7 +113,7 @@ public class PaymentAPITest {
     String expiryYear = "2017";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
+    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
     TransactionResponse transactionResponse = null;
 
@@ -140,8 +132,7 @@ public class PaymentAPITest {
   public void testCommitWithCardTransaction() {
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-        this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     InitTransactionResponse response = null;
 
@@ -160,7 +151,7 @@ public class PaymentAPITest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
+    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
     TransactionResponse transactionResponse = null;
 
@@ -197,8 +188,7 @@ public class PaymentAPITest {
   public void testRevertTransaction() {
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-        this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     // init transaction
     InitTransactionResponse response = null;
@@ -219,7 +209,7 @@ public class PaymentAPITest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
+    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
     TransactionResponse transactionResponse = null;
 
     try {
@@ -249,7 +239,7 @@ public class PaymentAPITest {
   public void testRevertFullAmountTransaction() {
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     // init transaction
     InitTransactionResponse response = null;
@@ -314,8 +304,7 @@ public class PaymentAPITest {
   public void testTransactionStatus() {
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-        this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     // init transaction
     InitTransactionResponse response = null;
@@ -336,7 +325,7 @@ public class PaymentAPITest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
+    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
     TransactionResponse transactionResponse = null;
 
@@ -383,8 +372,7 @@ public class PaymentAPITest {
   public void testOrderSearch() {
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-            this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     // init transaction
     InitTransactionResponse response = null;
@@ -406,7 +394,7 @@ public class PaymentAPITest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     UUID orderId = UUID.randomUUID();
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true, orderId.toString());
+    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", orderId.toString());
 
     TransactionResponse transactionResponse = null;
 
@@ -440,8 +428,7 @@ public class PaymentAPITest {
   public void testCommit() {
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-        this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(
@@ -456,7 +443,7 @@ public class PaymentAPITest {
     String result = null;
 
     try {
-      result = formApi.addCardAndPay(formContainer.getFields());
+      result = formApi.payWithCard(formContainer.getFields());
     } catch (IOException e1) {
       e1.printStackTrace();
     }
@@ -525,8 +512,7 @@ public class PaymentAPITest {
   public void testTokenize() {
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-        this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(
@@ -607,8 +593,7 @@ public class PaymentAPITest {
   public void testDebitWithToken() {
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-        this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     // create the payment highway request parameters
     FormBuilder formBuilder = new FormBuilder(
@@ -712,8 +697,7 @@ public class PaymentAPITest {
   public void testDailyBatchReport() {
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-        this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     // request batch for yesterday, today is not available
     DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -741,8 +725,7 @@ public class PaymentAPITest {
     fail("No test report available yet");
 
     // create the payment highway service
-    PaymentAPI paymentAPI = new PaymentAPI(this.serviceUrl,
-            this.signatureKeyId, this.signatureSecret, this.account, this.merchant);
+    PaymentAPI paymentAPI = createPaymentAPI();
 
     // request batch for yesterday, today is not available
     DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
@@ -763,5 +746,72 @@ public class PaymentAPITest {
     assertEquals(reconciliationReportResponse.getResult().getMessage(), "OK");
     assertNotNull(reconciliationReportResponse.getReconciliationSettlements()[0].getTransactions()[0].getMerchant());
     assertNotNull(reconciliationReportResponse.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerAmountPresented());
+  }
+
+  @Test
+  public void userProfileForMasterpass() {
+
+    UUID preGeneratedMasterpassTransaction = UUID.fromString("327c6f29-9b46-40b9-b85b-85e908015d92");
+
+    PaymentAPI paymentAPI = createPaymentAPI();
+
+    UserProfileResponse userProfileResponse = null;
+
+    try {
+      userProfileResponse = paymentAPI.userProfile(preGeneratedMasterpassTransaction);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(userProfileResponse);
+
+    assertEquals(
+      "100",
+      userProfileResponse.getResult().getCode()
+    );
+    assertEquals(
+      "OK",
+      userProfileResponse.getResult().getMessage()
+    );
+
+
+    assertNotNull(userProfileResponse.getMasterpass());
+
+    assertEquals(100L, userProfileResponse.getMasterpass().getAmount());
+    assertEquals("EUR", userProfileResponse.getMasterpass().getCurrency());
+    assertEquals("101", userProfileResponse.getMasterpass().getMasterpassWalletId());
+
+
+    assertNotNull(userProfileResponse.getProfile());
+    assertNotNull(userProfileResponse.getProfile().getEmailAddress());
+    assertNotNull(userProfileResponse.getProfile().getBillingAddress());
+    assertNotNull(userProfileResponse.getProfile().getShippingAddress());
+
+    assertEquals("matti.meikalainen@gmail.com", userProfileResponse.getProfile().getEmailAddress());
+
+    assertEquals("FI", userProfileResponse.getProfile().getBillingAddress().getCountry());
+    assertEquals("FI", userProfileResponse.getProfile().getShippingAddress().getCountry());
+
+
+    MasterpassTransactionRequest request = MasterpassTransactionRequest.Builder(50L, "EUR").build();
+
+    TransactionResponse transactionResponse = null;
+
+    try {
+      transactionResponse = paymentAPI.debitMasterpassTransaction(preGeneratedMasterpassTransaction, request);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(transactionResponse);
+
+    assertEquals(
+      "100",
+      transactionResponse.getResult().getCode()
+    );
+    assertEquals(
+      "OK",
+      transactionResponse.getResult().getMessage()
+    );
   }
 }

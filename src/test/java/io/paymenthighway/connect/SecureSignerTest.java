@@ -1,5 +1,6 @@
 package io.paymenthighway.connect;
 
+import io.paymenthighway.Constants;
 import io.paymenthighway.PaymentHighwayUtility;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
@@ -45,7 +46,7 @@ public class SecureSignerTest {
     String formPaymentBody = "";
 
     List<NameValuePair> nameValuePairs = new ArrayList<>();
-    nameValuePairs.add(new BasicNameValuePair("sph-api-version", "20151028"));
+    nameValuePairs.add(new BasicNameValuePair("sph-api-version", Constants.API_VERSION));
     nameValuePairs.add(new BasicNameValuePair("sph-account", "sampleAccount001"));
     nameValuePairs.add(new BasicNameValuePair("sph-amount", "990"));
     nameValuePairs.add(new BasicNameValuePair("sph-cancel-url", "https://merchant.example.com/payment/cancel"));

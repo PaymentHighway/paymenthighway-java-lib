@@ -1,5 +1,6 @@
 package io.paymenthighway.connect;
 
+import io.paymenthighway.Constants;
 import io.paymenthighway.PaymentHighwayUtility;
 import io.paymenthighway.model.Token;
 import io.paymenthighway.model.request.*;
@@ -173,7 +174,7 @@ public class PaymentAPIConnectionTest {
 
     List<NameValuePair> sphHeaders = new ArrayList<>();
 
-    sphHeaders.add(new BasicNameValuePair("sph-api-version", "20151028"));
+    sphHeaders.add(new BasicNameValuePair("sph-api-version", Constants.API_VERSION));
     sphHeaders.add(new BasicNameValuePair("sph-account", "test"));
     sphHeaders.add(new BasicNameValuePair("sph-amount", "9990"));
     sphHeaders.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
@@ -354,7 +355,7 @@ public class PaymentAPIConnectionTest {
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
-    TransactionRequest transaction = TransactionRequest.Builder(card, 99900, "EUR").build();
+    TransactionRequest transaction = TransactionRequest.Builder(card, 99900L, "EUR").build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -382,7 +383,7 @@ public class PaymentAPIConnectionTest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer(InetAddress.getLoopbackAddress().getHostAddress());
 
-    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setCustomer(customer).build();
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999L, "EUR").setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -446,7 +447,7 @@ public class PaymentAPIConnectionTest {
 
     UUID transactionId = createAndTestTransactionInit();
 
-    TransactionRequest transaction = new TransactionRequest.Builder(new Token(tokenResponse.getCardToken()), 9999, "EUR")
+    TransactionRequest transaction = new TransactionRequest.Builder(new Token(tokenResponse.getCardToken()), 9999L, "EUR")
         .setOrder("PIPPURI")
         .setCommit(false)
         .build();
@@ -503,7 +504,7 @@ public class PaymentAPIConnectionTest {
 
     UUID transactionId = createAndTestTransactionInit();
 
-    TransactionRequest transaction = TransactionRequest.Builder(new Token(tokenResponse.getCardToken(), "048"), 9999, "EUR")
+    TransactionRequest transaction = TransactionRequest.Builder(new Token(tokenResponse.getCardToken(), "048"), 9999L, "EUR")
         .setOrder("PIPPURI")
         .setCommit(false)
         .build();
@@ -951,7 +952,7 @@ public class PaymentAPIConnectionTest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer("83.145.208.186");
 
-    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setCustomer(customer).build();
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999L, "EUR").setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -1020,7 +1021,7 @@ public class PaymentAPIConnectionTest {
     Customer customer = new Customer("83.145.208.186");
     String orderId = "ABC123";
 
-    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setOrder(orderId).setCommit(false).setCustomer(customer).build();
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999L, "EUR").setOrder(orderId).setCommit(false).setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {
@@ -1090,7 +1091,7 @@ public class PaymentAPIConnectionTest {
     UUID orderId = UUID.randomUUID();
     Customer customer = new Customer("83.145.208.186");
 
-    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").setOrder(orderId.toString()).setCustomer(customer).build();
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999L, "EUR").setOrder(orderId.toString()).setCustomer(customer).build();
 
     TransactionResponse transactionResponse = null;
     try {

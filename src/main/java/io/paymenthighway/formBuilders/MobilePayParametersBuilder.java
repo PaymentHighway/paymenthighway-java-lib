@@ -1,17 +1,17 @@
 package io.paymenthighway.formBuilders;
 
-import org.apache.http.message.BasicNameValuePair;
-
-public class MobilePayParametersBuilder extends GenericFormBuilder<MobilePayParametersBuilder> implements MobilePayParametersInterface{
+public class MobilePayParametersBuilder
+  extends GenericFormBuilder<MobilePayParametersBuilder>
+  implements MobilePayParametersInterface {
 
     public MobilePayParametersBuilder(String method, String signatureKeyId, String signatureSecret, String account, String merchant,
                                       String baseUrl, String successUrl, String failureUrl, String cancelUrl,
                                       String amount, String currency, String orderId, String description) {
         super(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl, failureUrl, cancelUrl);
-        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount));
-        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency));
-        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_ORDER, orderId));
-        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.DESCRIPTION, description));
+        addNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount);
+        addNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency);
+        addNameValuePair(FormBuilderConstants.SPH_ORDER, orderId);
+        addNameValuePair(FormBuilderConstants.DESCRIPTION, description);
         serviceUri = "/form/view/mobilepay";
     }
 
@@ -21,8 +21,8 @@ public class MobilePayParametersBuilder extends GenericFormBuilder<MobilePayPara
      * @param exitIframeOnResult Exit from iframe after a result.
      * @return MobilePayParametersInterface
      */
-    public MobilePayParametersInterface exitIframeOnResult(Boolean exitIframeOnResult) {
-        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult.toString()));
+    public MobilePayParametersBuilder exitIframeOnResult(Boolean exitIframeOnResult) {
+        addNameValuePair(FormBuilderConstants.SPH_EXIT_IFRAME_ON_RESULT, exitIframeOnResult);
         return this;
     }
 
@@ -30,8 +30,8 @@ public class MobilePayParametersBuilder extends GenericFormBuilder<MobilePayPara
      * @param shopLogoUrl The logo must be 250x250 pixel in .png format and must be hosted on a HTTPS (secure) server.
      * @return MobilePayParametersInterface
      */
-    public MobilePayParametersInterface shopLogoUrl(String shopLogoUrl) {
-        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SHOP_LOGO_URL, shopLogoUrl));
+    public MobilePayParametersBuilder shopLogoUrl(String shopLogoUrl) {
+        addNameValuePair(FormBuilderConstants.SPH_SHOP_LOGO_URL, shopLogoUrl);
         return this;
     }
 
@@ -39,8 +39,8 @@ public class MobilePayParametersBuilder extends GenericFormBuilder<MobilePayPara
      * @param phoneNumber Customer phone number with country code e.q. +358449876543. Makes it easier for the customer to identify himself toward the MPO Website.
      * @return MobilePayParametersInterface
      */
-    public MobilePayParametersInterface phoneNumber(String phoneNumber) {
-        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_MOBILEPAY_PHONE_NUMBER, phoneNumber));
+    public MobilePayParametersBuilder phoneNumber(String phoneNumber) {
+        addNameValuePair(FormBuilderConstants.SPH_MOBILEPAY_PHONE_NUMBER, phoneNumber);
         return this;
     }
 
@@ -49,7 +49,7 @@ public class MobilePayParametersBuilder extends GenericFormBuilder<MobilePayPara
      * @return MobilePayParametersInterface
      */
     public MobilePayParametersBuilder shopName(String shopName) {
-        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_MOBILEPAY_SHOP_NAME, shopName));
+        addNameValuePair(FormBuilderConstants.SPH_MOBILEPAY_SHOP_NAME, shopName);
         return this;
     }
 
@@ -57,8 +57,8 @@ public class MobilePayParametersBuilder extends GenericFormBuilder<MobilePayPara
      * @param subMerchantId Max 15 AN. Should only be used by a Payment Facilitator customer
      * @return MobilePayParametersInterface
      */
-    public MobilePayParametersInterface subMerchantId(String subMerchantId) {
-        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_ID, subMerchantId));
+    public MobilePayParametersBuilder subMerchantId(String subMerchantId) {
+        addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_ID, subMerchantId);
         return this;
     }
 
@@ -66,8 +66,8 @@ public class MobilePayParametersBuilder extends GenericFormBuilder<MobilePayPara
      * @param subMerchantName Max 21 AN. Should only be used by a Payment Facilitator customer
      * @return MobilePayParametersInterface
      */
-    public MobilePayParametersInterface subMerchantName(String subMerchantName) {
-        nameValuePairs.add(new BasicNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_NAME, subMerchantName));
+    public MobilePayParametersBuilder subMerchantName(String subMerchantName) {
+        addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_NAME, subMerchantName);
         return this;
     }
 }

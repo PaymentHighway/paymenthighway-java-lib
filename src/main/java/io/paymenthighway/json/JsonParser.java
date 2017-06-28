@@ -31,45 +31,4 @@ public class JsonParser {
 
     return response;
   }
-
-  @Deprecated
-  public InitTransactionResponse mapInitTransactionResponse(String json) {
-    return mapResponse(json, InitTransactionResponse.class);
-  }
-
-  @Deprecated
-  public TransactionResponse mapTransactionResponse(String json) {
-    return mapResponse(json, TransactionResponse.class);
-  }
-
-  @Deprecated
-  public TransactionStatusResponse mapTransactionStatusResponse(String json) {
-    return mapResponse(json, TransactionStatusResponse.class);
-  }
-
-  @Deprecated
-  public CommitTransactionResponse mapCommitTransactionResponse(String json) {
-    return mapResponse(json, CommitTransactionResponse.class);
-  }
-
-  @Deprecated
-  public TokenizationResponse mapTokenizationResponse(String json) {
-    return mapResponse(json, TokenizationResponse.class);
-  }
-
-  @Deprecated
-  public OrderSearchResponse mapOrderSearchResponse(String json) {
-    return mapResponse(json, OrderSearchResponse.class);
-  }
-
-  @Deprecated
-  public ReportResponse mapReportResponse(String json) {
-    return mapResponse(json, ReportResponse.class);
-  }
-
-  @Deprecated
-  public ReconciliationReportResponse mapReconciliationReportResponse(String json) {
-    return mapResponse(json, ReconciliationReportResponse.class);
-  }
-
 }
