@@ -28,7 +28,6 @@ import static org.junit.Assert.assertEquals;
  * PaymentAPIConnection test class
  */
 public class PaymentAPIConnectionTest {
-
   private static String serviceUrl = null;
   private static String signatureKeyId = null;
   private static String signatureSecret = null;
@@ -118,8 +117,8 @@ public class PaymentAPIConnectionTest {
     return tokenResponse;
   }
 
-  private Card testCardOkWithCvc = new Card("4153013999700024", "2017", "11", "024");
-  private Card testCardTokenizeOkPaymentFails = new Card("4153013999700156", "2017", "11", "156");
+  private Card testCardOkWithCvc = new Card("4153013999700024", "2023", "11", "024");
+  private Card testCardTokenizeOkPaymentFails = new Card("4153013999700156", "2023", "11", "156");
 
   private void isSuccessfulCommitOrResultResponse(AbstractTransactionOutcomeResponse response) {
     assertNotNull(response);
@@ -262,7 +261,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -351,7 +350,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700289";
     String cvc = "289";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -378,7 +377,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer(InetAddress.getLoopbackAddress().getHostAddress());
@@ -439,7 +438,7 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testDebitTransaction5() {
 
-    TokenizationResponse tokenResponse = createAndTestTokenizationId("4153013999700024", "11", "2017", "024");
+    TokenizationResponse tokenResponse = createAndTestTokenizationId("4153013999700024", "11", "2023", "024");
 
     assertEquals(tokenResponse.getCard().getCvcRequired(), "no");
     assertEquals(tokenResponse.getCard().getFunding(), "debit");
@@ -496,7 +495,7 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testDebitTransaction6() {
 
-    TokenizationResponse tokenResponse = createAndTestTokenizationId("4324643990016048", "11", "2017", "048");
+    TokenizationResponse tokenResponse = createAndTestTokenizationId("4324643990016048", "11", "2023", "048");
 
     assertEquals("yes", tokenResponse.getCard().getCvcRequired());
     assertEquals("debit", tokenResponse.getCard().getFunding());
@@ -580,7 +579,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -637,7 +636,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -696,7 +695,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -754,7 +753,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -814,7 +813,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -881,7 +880,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -947,7 +946,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer("83.145.208.186");
@@ -1015,7 +1014,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer("83.145.208.186");
@@ -1085,7 +1084,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     UUID orderId = UUID.randomUUID();
