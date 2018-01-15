@@ -25,6 +25,8 @@ public class Transaction {
   @JsonProperty("cardholder_authentication")
   String cardholderAuthentication;
   String order;
+  @JsonProperty("recurring")
+  Boolean recurring;
 
   public String getId() {
     return id;
@@ -69,4 +71,6 @@ public class Transaction {
   public String getOrder() {
     return order;
   }
+
+  public Boolean getRecurring() { return recurring; }
 }
