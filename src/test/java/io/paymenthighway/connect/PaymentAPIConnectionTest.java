@@ -28,7 +28,6 @@ import static org.junit.Assert.assertEquals;
  * PaymentAPIConnection test class
  */
 public class PaymentAPIConnectionTest {
-
   private static String serviceUrl = null;
   private static String signatureKeyId = null;
   private static String signatureSecret = null;
@@ -118,22 +117,22 @@ public class PaymentAPIConnectionTest {
     return tokenResponse;
   }
 
-  private Card testCardOkWithCvc = new Card("4153013999700024", "2017", "11", "024");
-  private Card testCardTokenizeOkPaymentFails = new Card("4153013999700156", "2017", "11", "156");
+  private Card testCardOkWithCvc = new Card("4153013999700024", "2023", "11", "024");
+  private Card testCardTokenizeOkPaymentFails = new Card("4153013999700156", "2023", "11", "156");
 
   private void isSuccessfulCommitOrResultResponse(AbstractTransactionOutcomeResponse response) {
     assertNotNull(response);
     // Does not return card token when not paying with tokenized card
     //assertNotNull(commitTransactionResponse.getCardToken());
     assertTrue(response.getCard().getType().equalsIgnoreCase("visa"));
-    assertEquals(response.getCard().getCvcRequired(), "not_tested");
-    assertEquals(response.getCard().getBin(), testCardOkWithCvc.getPan().substring(0,6));
-    assertEquals(response.getCard().getFunding(), "debit");
-    assertEquals(response.getCard().getCategory(), "unknown");
-    assertEquals(response.getCard().getCountryCode(), "FI");
-    assertEquals(response.getCustomer().getNetworkAddress(), "83.145.208.186");
-    assertEquals(response.getCustomer().getCountryCode(), "FI");
-    assertEquals(response.getCardholderAuthentication(), "no");
+    assertEquals("not_tested", response.getCard().getCvcRequired());
+    assertEquals(testCardOkWithCvc.getPan().substring(0,6), response.getCard().getBin());
+    assertEquals("debit", response.getCard().getFunding());
+    assertEquals("unknown", response.getCard().getCategory());
+    assertEquals("FI", response.getCard().getCountryCode());
+    assertEquals("83.145.208.186", response.getCustomer().getNetworkAddress());
+    assertEquals("FI", response.getCustomer().getCountryCode());
+    assertEquals("no", response.getCardholderAuthentication());
     assertNotNull(response.getFilingCode());
     assertTrue(response.getFilingCode().length() == 12);
   }
@@ -157,8 +156,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     return transactionId;
   }
@@ -167,6 +166,11 @@ public class PaymentAPIConnectionTest {
     assertNotNull(response.getCommitted());
     assertEquals(isCommitted, response.getCommitted());
     assertEquals(committedAmount, response.getCommittedAmount());
+  }
+
+  private void assertRecurring(AbstractTransactionOutcomeResponse response, Boolean isRecurring) {
+    assertNotNull(response.getRecurring());
+    assertEquals(isRecurring, response.getRecurring());
   }
 
   @Test
@@ -197,9 +201,9 @@ public class PaymentAPIConnectionTest {
 
     assertNotNull(response);
     // test for response code 100
-    assertEquals(response.getResult().getCode(), "100");
+    assertEquals("100", response.getResult().getCode());
     // test for message OK
-    assertEquals(response.getResult().getMessage(), "OK");
+    assertEquals("OK", response.getResult().getMessage());
     // test for id field
     assertTrue(response.getId() != null);
   }
@@ -262,7 +266,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -301,8 +305,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "Authorization failed");
-    assertEquals(transactionResponse.getResult().getCode(), "200");
+    assertEquals("Authorization failed", transactionResponse.getResult().getMessage());
+    assertEquals("200", transactionResponse.getResult().getCode());
   }
 
   private CommitTransactionResponse commitTransaction(UUID transactionId, String amount, String currency) {
@@ -351,7 +355,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700289";
     String cvc = "289";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -364,8 +368,8 @@ public class PaymentAPIConnectionTest {
       e.printStackTrace();
     }
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "Authorization failed");
-    assertEquals(transactionResponse.getResult().getCode(), "200");
+    assertEquals("Authorization failed", transactionResponse.getResult().getMessage());
+    assertEquals("200", transactionResponse.getResult().getCode());
   }
 
   /**
@@ -378,7 +382,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer(InetAddress.getLoopbackAddress().getHostAddress());
@@ -394,8 +398,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // status response test
     TransactionStatusResponse statusResponse = null;
@@ -407,8 +411,8 @@ public class PaymentAPIConnectionTest {
     }
     // test result
     assertNotNull(statusResponse);
-    assertEquals(statusResponse.getResult().getMessage(), "OK");
-    assertEquals(statusResponse.getResult().getCode(), "100");
+    assertEquals("OK", statusResponse.getResult().getMessage());
+    assertEquals("100", statusResponse.getResult().getCode());
     assertNotNull(statusResponse.getTransaction());
     assertNotNull(statusResponse.getTransaction().getStatus());
     assertEquals(
@@ -439,11 +443,11 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testDebitTransaction5() {
 
-    TokenizationResponse tokenResponse = createAndTestTokenizationId("4153013999700024", "11", "2017", "024");
+    TokenizationResponse tokenResponse = createAndTestTokenizationId("4153013999700024", "11", "2023", "024");
 
-    assertEquals(tokenResponse.getCard().getCvcRequired(), "no");
-    assertEquals(tokenResponse.getCard().getFunding(), "debit");
-    assertEquals(tokenResponse.getCard().getCategory(), "unknown");
+    assertEquals("no", tokenResponse.getCard().getCvcRequired());
+    assertEquals("debit", tokenResponse.getCard().getFunding());
+    assertEquals("unknown", tokenResponse.getCard().getCategory());
 
     UUID transactionId = createAndTestTransactionInit();
 
@@ -460,8 +464,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // status response test
     TransactionStatusResponse statusResponse = null;
@@ -473,8 +477,8 @@ public class PaymentAPIConnectionTest {
     }
     // test result
     assertNotNull(statusResponse);
-    assertEquals(statusResponse.getResult().getMessage(), "OK");
-    assertEquals(statusResponse.getResult().getCode(), "100");
+    assertEquals("OK", statusResponse.getResult().getMessage());
+    assertEquals("100", statusResponse.getResult().getCode());
     assertNotNull(statusResponse.getTransaction());
     assertNotNull(statusResponse.getTransaction().getStatus());
     assertEquals(
@@ -485,9 +489,9 @@ public class PaymentAPIConnectionTest {
         "ok_pending",
         statusResponse.getTransaction().getStatus().getState()
     );
-    assertEquals(statusResponse.getTransaction().getCurrentAmount(), "9999");
-    assertEquals(statusResponse.getTransaction().getId(), transactionId);
-    assertEquals(statusResponse.getTransaction().getCard().getCvcRequired(), "no");
+    assertEquals("9999", statusResponse.getTransaction().getCurrentAmount());
+    assertEquals(transactionId, statusResponse.getTransaction().getId());
+    assertEquals("no", statusResponse.getTransaction().getCard().getCvcRequired());
   }
 
   /**
@@ -496,7 +500,7 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testDebitTransaction6() {
 
-    TokenizationResponse tokenResponse = createAndTestTokenizationId("4324643990016048", "11", "2017", "048");
+    TokenizationResponse tokenResponse = createAndTestTokenizationId("4324643990016048", "11", "2023", "048");
 
     assertEquals("yes", tokenResponse.getCard().getCvcRequired());
     assertEquals("debit", tokenResponse.getCard().getFunding());
@@ -517,8 +521,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // status response test
     TransactionStatusResponse statusResponse = null;
@@ -530,8 +534,8 @@ public class PaymentAPIConnectionTest {
     }
     // test result
     assertNotNull(statusResponse);
-    assertEquals(statusResponse.getResult().getMessage(), "OK");
-    assertEquals(statusResponse.getResult().getCode(), "100");
+    assertEquals("OK", statusResponse.getResult().getMessage());
+    assertEquals("100", statusResponse.getResult().getCode());
     assertNotNull(statusResponse.getTransaction());
     assertNotNull(statusResponse.getTransaction().getStatus());
     assertEquals(
@@ -542,9 +546,9 @@ public class PaymentAPIConnectionTest {
         "ok_pending",
         statusResponse.getTransaction().getStatus().getState()
     );
-    assertEquals(statusResponse.getTransaction().getCurrentAmount(), "9999");
-    assertEquals(statusResponse.getTransaction().getId(), transactionId);
-    assertEquals(statusResponse.getTransaction().getCard().getCvcRequired(), "yes");
+    assertEquals("9999", statusResponse.getTransaction().getCurrentAmount());
+    assertEquals(transactionId, statusResponse.getTransaction().getId());
+    assertEquals("yes", statusResponse.getTransaction().getCard().getCvcRequired());
   }
 
   /**
@@ -580,7 +584,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -594,8 +598,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // revert transaction test
     TransactionResponse revertResponse = null;
@@ -609,8 +613,8 @@ public class PaymentAPIConnectionTest {
       e.printStackTrace();
     }
     assertNotNull(revertResponse);
-    assertEquals(revertResponse.getResult().getMessage(), "OK");
-    assertEquals(revertResponse.getResult().getCode(), "100");
+    assertEquals("OK", revertResponse.getResult().getMessage());
+    assertEquals("100", revertResponse.getResult().getCode());
   }
 
   /**
@@ -637,7 +641,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -652,8 +656,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // revert transaction test
     TransactionResponse revertResponse = null;
@@ -667,8 +671,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(revertResponse);
-    assertEquals(revertResponse.getResult().getMessage(), "OK");
-    assertEquals(revertResponse.getResult().getCode(), "100");
+    assertEquals("OK", revertResponse.getResult().getMessage());
+    assertEquals("100", revertResponse.getResult().getCode());
 
   }
 
@@ -696,7 +700,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -710,8 +714,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // revert transaction test
     TransactionResponse revertResponse = null;
@@ -726,7 +730,7 @@ public class PaymentAPIConnectionTest {
 
     assertNotNull(revertResponse);
     assertTrue(revertResponse.getResult().getMessage().contains("Revert failed: Insufficient balance"));
-    assertEquals(revertResponse.getResult().getCode(), "211");
+    assertEquals("211", revertResponse.getResult().getCode());
 
   }
 
@@ -754,7 +758,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -769,8 +773,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // revert transaction test
     TransactionResponse revertResponse = null;
@@ -784,8 +788,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(revertResponse);
-    assertEquals(revertResponse.getResult().getMessage(), "OK");
-    assertEquals(revertResponse.getResult().getCode(), "100");
+    assertEquals("OK", revertResponse.getResult().getMessage());
+    assertEquals("100", revertResponse.getResult().getCode());
 
   }
 
@@ -814,7 +818,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -828,8 +832,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // revert transaction test
     TransactionResponse revertResponse = null;
@@ -843,8 +847,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(revertResponse);
-    assertEquals(revertResponse.getResult().getMessage(), "OK");
-    assertEquals(revertResponse.getResult().getCode(), "100");
+    assertEquals("OK", revertResponse.getResult().getMessage());
+    assertEquals("100", revertResponse.getResult().getCode());
 
     revertTransaction = new RevertTransactionRequest(); // no amount set, should revert rest of the transaction
     try {
@@ -853,8 +857,8 @@ public class PaymentAPIConnectionTest {
       e.printStackTrace();
     }
 
-    assertEquals(revertResponse.getResult().getMessage(), "OK");
-    assertEquals(revertResponse.getResult().getCode(), "100");
+    assertEquals("OK", revertResponse.getResult().getMessage());
+    assertEquals("100", revertResponse.getResult().getCode());
   }
 
   /**
@@ -881,7 +885,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -895,8 +899,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // revert transaction test
     TransactionResponse revertResponse = null;
@@ -910,8 +914,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(revertResponse);
-    assertEquals(revertResponse.getResult().getMessage(), "OK");
-    assertEquals(revertResponse.getResult().getCode(), "100");
+    assertEquals("OK", revertResponse.getResult().getMessage());
+    assertEquals("100", revertResponse.getResult().getCode());
 
     revertTransaction = new RevertTransactionRequest("501");// over balance
     try {
@@ -920,7 +924,7 @@ public class PaymentAPIConnectionTest {
       e.printStackTrace();
     }
     assertTrue(revertResponse.getResult().getMessage().contains("Revert failed: Insufficient balance"));
-    assertEquals(revertResponse.getResult().getCode(), "211");
+    assertEquals("211", revertResponse.getResult().getCode());
   }
 
   /**
@@ -947,7 +951,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer("83.145.208.186");
@@ -962,8 +966,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // status response test
     TransactionStatusResponse statusResponse = null;
@@ -975,18 +979,18 @@ public class PaymentAPIConnectionTest {
     }
     // test result
     assertNotNull(statusResponse);
-    assertEquals(statusResponse.getResult().getMessage(), "OK");
-    assertEquals(statusResponse.getResult().getCode(), "100");
-    assertEquals(statusResponse.getTransaction().getCurrentAmount(), "9999");
-    assertEquals(statusResponse.getTransaction().getId(), transactionId);
-    assertEquals(statusResponse.getTransaction().getCard().getCvcRequired(), "not_tested");
-    assertEquals(statusResponse.getTransaction().getCard().getBin(), "415301");
-    assertEquals(statusResponse.getTransaction().getCard().getFunding(), "debit");
-    assertEquals(statusResponse.getTransaction().getCard().getCategory(), "unknown");
-    assertEquals(statusResponse.getTransaction().getCard().getCountryCode(), "FI");
-    assertEquals(statusResponse.getTransaction().getCustomer().getNetworkAddress(), "83.145.208.186");
-    assertEquals(statusResponse.getTransaction().getCustomer().getCountryCode(), "FI");
-    assertEquals(statusResponse.getTransaction().getCardholderAuthentication(), "no");
+    assertEquals("OK", statusResponse.getResult().getMessage());
+    assertEquals("100", statusResponse.getResult().getCode());
+    assertEquals("9999", statusResponse.getTransaction().getCurrentAmount());
+    assertEquals(transactionId, statusResponse.getTransaction().getId());
+    assertEquals("not_tested", statusResponse.getTransaction().getCard().getCvcRequired());
+    assertEquals("415301", statusResponse.getTransaction().getCard().getBin());
+    assertEquals("debit", statusResponse.getTransaction().getCard().getFunding());
+    assertEquals("unknown", statusResponse.getTransaction().getCard().getCategory());
+    assertEquals("FI", statusResponse.getTransaction().getCard().getCountryCode());
+    assertEquals("83.145.208.186", statusResponse.getTransaction().getCustomer().getNetworkAddress());
+    assertEquals("FI", statusResponse.getTransaction().getCustomer().getCountryCode());
+    assertEquals("no", statusResponse.getTransaction().getCardholderAuthentication());
     assertEquals(true, statusResponse.getTransaction().getCommitted());
     assertEquals("9999", statusResponse.getTransaction().getCommittedAmount());
   }
@@ -1015,7 +1019,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer("83.145.208.186");
@@ -1031,8 +1035,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // status response test
     TransactionStatusResponse statusResponse = null;
@@ -1044,21 +1048,21 @@ public class PaymentAPIConnectionTest {
     }
     // test result
     assertNotNull(statusResponse);
-    assertEquals(statusResponse.getResult().getMessage(), "OK");
-    assertEquals(statusResponse.getResult().getCode(), "100");
-    assertEquals(statusResponse.getTransaction().getCurrentAmount(), "9999");
-    assertEquals(statusResponse.getTransaction().getId(), transactionId);
-    assertEquals(statusResponse.getTransaction().getCard().getCvcRequired(), "not_tested");
-    assertEquals(statusResponse.getTransaction().getCard().getBin(), "415301");
-    assertEquals(statusResponse.getTransaction().getCard().getFunding(), "debit");
-    assertEquals(statusResponse.getTransaction().getCard().getCategory(), "unknown");
-    assertEquals(statusResponse.getTransaction().getCard().getCountryCode(), "FI");
-    assertEquals(statusResponse.getTransaction().getCustomer().getNetworkAddress(), "83.145.208.186");
-    assertEquals(statusResponse.getTransaction().getCustomer().getCountryCode(), "FI");
-    assertEquals(statusResponse.getTransaction().getCardholderAuthentication(), "no");
-    assertEquals(statusResponse.getTransaction().getOrder(), orderId);
-    assertEquals(statusResponse.getTransaction().getCommitted(), false);
-    assertEquals(statusResponse.getTransaction().getCommittedAmount(), null);
+    assertEquals("OK", statusResponse.getResult().getMessage());
+    assertEquals("100", statusResponse.getResult().getCode());
+    assertEquals("9999", statusResponse.getTransaction().getCurrentAmount());
+    assertEquals(transactionId, statusResponse.getTransaction().getId());
+    assertEquals("not_tested", statusResponse.getTransaction().getCard().getCvcRequired());
+    assertEquals("415301", statusResponse.getTransaction().getCard().getBin());
+    assertEquals("debit", statusResponse.getTransaction().getCard().getFunding());
+    assertEquals("unknown", statusResponse.getTransaction().getCard().getCategory());
+    assertEquals("FI", statusResponse.getTransaction().getCard().getCountryCode());
+    assertEquals("83.145.208.186", statusResponse.getTransaction().getCustomer().getNetworkAddress());
+    assertEquals("FI", statusResponse.getTransaction().getCustomer().getCountryCode());
+    assertEquals("no", statusResponse.getTransaction().getCardholderAuthentication());
+    assertEquals(orderId, statusResponse.getTransaction().getOrder());
+    assertEquals(false, statusResponse.getTransaction().getCommitted());
+    assertEquals(null, statusResponse.getTransaction().getCommittedAmount());
 
   }
 
@@ -1085,7 +1089,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2017";
+    String expiryYear = "2023";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     UUID orderId = UUID.randomUUID();
@@ -1101,8 +1105,8 @@ public class PaymentAPIConnectionTest {
     }
 
     assertNotNull(transactionResponse);
-    assertEquals(transactionResponse.getResult().getMessage(), "OK");
-    assertEquals(transactionResponse.getResult().getCode(), "100");
+    assertEquals("OK", transactionResponse.getResult().getMessage());
+    assertEquals("100", transactionResponse.getResult().getCode());
 
     // order search test
     OrderSearchResponse orderSearchResponse = null;
@@ -1115,18 +1119,19 @@ public class PaymentAPIConnectionTest {
 
     // test result
     assertNotNull(orderSearchResponse);
-    assertEquals(orderSearchResponse.getResult().getMessage(), "OK");
-    assertEquals(orderSearchResponse.getResult().getCode(), "100");
-    assertEquals(orderSearchResponse.getTransactions()[0].getCurrentAmount(), "9999");
-    assertEquals(orderSearchResponse.getTransactions()[0].getId(), transactionId);
-    assertEquals(orderSearchResponse.getTransactions()[0].getCard().getBin(), "415301");
-    assertEquals(orderSearchResponse.getTransactions()[0].getCard().getFunding(), "debit");
-    assertEquals(orderSearchResponse.getTransactions()[0].getCard().getCategory(), "unknown");
-    assertEquals(orderSearchResponse.getTransactions()[0].getCard().getCountryCode(), "FI");
-    assertEquals(orderSearchResponse.getTransactions()[0].getCustomer().getNetworkAddress(), "83.145.208.186");
-    assertEquals(orderSearchResponse.getTransactions()[0].getCustomer().getCountryCode(), "FI");
-    assertEquals(orderSearchResponse.getTransactions()[0].getCardholderAuthentication(), "no");
+    assertEquals("OK", orderSearchResponse.getResult().getMessage());
+    assertEquals("100", orderSearchResponse.getResult().getCode());
+    assertEquals("9999", orderSearchResponse.getTransactions()[0].getCurrentAmount());
+    assertEquals(transactionId, orderSearchResponse.getTransactions()[0].getId());
+    assertEquals("415301", orderSearchResponse.getTransactions()[0].getCard().getBin());
+    assertEquals("debit", orderSearchResponse.getTransactions()[0].getCard().getFunding());
+    assertEquals("unknown", orderSearchResponse.getTransactions()[0].getCard().getCategory());
+    assertEquals("FI", orderSearchResponse.getTransactions()[0].getCard().getCountryCode());
+    assertEquals("83.145.208.186", orderSearchResponse.getTransactions()[0].getCustomer().getNetworkAddress());
+    assertEquals("FI", orderSearchResponse.getTransactions()[0].getCustomer().getCountryCode());
+    assertEquals("no", orderSearchResponse.getTransactions()[0].getCardholderAuthentication());
     assertEquals(true, orderSearchResponse.getTransactions()[0].getCommitted());
+    assertEquals(false, orderSearchResponse.getTransactions()[0].getRecurring());
     assertEquals("9999", orderSearchResponse.getTransactions()[0].getCommittedAmount());
   }
 
@@ -1141,6 +1146,7 @@ public class PaymentAPIConnectionTest {
     CommitTransactionResponse commitTransactionResponse = commitTransaction(transactionId, "9999", "EUR");
     isSuccessfulCommitOrResultResponse(commitTransactionResponse);
     assertCommitted(commitTransactionResponse, true, "9999");
+    assertRecurring(commitTransactionResponse, false);
   }
 
   @Test
@@ -1151,6 +1157,7 @@ public class PaymentAPIConnectionTest {
     CommitTransactionResponse commitTransactionResponse = commitTransaction(transactionId, "5000", "EUR");
     isSuccessfulCommitOrResultResponse(commitTransactionResponse);
     assertCommitted(commitTransactionResponse, true, "5000");
+    assertRecurring(commitTransactionResponse, false);
   }
 
   @Test
@@ -1235,16 +1242,17 @@ public class PaymentAPIConnectionTest {
       e.printStackTrace();
     }
     assertNotNull(tokenResponse);
-    assertEquals(tokenResponse.getCard().getExpireYear(), "2017");
-    assertEquals(tokenResponse.getCardToken().toString(), "71435029-fbb6-4506-aa86-8529efb640b0");
-    assertEquals(tokenResponse.getCard().getCvcRequired(), "no");
-    assertEquals(tokenResponse.getCard().getBin(), "415301");
-    assertEquals(tokenResponse.getCard().getFunding(), "debit");
-    assertEquals(tokenResponse.getCard().getCategory(), "unknown");
-    assertEquals(tokenResponse.getCard().getCountryCode(), "FI");
+    assertEquals("2017", tokenResponse.getCard().getExpireYear());
+    assertEquals("71435029-fbb6-4506-aa86-8529efb640b0", tokenResponse.getCardToken().toString());
+    assertEquals("no", tokenResponse.getCard().getCvcRequired());
+    assertEquals("415301", tokenResponse.getCard().getBin());
+    assertEquals("debit", tokenResponse.getCard().getFunding());
+    assertEquals("unknown", tokenResponse.getCard().getCategory());
+    assertEquals("FI", tokenResponse.getCard().getCountryCode());
     // no Customer info was available when the tokenizationId was generated so it should not be visible in the response
     assertNull(tokenResponse.getCustomer());
-    assertEquals(tokenResponse.getCardholderAuthentication(), "no");
+    assertEquals("no", tokenResponse.getCardholderAuthentication());
+    assertEquals(Boolean.FALSE, tokenResponse.getRecurring());
   }
 
   /**
@@ -1263,17 +1271,17 @@ public class PaymentAPIConnectionTest {
       e.printStackTrace();
     }
     assertNotNull(tokenResponse);
-    assertEquals(tokenResponse.getCard().getExpireYear(), "2017");
-    assertEquals(tokenResponse.getCardToken().toString(), "71435029-fbb6-4506-aa86-8529efb640b0");
-    assertEquals(tokenResponse.getCard().getCvcRequired(), "no");
-    assertEquals(tokenResponse.getCard().getBin(), "415301");
-    assertEquals(tokenResponse.getCard().getFunding(), "debit");
-    assertEquals(tokenResponse.getCard().getCategory(), "unknown");
-    assertEquals(tokenResponse.getCard().getCountryCode(), "FI");
+    assertEquals("2017", tokenResponse.getCard().getExpireYear());
+    assertEquals("71435029-fbb6-4506-aa86-8529efb640b0", tokenResponse.getCardToken().toString());
+    assertEquals("no", tokenResponse.getCard().getCvcRequired());
+    assertEquals("415301", tokenResponse.getCard().getBin());
+    assertEquals("debit", tokenResponse.getCard().getFunding());
+    assertEquals("unknown", tokenResponse.getCard().getCategory());
+    assertEquals("FI", tokenResponse.getCard().getCountryCode());
     // Customer information from the time the tokenizationId was generated through the Form API add_card request
-    assertEquals(tokenResponse.getCustomer().getNetworkAddress(), "83.145.208.185"); // Manually updated :/
-    assertEquals(tokenResponse.getCustomer().getCountryCode(), "FI");
-    assertEquals(tokenResponse.getCardholderAuthentication(), "no");
+    assertEquals("83.145.208.185", tokenResponse.getCustomer().getNetworkAddress()); // Manually updated :/
+    assertEquals("FI", tokenResponse.getCustomer().getCountryCode());
+    assertEquals("no", tokenResponse.getCardholderAuthentication());
   }
 
   /**
@@ -1295,9 +1303,9 @@ public class PaymentAPIConnectionTest {
       e.printStackTrace();
     }
     assertNotNull(result);
-    assertEquals(result.getResult().getCode(), "100");
-    assertEquals(result.getResult().getMessage(), "OK");
-    assertEquals(result.getSettlements()[0].getMerchant().getAcquirerMerchantId(), "90000001");
+    assertEquals("100", result.getResult().getCode());
+    assertEquals("OK", result.getResult().getMessage());
+    assertEquals("90000001", result.getSettlements()[0].getMerchant().getAcquirerMerchantId());
   }
 
   /**
@@ -1322,8 +1330,8 @@ public class PaymentAPIConnectionTest {
       e.printStackTrace();
     }
     assertNotNull(result);
-    assertEquals(result.getResult().getCode(), "100");
-    assertEquals(result.getResult().getMessage(), "OK");
+    assertEquals("100", result.getResult().getCode());
+    assertEquals("OK", result.getResult().getMessage());
     assertNotNull(result.getReconciliationSettlements()[0].getAcquirer());
     assertNotNull(result.getReconciliationSettlements()[0].getAcquirerBatchId());
     assertNotNull(result.getReconciliationSettlements()[0].getBatch());
@@ -1345,7 +1353,7 @@ public class PaymentAPIConnectionTest {
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerExchangeRate());
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerTransactionFee());
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerTransactionFeeCurrency());
-    assertEquals(result.getReconciliationSettlements()[0].getUnallocatedTransactionsCount(), "0");
+    assertEquals("0", result.getReconciliationSettlements()[0].getUnallocatedTransactionsCount());
 
   }
 
@@ -1371,8 +1379,8 @@ public class PaymentAPIConnectionTest {
       e.printStackTrace();
     }
     assertNotNull(result);
-    assertEquals(result.getResult().getCode(), "100");
-    assertEquals(result.getResult().getMessage(), "OK");
+    assertEquals("100", result.getResult().getCode());
+    assertEquals("OK", result.getResult().getMessage());
     assertNotNull(result.getReconciliationSettlements()[0].getAcquirer());
     assertNotNull(result.getReconciliationSettlements()[0].getAcquirerBatchId());
     assertNotNull(result.getReconciliationSettlements()[0].getBatch());
@@ -1382,8 +1390,8 @@ public class PaymentAPIConnectionTest {
     assertNotNull(result.getReconciliationSettlements()[0].getNetAmount());
     assertNotNull(result.getReconciliationSettlements()[0].getReference());
     assertNotNull(result.getReconciliationSettlements()[0].getStatus());
-    assertEquals(result.getReconciliationSettlements()[0].getTransactionCount(), "0");
-    assertNotEquals(Integer.parseInt(result.getReconciliationSettlements()[0].getUnallocatedTransactionsCount()), 0);
+    assertEquals("0", result.getReconciliationSettlements()[0].getTransactionCount());
+    assertNotEquals(0, Integer.parseInt(result.getReconciliationSettlements()[0].getUnallocatedTransactionsCount()));
     assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getFilingCode());
     assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerAmountPresented());
     assertNotNull(result.getReconciliationSettlements()[0].getUnallocatedTransactions()[0].getAcquirerCommission());
@@ -1418,8 +1426,8 @@ public class PaymentAPIConnectionTest {
       e.printStackTrace();
     }
     assertNotNull(result);
-    assertEquals(result.getResult().getCode(), "100");
-    assertEquals(result.getResult().getMessage(), "OK");
+    assertEquals("100", result.getResult().getCode());
+    assertEquals("OK", result.getResult().getMessage());
     assertNotNull(result.getReconciliationSettlements()[0].getAcquirer());
     assertNotNull(result.getReconciliationSettlements()[0].getAcquirerBatchId());
     assertNotNull(result.getReconciliationSettlements()[0].getBatch());
@@ -1429,7 +1437,7 @@ public class PaymentAPIConnectionTest {
     assertNotNull(result.getReconciliationSettlements()[0].getNetAmount());
     assertNotNull(result.getReconciliationSettlements()[0].getReference());
     assertNotNull(result.getReconciliationSettlements()[0].getStatus());
-    assertNotEquals(result.getReconciliationSettlements()[0].getTransactionCount(), "0");
+    assertNotEquals("0", result.getReconciliationSettlements()[0].getTransactionCount());
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions());
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getMerchant());
     assertNotNull(result.getReconciliationSettlements()[0].getTransactions()[0].getAcquirerAmountPresented());

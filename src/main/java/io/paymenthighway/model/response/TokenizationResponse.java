@@ -15,6 +15,8 @@ public class TokenizationResponse extends Response {
   Customer customer;
   @JsonProperty("cardholder_authentication")
   String cardholderAuthentication;
+  @JsonProperty("recurring")
+  Boolean recurring;
 
   public UUID getCardToken() {
     return cardToken;
@@ -31,6 +33,8 @@ public class TokenizationResponse extends Response {
   public String getCardholderAuthentication() {
     return cardholderAuthentication;
   }
+
+  public Boolean getRecurring() { return recurring; }
 
   public static class Card {
     String type;

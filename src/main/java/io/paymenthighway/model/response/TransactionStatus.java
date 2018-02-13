@@ -37,6 +37,8 @@ public class TransactionStatus {
   private Boolean committed;
   @JsonProperty("committed_amount")
   private String committedAmount;
+  @JsonProperty("recurring")
+  private Boolean recurring;
 
   public UUID getId() {
     return id;
@@ -116,4 +118,6 @@ public class TransactionStatus {
   public String getCommittedAmount() {
     return committedAmount;
   }
+
+  public Boolean getRecurring() { return recurring; }
 }

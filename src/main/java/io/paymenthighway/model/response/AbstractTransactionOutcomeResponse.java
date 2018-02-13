@@ -21,6 +21,8 @@ abstract public class AbstractTransactionOutcomeResponse extends Response {
   protected Boolean committed;
   @JsonProperty("committed_amount")
   protected String committedAmount;
+  @JsonProperty("recurring")
+  protected Boolean recurring;
 
   public UUID getCardToken() {
     return cardToken;
@@ -45,6 +47,8 @@ abstract public class AbstractTransactionOutcomeResponse extends Response {
   public Boolean getCommitted() {
     return committed;
   }
+
+  public Boolean getRecurring() { return recurring; }
 
   /**
    * @return Committed amount or null if transaction not committed
