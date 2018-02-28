@@ -587,6 +587,32 @@ public class NewFormBuilderTest {
         this.validateWebhookParameters(formContainer.getFields(), false);
     }
 
+    @Test
+    public void testSiirtoParameters() {
+        FormContainer formContainer = this.formBuilder.siirtoParametersBuilder(
+            this.successUrl,
+            this.failureUrl,
+            this.cancelUrl,
+            Long.valueOf(this.amount),
+            this.orderId,
+            this.description
+        )
+            .language(this.language)
+            .phoneNumber("+358441234567")
+            .referenceNumber("1313")
+            .webhookSuccessUrl(this.webhookSuccessUrl)
+            .webhookFailureUrl(this.webhookFailureUrl)
+            .webhookCancelUrl(this.webhookCancelUrl)
+            .webhookDelay(this.webhookDelay)
+            .build();
+
+        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
+        assertNotNull(signature);
+        assertTrue(signature.startsWith("SPH1"));
+        assertTrue(formContainer.getFields().size() == 20);
+        this.validateWebhookParameters(formContainer.getFields(), false);
+    }
+
     private void validateWebhookParameters(List<NameValuePair> nameValuePairs, boolean ignoreDelay) {
         for (NameValuePair nameValuePair : nameValuePairs) {
             String name = nameValuePair.getName();
