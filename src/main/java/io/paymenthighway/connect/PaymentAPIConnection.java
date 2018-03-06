@@ -81,20 +81,24 @@ public class PaymentAPIConnection implements Closeable {
 
   public DebitTransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
-    final String paymentUri = "/transaction/";
-    final String actionUri = "/debit";
-    String debitUri = paymentUri + transactionId + actionUri;
-
-    String response = executePost(debitUri, createNameValuePairs(), request);
-
+    String requestUri = String.format("/transaction/%s/debit", transactionId);
+    String response = executePost(requestUri, createNameValuePairs(), request);
     return jsonParser.mapResponse(response, DebitTransactionResponse.class);
   }
 
   public DebitTransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
     throws IOException {
 
-    String debitMasterpassUri = String.format("/transaction/%s/debit_masterpass", transactionId);
-    String response = executePost(debitMasterpassUri, createNameValuePairs(), request);
+    String requestUri = String.format("/transaction/%s/debit_masterpass", transactionId);
+    String response = executePost(requestUri, createNameValuePairs(), request);
+    return jsonParser.mapResponse(response, DebitTransactionResponse.class);
+  }
+
+  public DebitTransactionResponse debitApplePayTransaction(UUID transactionId, ApplePayTransactionRequest request)
+    throws IOException {
+
+    String requestUri = String.format("/transaction/%s/debit_applepay", transactionId);
+    String response = executePost(requestUri, createNameValuePairs(), request);
     return jsonParser.mapResponse(response, DebitTransactionResponse.class);
   }
 
