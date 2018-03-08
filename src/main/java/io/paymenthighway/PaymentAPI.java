@@ -2,10 +2,7 @@ package io.paymenthighway;
 
 import io.paymenthighway.connect.PaymentAPIConnection;
 import io.paymenthighway.exception.AuthenticationException;
-import io.paymenthighway.model.request.CommitTransactionRequest;
-import io.paymenthighway.model.request.MasterpassTransactionRequest;
-import io.paymenthighway.model.request.RevertTransactionRequest;
-import io.paymenthighway.model.request.TransactionRequest;
+import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -75,6 +72,20 @@ public class PaymentAPI implements Closeable {
     throws IOException {
 
     return paymentApi.debitMasterpassTransaction(transactionId, request);
+  }
+
+  /**
+   * Payment Highway Apple Pay Transaction
+   *
+   * @param transactionId Transaction id
+   * @param request Apple Pay Transaction request
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse debitApplePayTransaction(UUID transactionId, ApplePayTransactionRequest request) throws IOException {
+    return paymentApi.debitApplePayTransaction(transactionId, request);
   }
 
   /**
