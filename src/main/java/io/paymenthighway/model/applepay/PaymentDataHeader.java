@@ -2,7 +2,7 @@ package io.paymenthighway.model.applepay;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PaymentTokenHeader {
+public class PaymentDataHeader {
 
   @JsonProperty
   String applicationData = null;

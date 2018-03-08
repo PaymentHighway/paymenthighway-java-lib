@@ -1,12 +1,12 @@
 package io.paymenthighway.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.paymenthighway.model.applepay.PaymentToken;
+import io.paymenthighway.model.applepay.PaymentData;
 
 public class ApplePayTransactionRequest extends Request {
 
   @JsonProperty("payment_data")
-  private PaymentToken token;
+  private PaymentData paymentData;
 
   @JsonProperty
   private String amount;
@@ -21,13 +21,13 @@ public class ApplePayTransactionRequest extends Request {
   @JsonProperty
   private Customer customer;
 
-  public static Builder Builder(PaymentToken token, long amount, String currency) {
-    return new Builder(token, amount, currency);
+  public static Builder Builder(PaymentData paymentData, long amount, String currency) {
+    return new Builder(paymentData, amount, currency);
   }
 
   public static class Builder {
 
-    private PaymentToken token;
+    private PaymentData paymentData;
 
     private Long amount;
     private String currency;
@@ -36,8 +36,8 @@ public class ApplePayTransactionRequest extends Request {
     private Customer customer = null;
     private Boolean commit;
 
-    public Builder(PaymentToken token, long amount, String currency) {
-      this.token = token;
+    public Builder(PaymentData paymentData, long amount, String currency) {
+      this.paymentData = paymentData;
       this.amount = amount;
       this.currency = currency;
     }
@@ -64,14 +64,14 @@ public class ApplePayTransactionRequest extends Request {
 
   private ApplePayTransactionRequest(Builder builder) {
     // Required parameters
-    this.token    = builder.token;
+    this.paymentData  = builder.paymentData;
 
-    this.amount   = Long.toString(builder.amount);
-    this.currency = builder.currency;
+    this.amount       = Long.toString(builder.amount);
+    this.currency     = builder.currency;
 
     // Optional parameters
-    this.order    = builder.order;
-    this.customer = builder.customer;
-    this.commit   = builder.commit;
+    this.order        = builder.order;
+    this.customer     = builder.customer;
+    this.commit       = builder.commit;
   }
 }
