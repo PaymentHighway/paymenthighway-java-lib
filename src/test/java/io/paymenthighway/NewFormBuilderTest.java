@@ -3,11 +3,11 @@ package io.paymenthighway;
 
 import io.paymenthighway.connect.FormAPIConnection;
 import io.paymenthighway.formBuilders.FormBuilderConstants;
+import io.paymenthighway.formBuilders.PaymentParameters;
 import org.apache.http.NameValuePair;
 import org.junit.*;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -19,573 +19,543 @@ import static org.junit.Assert.assertEquals;
 
 public class NewFormBuilderTest {
 
-    Properties props = null;
-    private String serviceUrl;
-    private String signatureKeyId;
-    private String signatureSecret;
-    private String method;
-    private String account;
-    private String merchant;
-    private String successUrl;
-    private String failureUrl;
-    private String cancelUrl;
-    private String amount;
-    private String currency;
-    private String orderId;
-    private String language;
-    private String description;
-    private String webhookSuccessUrl;
-    private String webhookFailureUrl;
-    private String webhookCancelUrl;
-    private Integer webhookDelay;
-    private UUID token;
-    private FormBuilder formBuilder;
-    private FormAPIConnection formApi;
+  Properties props = null;
+  private String serviceUrl;
+  private String signatureKeyId;
+  private String signatureSecret;
+  private String method;
+  private String account;
+  private String merchant;
+  private String successUrl;
+  private String failureUrl;
+  private String cancelUrl;
+  private String amount;
+  private String currency;
+  private String orderId;
+  private String language;
+  private String description;
+  private String webhookSuccessUrl;
+  private String webhookFailureUrl;
+  private String webhookCancelUrl;
+  private Integer webhookDelay;
+  private UUID token;
+  private FormBuilder formBuilder;
+  private FormAPIConnection formApi;
 
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
+  @BeforeClass
+  public static void setUpBeforeClass() throws Exception {
+  }
+
+  @AfterClass
+  public static void tearDownAfterClass() throws Exception {
+  }
+
+  @Before
+  public void setUp() throws Exception {
+    // required system information and authentication credentials
+    // we read this from file, but can be from everywhere
+    try {
+      this.props = PaymentHighwayUtility.getProperties();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
+    this.serviceUrl = this.props.getProperty("service_url");
+    this.signatureKeyId = this.props.getProperty("signature_key_id");
+    this.signatureSecret = this.props.getProperty("signature_secret");
+    this.method = "POST";
+    this.account = "test";
+    this.merchant = "test_merchantId";
+    this.successUrl = "https://www.paymenthighway.fi/";
+    this.failureUrl = "https://paymenthighway.fi/index-en.html";
+    this.cancelUrl = "https://solinor.fi";
+    this.amount = "9999";
+    this.currency = "EUR";
+    this.orderId = "1000123A";
+    this.language = "EN";
+    this.description = "this is payment description";
+    this.webhookSuccessUrl = "http://example.com/?success";
+    this.webhookFailureUrl = "http://example.com/?failure";
+    this.webhookCancelUrl = "http://example.com/?cancel";
+    this.webhookDelay = 0;
+    this.token = UUID.fromString("71435029-fbb6-4506-aa86-8529efb640b0");
+    this.formBuilder = new FormBuilder(
+      this.method,
+      this.signatureKeyId,
+      this.signatureSecret,
+      this.account,
+      this.merchant,
+      this.serviceUrl
+    );
+    this.formApi = new FormAPIConnection(
+      this.serviceUrl,
+      this.signatureKeyId,
+      this.signatureSecret
+    );
+  }
+
+  @After
+  public void tearDown() throws Exception {
+  }
+
+  /**
+   * Test with acceptCvcRequired set to false.
+   */
+  @Test
+  public void testAddCardParameters() {
+
+    FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
+      .acceptCvcRequired(false)
+      .build();
+
+    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
+    assertNotNull(signature);
+    assertTrue(signature.startsWith("SPH1"));
+  }
+
+  /**
+   * Test with acceptCvcRequired set to true.
+   */
+  @Test
+  public void testAddCardParameters2() {
+
+    FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
+      .acceptCvcRequired(true)
+      .language(this.language)
+      .build();
+
+    String response = null;
+    try {
+      response = this.formApi.addCardRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
-    @Before
-    public void setUp() throws Exception {
-        // required system information and authentication credentials
-        // we read this from file, but can be from everywhere
-        try {
-            this.props = PaymentHighwayUtility.getProperties();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        this.serviceUrl = this.props.getProperty("service_url");
-        this.signatureKeyId = this.props.getProperty("signature_key_id");
-        this.signatureSecret = this.props.getProperty("signature_secret");
-        this.method = "POST";
-        this.account = "test";
-        this.merchant = "test_merchantId";
-        this.successUrl = "https://www.paymenthighway.fi/";
-        this.failureUrl = "https://paymenthighway.fi/index-en.html";
-        this.cancelUrl = "https://solinor.fi";
-        this.amount = "9999";
-        this.currency = "EUR";
-        this.orderId = "1000123A";
-        this.language = "EN";
-        this.description = "this is payment description";
-        this.webhookSuccessUrl = "http://example.com/?success";
-        this.webhookFailureUrl = "http://example.com/?failure";
-        this.webhookCancelUrl = "http://example.com/?cancel";
-        this.webhookDelay = 0;
-        this.token = UUID.fromString("71435029-fbb6-4506-aa86-8529efb640b0");
-        this.formBuilder = new FormBuilder(this.method, this.signatureKeyId, this.signatureSecret, this.account,
-            this.merchant, this.serviceUrl);
-        this.formApi = new FormAPIConnection(this.serviceUrl,
-            this.signatureKeyId, this.signatureSecret);
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+    assertTrue(response.contains("Payment Highway"));
+  }
 
 
+  /**
+   * Test with acceptCvcRequired, skipFormNotifications, exitIframeOnResult and exitIframeon3ds set to true.
+   */
+  @Test
+  public void testAddCardParameters3() {
+
+    FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
+      .acceptCvcRequired(true)
+      .skipFormNotifications(true)
+      .exitIframeOnResult(true)
+      .exitIframeOn3ds(true)
+      .build();
+
+    String response = null;
+    try {
+      response = this.formApi.addCardRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
-    @After
-    public void tearDown() throws Exception {
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+    assertTrue(response.contains("Payment Highway"));
+  }
+
+  @Test
+  public void testAddCardUse3ds() {
+
+    FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
+      .use3ds(false)
+      .language(this.language)
+      .build();
+
+    String response = null;
+    try {
+      response = this.formApi.addCardRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
-    /**
-     * Test with acceptCvcRequired set to false.
-     */
-    @Test
-    public void testAddCardParameters() {
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+    assertTrue(response.contains("Payment Highway"));
+  }
 
-        Boolean acceptCvcRequired = false;
+  /**
+   * Test with only the mandatory parameters.
+   */
+  @Test
+  public void testAddCardParameters4() {
+    FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl).build();
 
-        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
-            .acceptCvcRequired(acceptCvcRequired)
-            .build();
+    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
+    assertNotNull(signature);
+    assertTrue(signature.startsWith("SPH1"));
+  }
 
+  @Test
+  public void testPaymentParameters() {
+    FormContainer formContainer = generatePaymentParameters()
+      .language(this.language)
+      .build();
 
-        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-        assertNotNull(signature);
-        assertTrue(signature.startsWith("SPH1"));
+    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
+    assertNotNull(signature);
+    assertTrue(signature.startsWith("SPH1"));
+  }
+
+  /**
+   * Test with only the mandatory parameters.
+   */
+
+  @Test
+  public void testGetPaymentParameters2() {
+    FormContainer formContainer = generatePaymentParameters()
+      .build();
+
+    String response = null;
+    try {
+      response = this.formApi.paymentRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
 
-    /**
-     * Test with acceptCvcRequired set to true.
-     */
-    @Test
-    public void testAddCardParameters2() {
+  /**
+   * Test with all the optional parameters present.
+   */
 
-        Boolean acceptCvcRequired = true;
+  @Test
+  public void testGetPaymentParameters3() {
 
-        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
-            .acceptCvcRequired(acceptCvcRequired)
-            .language(this.language)
-            .build();
+    FormContainer formContainer = generatePaymentParameters()
+      .showPaymentMethodSelectionPage(false)
+      .skipFormNotifications(true)
+      .exitIframeOnResult(true)
+      .exitIframeOn3ds(true)
+      .language(this.language)
+      .build();
 
-        String response = null;
-        try {
-            response = this.formApi.addCardRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
-        assertTrue(response.contains("Payment Highway"));
+    String response = null;
+    try {
+      response = this.formApi.paymentRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
 
 
-    /**
-     * Test with acceptCvcRequired, skipFormNotifications, exitIframeOnResult and exitIframeon3ds set to true.
-     */
-    @Test
-    public void testAddCardParameters3() {
+  @Test
+  public void testGetPaymentFormWithUse3ds() {
 
-        Boolean acceptCvcRequired = true;
-        Boolean skipFormNotifications = true;
-        Boolean exitIframeOnResult = true;
-        Boolean exitIframeOn3ds = true;
+    FormContainer formContainer = generatePaymentParameters()
+      .use3ds(true)
+      .language(this.language)
+      .build();
 
-        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
-            .acceptCvcRequired(acceptCvcRequired)
-            .skipFormNotifications(skipFormNotifications)
-            .exitIframeOnResult(exitIframeOnResult)
-            .exitIframeOn3ds(exitIframeOn3ds)
-            .build();
-
-        String response = null;
-        try {
-            response = this.formApi.addCardRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
-        assertTrue(response.contains("Payment Highway"));
+    String response = null;
+    try {
+      response = this.formApi.paymentRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
 
-    @Test
-    public void testAddCardUse3ds() {
 
-        Boolean use3ds = false;
+  @Test
+  public void testGetAddCardAndPaymentParameters() {
+    FormContainer formContainer = generatePaymentParameters()
+      .tokenize(true)
+      .build();
 
-        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
-            .language(this.language)
-            .use3ds(use3ds)
-            .build();
+    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
+    assertNotNull(signature);
+    assertTrue(signature.startsWith("SPH1"));
+  }
 
-        String response = null;
-        try {
-            response = this.formApi.addCardRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
-        assertTrue(response.contains("Payment Highway"));
+  /**
+   * Test without optional parameters.
+   */
+
+  @Test
+  public void testGetAddCardAndPaymentParameters2() {
+    FormContainer formContainer = generatePaymentParameters()
+      .tokenize(true)
+      .language(this.language)
+      .build();
+
+    String response = null;
+    try {
+      response = this.formApi.paymentRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
 
-    /**
-     * Test with only the mandatory parameters.
-     */
-    @Test
-    public void testAddCardParameters4() {
-        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl).build();
+  /**
+   * Test with optional parameters present.
+   */
 
-        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-        assertNotNull(signature);
-        assertTrue(signature.startsWith("SPH1"));
+  @Test
+  public void testGetAddCardAndPaymentParameters3() {
+    FormContainer formContainer = generatePaymentParameters()
+      .skipFormNotifications(true)
+      .exitIframeOnResult(true)
+      .exitIframeOn3ds(true)
+      .tokenize(true)
+      .language(this.language)
+      .build();
+
+    String response = null;
+    try {
+      response = this.formApi.paymentRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
 
-    @Test
-    public void testPaymentParameters() {
-        FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .language(this.language)
-            .build();
 
-        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-        assertNotNull(signature);
-        assertTrue(signature.startsWith("SPH1"));
+  @Test
+  public void testGetAddCardAndPaymentWithUse3ds() {
+    FormContainer formContainer = generatePaymentParameters()
+      .skipFormNotifications(true)
+      .exitIframeOnResult(true)
+      .exitIframeOn3ds(true)
+      .use3ds(true)
+      .build();
+
+    String response = null;
+    try {
+      response = this.formApi.paymentRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
 
-    /**
-     * Test with only the mandatory parameters.
-     */
+  /**
+   * Test without optional parameters.
+   */
 
-    @Test
-    public void testGetPaymentParameters2() {
-        FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .build();
+  @Test
+  public void testGetPayWithTokenAndCvcParameters() {
+    FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+      this.amount, this.currency, this.orderId, this.description, this.token)
+      .language(this.language)
+      .build();
 
-        String response = null;
-        try {
-            response = this.formApi.paymentRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
+    String response = null;
+    try {
+      response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
 
-    /**
-     * Test with all the optional parameters present.
-     */
+  /**
+   * Test with optional parameters present.
+   */
 
-    @Test
-    public void testGetPaymentParameters3() {
-        Boolean skipFormNotifications = true;
-        Boolean exitIframeOnResult = true;
-        Boolean exitIframeOn3ds = true;
+  @Test
+  public void testGetPayWithTokenAndCvcParameters2() {
 
-        FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .showPaymentMethodSelectionPage(false)
-            .skipFormNotifications(skipFormNotifications)
-            .language(this.language)
-            .exitIframeOnResult(exitIframeOnResult)
-            .exitIframeOn3ds(exitIframeOn3ds)
-            .build();
+    FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+      this.amount, this.currency, this.orderId, this.description, this.token)
+      .skipFormNotifications(true)
+      .exitIframeOnResult(true)
+      .exitIframeOn3ds(true)
+      .build();
 
-        String response = null;
-        try {
-            response = this.formApi.paymentRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
+    String response = null;
+    try {
+      response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
 
+  @Test
+  public void testGetPayWithTokenAndCvcWithUse3ds() {
 
-    @Test
-    public void testGetPaymentFormWithUse3ds() {
-        Boolean use3ds = true;
+    FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+      this.amount, this.currency, this.orderId, this.description, this.token)
+      .skipFormNotifications(false)
+      .exitIframeOn3ds(false)
+      .use3ds(false)
+      .language(this.language)
+      .build();
 
-        FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .use3ds(use3ds)
-            .language(this.language)
-            .build();
-
-        String response = null;
-        try {
-            response = this.formApi.paymentRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
+    String response = null;
+    try {
+      response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    assertNotNull(response);
+    assertTrue(response.contains("card_number_formatted"));
+  }
 
 
-    @Test
-    public void testGetAddCardAndPaymentParameters() {
-        FormContainer formContainer = this.formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .build();
-
-        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-        assertNotNull(signature);
-        assertTrue(signature.startsWith("SPH1"));
-    }
+  @Test
+  public void testMobilePayForm() {
+    FormContainer formContainer = this.formBuilder.mobilePayParametersBuilder(this.successUrl, this.failureUrl, this.cancelUrl,
+      this.amount, this.currency, this.orderId, this.description)
+      .build();
+    assertEquals(13, formContainer.getFields().size());
+  }
 
 
-    /**
-     * Test without optional parameters.
-     */
+  @Test
+  public void testMobilePayFormWithOptionalParameters() {
+    String logoUrl = "https://foo.bar";
+    String phoneNumber = "+35844123465";
+    String shopName = "Jaskan kello";
+    String submerchantId = "submerchantId";
+    String submerchantName = "submerchantName";
 
-    @Test
-    public void testGetAddCardAndPaymentParameters2() {
-        FormContainer formContainer = this.formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .language(this.language)
-            .build();
+    FormContainer formContainer = this.formBuilder.mobilePayParametersBuilder(this.successUrl, this.failureUrl, this.cancelUrl,
+      this.amount, this.currency, this.orderId, this.description)
+      .exitIframeOnResult(true)
+      .shopLogoUrl(logoUrl)
+      .phoneNumber(phoneNumber)
+      .shopName(shopName)
+      .subMerchantId(submerchantId)
+      .subMerchantName(submerchantName)
+      .language(this.language)
+      .build();
 
-        String response = null;
-        try {
-            response = this.formApi.paymentRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
-    }
+    assertEquals(20, formContainer.getFields().size());
+  }
 
-    /**
-     * Test with optional parameters present.
-     */
+  @Test
+  public void testAddCardWebhookParameters() {
+    FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
+      .webhookSuccessUrl(this.webhookSuccessUrl)
+      .webhookFailureUrl(this.webhookFailureUrl)
+      .webhookCancelUrl(this.webhookCancelUrl)
+      .webhookDelay(this.webhookDelay)
+      .language(this.language)
+      .build();
 
-    @Test
-    public void testGetAddCardAndPaymentParameters3() {
-        Boolean skipFormNotifications = true;
-        Boolean exitIframeOnResult = true;
-        Boolean exitIframeOn3ds = true;
+    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
+    assertNotNull(signature);
+    assertTrue(signature.startsWith("SPH1"));
 
-        FormContainer formContainer = this.formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .skipFormNotifications(skipFormNotifications)
-            .exitIframeOnResult(exitIframeOnResult)
-            .exitIframeOn3ds(exitIframeOn3ds)
-            .language(this.language)
-            .build();
+    this.validateWebhookParameters(formContainer.getFields(), false);
+  }
 
-        String response = null;
-        try {
-            response = this.formApi.paymentRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
-    }
+  @Test
+  public void testPaymentWebhookParameters() {
+    FormContainer formContainer = generatePaymentParameters()
+      .webhookSuccessUrl(this.webhookSuccessUrl)
+      .webhookFailureUrl(this.webhookFailureUrl)
+      .webhookCancelUrl(this.webhookCancelUrl)
+      .webhookDelay(this.webhookDelay)
+      .language(this.language)
+      .build();
 
+    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
+    assertNotNull(signature);
+    assertTrue(signature.startsWith("SPH1"));
 
-    @Test
-    public void testGetAddCardAndPaymentWithUse3ds() {
-        Boolean skipFormNotifications = true;
-        Boolean exitIframeOnResult = true;
-        Boolean exitIframeOn3ds = true;
-        Boolean use3ds = true;
+    this.validateWebhookParameters(formContainer.getFields(), false);
+  }
 
-        FormContainer formContainer = this.formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .skipFormNotifications(skipFormNotifications)
-            .exitIframeOnResult(exitIframeOnResult)
-            .exitIframeOn3ds(exitIframeOn3ds)
-            .use3ds(use3ds)
-            .build();
+  @Test
+  public void testAddCardAndPaymentWebhookParameters() {
+    FormContainer formContainer = generatePaymentParameters()
+      .webhookSuccessUrl(this.webhookSuccessUrl)
+      .webhookFailureUrl(this.webhookFailureUrl)
+      .webhookCancelUrl(this.webhookCancelUrl)
+      .webhookDelay(this.webhookDelay)
+      .tokenize(true)
+      .language(this.language)
+      .build();
 
-        String response = null;
-        try {
-            response = this.formApi.paymentRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
-    }
+    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
+    assertNotNull(signature);
+    assertTrue(signature.startsWith("SPH1"));
 
-    /**
-     * Test without optional parameters.
-     */
+    this.validateWebhookParameters(formContainer.getFields(), false);
+  }
 
-    @Test
-    public void testGetPayWithTokenAndCvcParameters() {
-        FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description, this.token)
-            .language(this.language)
-            .build();
+  @Test
+  public void testPayWithTokenAndCvcWebhookParameters() {
+    FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
+      this.amount, this.currency, this.orderId, this.description, this.token)
+      .webhookSuccessUrl(this.webhookSuccessUrl)
+      .webhookFailureUrl(this.webhookFailureUrl)
+      .webhookCancelUrl(this.webhookCancelUrl)
+      .webhookDelay(this.webhookDelay)
+      .language(this.language)
+      .build();
 
-        String response = null;
-        try {
-            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
-    }
+    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
+    assertNotNull(signature);
+    assertTrue(signature.startsWith("SPH1"));
 
-    /**
-     * Test with optional parameters present.
-     */
+    this.validateWebhookParameters(formContainer.getFields(), false);
+  }
 
-    @Test
-    public void testGetPayWithTokenAndCvcParameters2() {
-        Boolean skipFormNotifications = true;
-        Boolean exitIframeOnResult = true;
-        Boolean exitIframeOn3ds = true;
+  @Test
+  public void testMobilePayWebhookParameters() {
+    FormContainer formContainer = this.formBuilder.mobilePayParametersBuilder(this.successUrl, this.failureUrl, this.cancelUrl,
+      this.amount, this.currency, this.orderId, this.description)
+      .webhookSuccessUrl(this.webhookSuccessUrl)
+      .webhookFailureUrl(this.webhookFailureUrl)
+      .webhookCancelUrl(this.webhookCancelUrl)
+      .webhookDelay(this.webhookDelay)
+      .language(this.language)
+      .build();
 
-        FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description, this.token)
-            .skipFormNotifications(skipFormNotifications)
-            .exitIframeOnResult(exitIframeOnResult)
-            .exitIframeOn3ds(exitIframeOn3ds)
-            .build();
+    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
+    assertNotNull(signature);
+    assertTrue(signature.startsWith("SPH1"));
 
-        String response = null;
-        try {
-            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
-    }
+    this.validateWebhookParameters(formContainer.getFields(), false);
+  }
 
-    @Test
-    public void testGetPayWithTokenAndCvcWithUse3ds() {
-        Boolean skipFormNotifications = false;
-        Boolean exitIframeOn3ds = false;
-        Boolean use3ds = false;
+  @Test
+  public void testMasterpassWebhookParameters() {
+    FormContainer formContainer = this.formBuilder.masterpassParameters(
+      this.successUrl,
+      this.failureUrl,
+      this.cancelUrl,
+      Long.valueOf(this.amount),
+      this.currency,
+      this.orderId,
+      this.description
+    )
+      .webhookSuccessUrl(this.webhookSuccessUrl)
+      .webhookFailureUrl(this.webhookFailureUrl)
+      .webhookCancelUrl(this.webhookCancelUrl)
+      .webhookDelay(this.webhookDelay)
+      .language(this.language)
+      .build();
 
-        FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description, this.token)
-            .language(this.language)
-            .skipFormNotifications(skipFormNotifications)
-            .exitIframeOn3ds(exitIframeOn3ds)
-            .use3ds(use3ds)
-            .build();
+    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
+    assertNotNull(signature);
+    assertTrue(signature.startsWith("SPH1"));
 
-        String response = null;
-        try {
-            response = this.formApi.payWithTokenAndCvcRequest(formContainer.getFields(), false);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        assertNotNull(response);
-        assertTrue(response.contains("card_number_formatted"));
-    }
-
-
-    @Test
-    public void testMobilePayForm() {
-        FormContainer formContainer = this.formBuilder.mobilePayParametersBuilder(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .build();
-        assertTrue(formContainer.getFields().size() == 13);
-    }
-
-
-    @Test
-    public void testMobilePayFormWithOptionalParameters() {
-        String logoUrl = "https://foo.bar";
-        Boolean exitIframeOnResult = true;
-        String phoneNumber = "+35844123465";
-        String shopName = "Jaskan kello";
-        String submerchantId = "submerchantId";
-        String submerchantName = "submerchantName";
-
-        FormContainer formContainer = this.formBuilder.mobilePayParametersBuilder(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .language(this.language)
-            .exitIframeOnResult(exitIframeOnResult)
-            .shopLogoUrl(logoUrl)
-            .phoneNumber(phoneNumber)
-            .shopName(shopName)
-            .subMerchantId(submerchantId)
-            .subMerchantName(submerchantName)
-            .build();
-        assertTrue(formContainer.getFields().size() == 20);
-    }
-
-    @Test
-    public void testAddCardWebhookParameters() {
-        FormContainer formContainer = this.formBuilder.addCardParameters(this.successUrl, this.failureUrl, this.cancelUrl)
-            .language(this.language)
-            .webhookSuccessUrl(this.webhookSuccessUrl)
-            .webhookFailureUrl(this.webhookFailureUrl)
-            .webhookCancelUrl(this.webhookCancelUrl)
-            .webhookDelay(this.webhookDelay)
-            .build();
-
-        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-        assertNotNull(signature);
-        assertTrue(signature.startsWith("SPH1"));
-
-        this.validateWebhookParameters(formContainer.getFields(), false);
-    }
-
-    @Test
-    public void testPaymentWebhookParameters() {
-        FormContainer formContainer = this.formBuilder.paymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .language(this.language)
-            .webhookSuccessUrl(this.webhookSuccessUrl)
-            .webhookFailureUrl(this.webhookFailureUrl)
-            .webhookCancelUrl(this.webhookCancelUrl)
-            .webhookDelay(this.webhookDelay)
-            .build();
-
-        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-        assertNotNull(signature);
-        assertTrue(signature.startsWith("SPH1"));
-
-        this.validateWebhookParameters(formContainer.getFields(), false);
-    }
-
-    @Test
-    public void testAddCardAndPaymentWebhookParameters() {
-        FormContainer formContainer = this.formBuilder.addCardAndPaymentParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .language(this.language)
-            .webhookSuccessUrl(this.webhookSuccessUrl)
-            .webhookFailureUrl(this.webhookFailureUrl)
-            .webhookCancelUrl(this.webhookCancelUrl)
-            .webhookDelay(this.webhookDelay)
-            .build();
-
-        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-        assertNotNull(signature);
-        assertTrue(signature.startsWith("SPH1"));
-
-        this.validateWebhookParameters(formContainer.getFields(), false);
-    }
-
-    @Test
-    public void testPayWithTokenAndCvcWebhookParameters() {
-        FormContainer formContainer = this.formBuilder.payWithTokenAndCvcParameters(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description, this.token)
-            .language(this.language)
-            .webhookSuccessUrl(this.webhookSuccessUrl)
-            .webhookFailureUrl(this.webhookFailureUrl)
-            .webhookCancelUrl(this.webhookCancelUrl)
-            .webhookDelay(this.webhookDelay)
-            .build();
-
-        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-        assertNotNull(signature);
-        assertTrue(signature.startsWith("SPH1"));
-
-        this.validateWebhookParameters(formContainer.getFields(), false);
-    }
-
-    @Test
-    public void testMobilePayWebhookParameters() {
-        FormContainer formContainer = this.formBuilder.mobilePayParametersBuilder(this.successUrl, this.failureUrl, this.cancelUrl,
-            this.amount, this.currency, this.orderId, this.description)
-            .language(this.language)
-            .webhookSuccessUrl(this.webhookSuccessUrl)
-            .webhookFailureUrl(this.webhookFailureUrl)
-            .webhookCancelUrl(this.webhookCancelUrl)
-            .webhookDelay(this.webhookDelay)
-            .build();
-
-        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-        assertNotNull(signature);
-        assertTrue(signature.startsWith("SPH1"));
-
-        this.validateWebhookParameters(formContainer.getFields(), false);
-    }
-
-    @Test
-    public void testMasterpassWebhookParameters() {
-        FormContainer formContainer = this.formBuilder.masterpassParameters(
-          this.successUrl,
-          this.failureUrl,
-          this.cancelUrl,
-          Long.valueOf(this.amount),
-          this.currency,
-          this.orderId,
-          this.description
-        )
-          .language(this.language)
-          .webhookSuccessUrl(this.webhookSuccessUrl)
-          .webhookFailureUrl(this.webhookFailureUrl)
-          .webhookCancelUrl(this.webhookCancelUrl)
-          .webhookDelay(this.webhookDelay)
-          .build();
-
-        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-        assertNotNull(signature);
-        assertTrue(signature.startsWith("SPH1"));
-
-        this.validateWebhookParameters(formContainer.getFields(), false);
-    }
+    this.validateWebhookParameters(formContainer.getFields(), false);
+  }
 
     @Test
     public void testSiirtoParameters() {
@@ -613,19 +583,30 @@ public class NewFormBuilderTest {
         this.validateWebhookParameters(formContainer.getFields(), false);
     }
 
-    private void validateWebhookParameters(List<NameValuePair> nameValuePairs, boolean ignoreDelay) {
-        for (NameValuePair nameValuePair : nameValuePairs) {
-            String name = nameValuePair.getName();
-            if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_SUCCESS_URL)) {
-                assertEquals(nameValuePair.getValue(), this.webhookSuccessUrl);
-            } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_FAILURE_URL)) {
-                assertEquals(nameValuePair.getValue(), this.webhookFailureUrl);
-            } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_CANCEL_URL)) {
-                assertEquals(nameValuePair.getValue(), this.webhookCancelUrl);
-            } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_DELAY) && !ignoreDelay) {
-                assertEquals(nameValuePair.getValue(), this.webhookDelay.toString());
-            }
-        }
+  private void validateWebhookParameters(List<NameValuePair> nameValuePairs, boolean ignoreDelay) {
+    for (NameValuePair nameValuePair : nameValuePairs) {
+      String name = nameValuePair.getName();
+      if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_SUCCESS_URL)) {
+        assertEquals(nameValuePair.getValue(), this.webhookSuccessUrl);
+      } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_FAILURE_URL)) {
+        assertEquals(nameValuePair.getValue(), this.webhookFailureUrl);
+      } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_CANCEL_URL)) {
+        assertEquals(nameValuePair.getValue(), this.webhookCancelUrl);
+      } else if (name.equalsIgnoreCase(FormBuilderConstants.SPH_WEBHOOK_DELAY) && !ignoreDelay) {
+        assertEquals(nameValuePair.getValue(), this.webhookDelay.toString());
+      }
     }
-}
+  }
 
+  private PaymentParameters generatePaymentParameters() {
+    return this.formBuilder.paymentParameters(
+      this.successUrl,
+      this.failureUrl,
+      this.cancelUrl,
+      this.amount,
+      this.currency,
+      this.orderId,
+      this.description
+    );
+  }
+}

@@ -33,7 +33,7 @@ public class GenericPaymentParametersBuilder<T>
   }
 
   /**
-   * Skip payment method selection page.
+   * Show payment method selection page.
    *
    * @param show Show payment method selection page.
    * @return Form builder
