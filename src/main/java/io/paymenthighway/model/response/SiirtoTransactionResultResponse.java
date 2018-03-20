@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *  Siirto Transaction Result response POJO.
  *  Used to find out whether or not an Siirto transaction succeeded.
  */
-public class SiirtoTransactionResultResponse {
+public class SiirtoTransactionResultResponse extends Response {
     @JsonProperty("status")
     protected String status;
     Customer customer;
