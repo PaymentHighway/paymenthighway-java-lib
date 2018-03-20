@@ -2,7 +2,6 @@ package io.paymenthighway.connect;
 
 import io.paymenthighway.Constants;
 import io.paymenthighway.PaymentHighwayUtility;
-import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.json.JsonParser;
 import io.paymenthighway.model.request.*;
@@ -10,7 +9,6 @@ import io.paymenthighway.model.response.*;
 import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -114,56 +112,53 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   public TransactionResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
-
-    final String paymentUri = "/transaction/";
     final String actionUri = "/revert";
-    String revertUri = paymentUri + transactionId + actionUri;
+    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+  }
 
-    String response = executePost(revertUri, createNameValuePairs(), request);
-
-    return jsonParser.mapResponse(response, TransactionResponse.class);
+  public TransactionResponse revertSiirtoTransaction(UUID transactionId, RevertSiirtoTransactionRequest request) throws IOException {
+    final String actionUri = "/siirto/revert";
+    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
   }
 
   public CommitTransactionResponse commitTransaction(UUID transactionId, CommitTransactionRequest request) throws IOException {
-
-    final String paymentUri = "/transaction/";
     final String actionUri = "/commit";
-    String commitUri = paymentUri + transactionId + actionUri;
-
-    String response = executePost(commitUri, createNameValuePairs(), request);
-
-    return jsonParser.mapResponse(response, CommitTransactionResponse.class);
+    return transactionPost(transactionId, actionUri, request, CommitTransactionResponse.class);
   }
 
   public UserProfileResponse userProfile(UUID transactionId) throws IOException {
-
-    String userProfileUri = String.format("/transaction/%s/user_profile", transactionId);
-
-    String response = executeGet(userProfileUri, createNameValuePairs());
-
-    return jsonParser.mapResponse(response, UserProfileResponse.class);
+    String actionUri = "/user_profile";
+    return transactionGet(transactionId, actionUri, UserProfileResponse.class);
   }
 
   public TransactionResultResponse transactionResult(UUID transactionId) throws IOException {
-
-    final String paymentUri = "/transaction/";
     final String actionUri = "/result";
-    String transactionResultUrl = paymentUri + transactionId + actionUri;
+    return transactionGet(transactionId, actionUri, TransactionResultResponse.class);
+  }
 
-    String response = executeGet(transactionResultUrl, createNameValuePairs());
-
-    return jsonParser.mapResponse(response, TransactionResultResponse.class);
+  public SiirtoTransactionResultResponse siirtoTransactionResult(UUID transactionId) throws IOException {
+    final String actionUri = "/siirto/result";
+    return transactionGet(transactionId, actionUri, SiirtoTransactionResultResponse.class);
   }
 
   public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
+    return transactionGet(transactionId, "",  TransactionStatusResponse.class);
+  }
 
+  private <T> T transactionPost(UUID transactionId, String actionUri, Request request, Class<T> clazz) throws IOException {
     final String paymentUri = "/transaction/";
+    String uri = paymentUri + transactionId + actionUri;
+    String response = executePost(uri, createNameValuePairs(), request);
 
-    String statusUri = paymentUri + transactionId;
+    return jsonParser.mapResponse(response, clazz);
+  }
 
-    String response = executeGet(statusUri, createNameValuePairs());
+  private <T> T transactionGet(UUID transactionId, String actionUri, Class<T> clazz) throws IOException {
+    final String paymentUri = "/transaction/";
+    String uri = paymentUri + transactionId + actionUri;
+    String response = executeGet(uri, createNameValuePairs());
 
-    return jsonParser.mapResponse(response, TransactionStatusResponse.class);
+    return jsonParser.mapResponse(response, clazz);
   }
 
   public OrderSearchResponse searchOrders(String order) throws IOException {

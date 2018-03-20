@@ -16,7 +16,8 @@ public class SiirtoParametersBuilder
         String cancelUrl,
         Long amount,
         String orderId,
-        String description
+        String description,
+        String referenceNumber
     ) {
         super(
             method,
@@ -33,6 +34,7 @@ public class SiirtoParametersBuilder
             orderId,
             description
         );
+        addNameValuePair(FormBuilderConstants.SPH_REFERENCE, referenceNumber);
         serviceUri = "/form/view/siirto";
     }
 
@@ -42,17 +44,6 @@ public class SiirtoParametersBuilder
      */
     public SiirtoParametersInterface phoneNumber(String phoneNumber) {
         addNameValuePair(FormBuilderConstants.SPH_PHONE_NUMBER, phoneNumber);
-        return this;
-    }
-
-    /**
-     * Reference number
-     *
-     * @param referenceNumber Reference number
-     * @return SiirtoParametersInterface
-     */
-    public SiirtoParametersInterface referenceNumber(String referenceNumber) {
-        addNameValuePair(FormBuilderConstants.SPH_REFERENCE, referenceNumber);
         return this;
     }
 

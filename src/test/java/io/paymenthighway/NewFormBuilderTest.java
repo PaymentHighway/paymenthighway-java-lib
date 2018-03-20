@@ -565,11 +565,11 @@ public class NewFormBuilderTest {
             this.cancelUrl,
             Long.valueOf(this.amount),
             this.orderId,
-            this.description
+            this.description,
+            "1313"
         )
             .language(this.language)
             .phoneNumber("+358441234567")
-            .referenceNumber("1313")
             .webhookSuccessUrl(this.webhookSuccessUrl)
             .webhookFailureUrl(this.webhookFailureUrl)
             .webhookCancelUrl(this.webhookCancelUrl)

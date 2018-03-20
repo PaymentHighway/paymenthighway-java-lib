@@ -58,15 +58,6 @@ public interface SiirtoParametersInterface {
     SiirtoParametersInterface webhookDelay(Integer delay);
 
     /**
-     * Reference number
-     *
-     * @param referenceNumber Reference number
-     * @return Form builder
-     */
-    SiirtoParametersInterface referenceNumber(String referenceNumber);
-
-
-    /**
      * Builds form parameters
      *
      * @return FormContainer
