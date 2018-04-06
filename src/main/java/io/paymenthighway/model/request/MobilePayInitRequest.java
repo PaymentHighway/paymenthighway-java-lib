@@ -12,6 +12,7 @@ public class MobilePayInitRequest extends Request {
   @JsonProperty("currency") private String currency;
   @JsonProperty("order") private String order;
   @JsonProperty("return_uri") private URI returnUri;
+  @JsonProperty("language") private String language;
   @JsonProperty("webhook_success_url") private URL webhookSuccessUrl;
   @JsonProperty("webhook_cancel_url") private URL webhookCancelUrl;
   @JsonProperty("webhook_failure_url") private URL webhookFailureUrl;
@@ -19,7 +20,7 @@ public class MobilePayInitRequest extends Request {
   @JsonProperty("sub_merchant_name") private String subMerchantName;
   @JsonProperty("sub_merchant_id") private String subMerhantId;
   @JsonProperty("shop_name") private String shopName;
-  @JsonProperty("shop_logo_url") private String shopLogoUrl;
+  @JsonProperty("shop_logo_url") private URL shopLogoUrl;
 
   protected MobilePayInitRequest() {}
 
@@ -43,6 +44,10 @@ public class MobilePayInitRequest extends Request {
     return returnUri;
   }
 
+  public String getLanguage() {
+    return language;
+  }
+
   public String getSubMerchantName() {
     return subMerchantName;
   }
@@ -55,7 +60,7 @@ public class MobilePayInitRequest extends Request {
     return shopName;
   }
 
-  public String getShopLogoUrl() {
+  public URL getShopLogoUrl() {
     return shopLogoUrl;
   }
 
@@ -77,10 +82,11 @@ public class MobilePayInitRequest extends Request {
 
     private String order = null;
     private URI returnUri;
+    private String language;
     private String subMerchantName;
     private String subMerhantId;
     private String shopName;
-    private String shopLogoUrl;
+    private URL shopLogoUrl;
     private URL webhookSuccessUrl;
     private URL webhookCancelUrl;
     private URL webhookFailureUrl;
@@ -106,6 +112,11 @@ public class MobilePayInitRequest extends Request {
       return this;
     }
 
+    public Builder setLanguage(String language) {
+      this.language = language;
+      return this;
+    }
+
     public Builder setSubMerchantName(String subMerchantName) {
       this.subMerchantName = subMerchantName;
       return this;
@@ -121,7 +132,11 @@ public class MobilePayInitRequest extends Request {
       return this;
     }
 
-    public Builder setShopLogoUrl(String shopLogoUrl) {
+    public Builder setShopLogoUrl(String shopLogoUrl) throws MalformedURLException {
+      return setShopLogoUrl(new URL(shopLogoUrl));
+    }
+
+    public Builder setShopLogoUrl(URL shopLogoUrl) {
       this.shopLogoUrl = shopLogoUrl;
       return this;
     }
@@ -169,6 +184,7 @@ public class MobilePayInitRequest extends Request {
     this.webhookFailureUrl = builder.webhookFailureUrl;
 
     // Optional parameters
+    this.language = builder.language;
     this.subMerchantName = builder.subMerchantName;
     this.subMerhantId = builder.subMerhantId;
     this.shopName = builder.shopName;
