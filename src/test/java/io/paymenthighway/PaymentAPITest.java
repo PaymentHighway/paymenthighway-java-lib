@@ -822,8 +822,6 @@ public class PaymentAPITest {
   @Test
   @Category(ExternalServiceTest.class)
   public void initMobilePayAppFlow() throws Exception {
-    UUID orderId = UUID.randomUUID();
-
     MobilePayInitRequest request = MobilePayInitRequest.Builder(100, "EUR")
         .setWebhookSuccessUrl("https://myserver.com/success")
         .setWebhookCancelUrl("https://myserver.com/cancel")
@@ -831,7 +829,7 @@ public class PaymentAPITest {
         .setReturnUri(new URI("myapp://paid"))
         .setLanguage("fi")
         .setShopLogoUrl("https://myserver.com/shop-logo")
-        .setOrder(orderId.toString())
+        .setOrder(UUID.randomUUID().toString())
         .build();
 
     PaymentAPI paymentAPI = createPaymentAPI();
@@ -840,5 +838,30 @@ public class PaymentAPITest {
     assertNotNull(response.getUri());
     assertNotNull(response.getSessionToken());
     assertNotNull(response.getValidUntil());
+  }
+
+  @Test
+  @Category(ExternalServiceTest.class)
+  public void mobilePaySessionStatus() throws Exception {
+    MobilePayInitRequest request = MobilePayInitRequest.Builder(100, "EUR")
+            .setWebhookSuccessUrl("https://myserver.com/success")
+            .setWebhookCancelUrl("https://myserver.com/cancel")
+            .setWebhookFailureUrl("https://myserver.com/failure")
+            .setReturnUri(new URI("myapp://paid"))
+            .setOrder(UUID.randomUUID().toString())
+            .build();
+
+    PaymentAPI paymentAPI = createPaymentAPI();
+    MobilePayInitResponse initResponse = paymentAPI.initMobilePaySession(request);
+    assertNotNull("Initialization failed.", initResponse.getSessionToken());
+
+    MobilePayStatusResponse response = paymentAPI.mobilePaySessionStatus(initResponse.getSessionToken());
+    assertEquals("in_progress", response.getStatus());
+    assertEquals(
+            "Valid until value should be same in init and status check.",
+            initResponse.getValidUntil(),
+            response.getValidUntil()
+    );
+    assertNull("When status is 'in_progress' transaction id should be null.", response.getTransactionId());
   }
 }
