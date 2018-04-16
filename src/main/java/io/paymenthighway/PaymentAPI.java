@@ -4,6 +4,7 @@ import io.paymenthighway.connect.PaymentAPIConnection;
 import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.model.response.MobilePayInitResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -86,6 +87,14 @@ public class PaymentAPI implements Closeable {
    */
   public TransactionResponse debitApplePayTransaction(UUID transactionId, ApplePayTransactionRequest request) throws IOException {
     return paymentApi.debitApplePayTransaction(transactionId, request);
+  }
+
+  public MobilePayInitResponse initMobilePaySession(MobilePayInitRequest request) throws IOException {
+    return paymentApi.initMobilePaySession(request);
+  }
+
+  public MobilePayStatusResponse mobilePaySessionStatus(String sessionToken) throws IOException {
+    return paymentApi.mobilePaySessionStatus(sessionToken);
   }
 
   /**

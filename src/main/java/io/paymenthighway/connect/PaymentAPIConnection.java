@@ -2,15 +2,14 @@ package io.paymenthighway.connect;
 
 import io.paymenthighway.Constants;
 import io.paymenthighway.PaymentHighwayUtility;
-import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.json.JsonParser;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.model.response.MobilePayInitResponse;
 import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -100,6 +99,18 @@ public class PaymentAPIConnection implements Closeable {
     String requestUri = String.format("/transaction/%s/debit_applepay", transactionId);
     String response = executePost(requestUri, createNameValuePairs(), request);
     return jsonParser.mapResponse(response, DebitTransactionResponse.class);
+  }
+
+  public MobilePayInitResponse initMobilePaySession(MobilePayInitRequest request) throws IOException {
+    String requestUri = "/app/mobilepay";
+    String response = executePost(requestUri, createNameValuePairs(), request);
+    return jsonParser.mapResponse(response, MobilePayInitResponse.class);
+  }
+
+  public MobilePayStatusResponse mobilePaySessionStatus(String sessionToken) throws IOException {
+    String requestUri = String.format("/app/mobilepay/%s/status", sessionToken);
+    String response = executeGet(requestUri, createNameValuePairs());
+    return jsonParser.mapResponse(response, MobilePayStatusResponse.class);
   }
 
   public TransactionResponse creditTransaction(UUID transactionId, TransactionRequest request) throws IOException {
