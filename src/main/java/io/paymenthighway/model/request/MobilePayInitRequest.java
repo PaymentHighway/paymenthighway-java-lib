@@ -8,19 +8,19 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 public class MobilePayInitRequest extends Request {
-  @JsonProperty("amount") private Long amount;
+  @JsonProperty("amount") private String amount;
   @JsonProperty("currency") private String currency;
   @JsonProperty("order") private String order;
-  @JsonProperty("return_uri") private URI returnUri;
+  @JsonProperty("return_uri") private String returnUri;
   @JsonProperty("language") private String language;
-  @JsonProperty("webhook_success_url") private URL webhookSuccessUrl;
-  @JsonProperty("webhook_cancel_url") private URL webhookCancelUrl;
-  @JsonProperty("webhook_failure_url") private URL webhookFailureUrl;
+  @JsonProperty("webhook_success_url") private String webhookSuccessUrl;
+  @JsonProperty("webhook_cancel_url") private String webhookCancelUrl;
+  @JsonProperty("webhook_failure_url") private String webhookFailureUrl;
 
   @JsonProperty("sub_merchant_name") private String subMerchantName;
   @JsonProperty("sub_merchant_id") private String subMerhantId;
   @JsonProperty("shop_name") private String shopName;
-  @JsonProperty("shop_logo_url") private URL shopLogoUrl;
+  @JsonProperty("shop_logo_url") private String shopLogoUrl;
 
   protected MobilePayInitRequest() {}
 
@@ -28,7 +28,7 @@ public class MobilePayInitRequest extends Request {
     return new Builder(amount, currency);
   }
 
-  public Long getAmount() {
+  public String getAmount() {
     return amount;
   }
 
@@ -40,7 +40,7 @@ public class MobilePayInitRequest extends Request {
     return order;
   }
 
-  public URI getReturnUri() {
+  public String getReturnUri() {
     return returnUri;
   }
 
@@ -60,19 +60,19 @@ public class MobilePayInitRequest extends Request {
     return shopName;
   }
 
-  public URL getShopLogoUrl() {
+  public String getShopLogoUrl() {
     return shopLogoUrl;
   }
 
-  public URL getWebhookSuccessUrl() {
+  public String getWebhookSuccessUrl() {
     return webhookSuccessUrl;
   }
 
-  public URL getWebhookCancelUrl() {
+  public String getWebhookCancelUrl() {
     return webhookCancelUrl;
   }
 
-  public URL getWebhookFailureUrl() {
+  public String getWebhookFailureUrl() {
     return webhookFailureUrl;
   }
 
@@ -175,19 +175,29 @@ public class MobilePayInitRequest extends Request {
 
   private MobilePayInitRequest(Builder builder) {
     // Required parameters
-    this.amount = builder.amount;
+    this.amount = Long.toString(builder.amount);
     this.currency = builder.currency;
     this.order = builder.order;
-    this.returnUri = builder.returnUri;
-    this.webhookSuccessUrl = builder.webhookSuccessUrl;
-    this.webhookCancelUrl = builder.webhookCancelUrl;
-    this.webhookFailureUrl = builder.webhookFailureUrl;
+    this.returnUri = toString(builder.returnUri);
+    this.webhookSuccessUrl = toString(builder.webhookSuccessUrl);
+    this.webhookCancelUrl = toString(builder.webhookCancelUrl);
+    this.webhookFailureUrl = toString(builder.webhookFailureUrl);
 
     // Optional parameters
     this.language = builder.language;
     this.subMerchantName = builder.subMerchantName;
     this.subMerhantId = builder.subMerhantId;
     this.shopName = builder.shopName;
-    this.shopLogoUrl = builder.shopLogoUrl;
+    this.shopLogoUrl = toString(builder.shopLogoUrl);
+  }
+
+  private String toString(URI uri) {
+    if (uri == null) return null;
+    else return uri.toString();
+  }
+
+  private String toString(URL url) {
+    if (url == null) return null;
+    else return url.toString();
   }
 }
