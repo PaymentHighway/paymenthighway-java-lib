@@ -3,8 +3,10 @@ package io.paymenthighway;
 import io.paymenthighway.model.Token;
 import io.paymenthighway.model.request.Card;
 import io.paymenthighway.model.request.MasterpassTransactionRequest;
+import io.paymenthighway.model.request.MobilePayInitRequest;
 import io.paymenthighway.model.request.TransactionRequest;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.test.ExternalServiceTest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -16,8 +18,10 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpCoreContext;
 import org.junit.*;
+import org.junit.experimental.categories.Category;
 
 import java.io.IOException;
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -813,5 +817,28 @@ public class PaymentAPITest {
       "OK",
       transactionResponse.getResult().getMessage()
     );
+  }
+
+  @Test
+  @Category(ExternalServiceTest.class)
+  public void initMobilePayAppFlow() throws Exception {
+    UUID orderId = UUID.randomUUID();
+
+    MobilePayInitRequest request = MobilePayInitRequest.Builder(100, "EUR")
+        .setWebhookSuccessUrl("https://myserver.com/success")
+        .setWebhookCancelUrl("https://myserver.com/cancel")
+        .setWebhookFailureUrl("https://myserver.com/failure")
+        .setReturnUri(new URI("myapp://paid"))
+        .setLanguage("fi")
+        .setShopLogoUrl("https://myserver.com/shop-logo")
+        .setOrder(orderId.toString())
+        .build();
+
+    PaymentAPI paymentAPI = createPaymentAPI();
+    MobilePayInitResponse response = paymentAPI.initMobilePaySession(request);
+
+    assertNotNull(response.getUri());
+    assertNotNull(response.getSessionToken());
+    assertNotNull(response.getValidUntil());
   }
 }

@@ -102,13 +102,13 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   public MobilePayInitResponse initMobilePaySession(MobilePayInitRequest request) throws IOException {
-    String requestUri = "/mobilepay";
+    String requestUri = "/app/mobilepay";
     String response = executePost(requestUri, createNameValuePairs(), request);
     return jsonParser.mapResponse(response, MobilePayInitResponse.class);
   }
 
   public MobilePayStatusResponse mobilePaySessionStatus(String sessionToken) throws IOException {
-    String requestUri = String.format("/mobilepay/%s/status", sessionToken);
+    String requestUri = String.format("/app/mobilepay/%s/status", sessionToken);
     String response = executeGet(requestUri, createNameValuePairs());
     return jsonParser.mapResponse(response, MobilePayStatusResponse.class);
   }
