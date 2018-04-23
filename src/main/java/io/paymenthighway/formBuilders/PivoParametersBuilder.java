@@ -52,7 +52,7 @@ public class PivoParametersBuilder
      * @return PivoParametersInterface
      */
     public PivoParametersBuilder referenceNumber(String referenceNumber) {
-        addNameValuePair(FormBuilderConstants.SPH_REFERENCE, referenceNumber);
+        addNameValuePair(FormBuilderConstants.SPH_REFERENCE_NUMBER, referenceNumber);
         return this;
     }
 

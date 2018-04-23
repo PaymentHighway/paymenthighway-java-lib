@@ -86,7 +86,7 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   public DebitTransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
-    throws IOException {
+      throws IOException {
 
     String requestUri = String.format("/transaction/%s/debit_masterpass", transactionId);
     String response = executePost(requestUri, createNameValuePairs(), request);
@@ -94,7 +94,7 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   public DebitTransactionResponse debitApplePayTransaction(UUID transactionId, ApplePayTransactionRequest request)
-    throws IOException {
+      throws IOException {
 
     String requestUri = String.format("/transaction/%s/debit_applepay", transactionId);
     String response = executePost(requestUri, createNameValuePairs(), request);
@@ -129,6 +129,11 @@ public class PaymentAPIConnection implements Closeable {
     return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
   }
 
+  public TransactionResponse revertPivoTransaction(UUID transactionId, RevertPivoTransactionRequest request) throws IOException {
+    final String actionUri = "/pivo/revert";
+    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+  }
+
   public TransactionResponse revertSiirtoTransaction(UUID transactionId, RevertSiirtoTransactionRequest request) throws IOException {
     final String actionUri = "/siirto/revert";
     return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
@@ -147,6 +152,11 @@ public class PaymentAPIConnection implements Closeable {
   public TransactionResultResponse transactionResult(UUID transactionId) throws IOException {
     final String actionUri = "/result";
     return transactionGet(transactionId, actionUri, TransactionResultResponse.class);
+  }
+
+  public PivoTransactionResultResponse pivoTransactionResult(UUID transactionId) throws IOException {
+    final String actionUri = "/pivo/result";
+    return transactionGet(transactionId, actionUri, PivoTransactionResultResponse.class);
   }
 
   public SiirtoTransactionResultResponse siirtoTransactionResult(UUID transactionId) throws IOException {
