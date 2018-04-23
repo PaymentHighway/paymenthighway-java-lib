@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class MobilePayStatusResponseTest {
   @Test
   public void inProgress() {
-    String json = "{\"status\": \"in_progress\", \"valid-until\": \"2018-12-24T18:00:00Z\"}";
+    String json = "{\"status\": \"in_progress\", \"valid_until\": \"2018-12-24T18:00:00Z\"}";
     JsonParser parser = new JsonParser();
     MobilePayStatusResponse response = parser.mapResponse(json, MobilePayStatusResponse.class);
 
@@ -22,7 +22,7 @@ public class MobilePayStatusResponseTest {
   @Test
   public void ok() {
     String txId = UUID.randomUUID().toString();
-    String json = String.format("{\"status\": \"ok\", \"transaction-id\": \"%s\"}", txId);
+    String json = String.format("{\"status\": \"ok\", \"transaction_id\": \"%s\"}", txId);
     JsonParser parser = new JsonParser();
     MobilePayStatusResponse response = parser.mapResponse(json, MobilePayStatusResponse.class);
 
