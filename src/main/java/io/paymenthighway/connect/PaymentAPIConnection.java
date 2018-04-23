@@ -108,7 +108,7 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   public MobilePayStatusResponse mobilePaySessionStatus(String sessionToken) throws IOException {
-    String requestUri = String.format("/app/mobilepay/%s/status", sessionToken);
+    String requestUri = String.format("/app/mobilepay/%s", sessionToken);
     String response = executeGet(requestUri, createNameValuePairs());
     return jsonParser.mapResponse(response, MobilePayStatusResponse.class);
   }
