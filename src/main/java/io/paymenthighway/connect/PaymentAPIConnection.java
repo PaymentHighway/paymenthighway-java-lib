@@ -129,6 +129,11 @@ public class PaymentAPIConnection implements Closeable {
     return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
   }
 
+  public TransactionResponse revertPivoTransaction(UUID transactionId, RevertPivoTransactionRequest request) throws IOException {
+    final String actionUri = "/pivo/revert";
+    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+  }
+
   public CommitTransactionResponse commitTransaction(UUID transactionId, CommitTransactionRequest request) throws IOException {
     final String actionUri = "/commit";
     return transactionPost(transactionId, actionUri, request, CommitTransactionResponse.class);
@@ -142,6 +147,11 @@ public class PaymentAPIConnection implements Closeable {
   public TransactionResultResponse transactionResult(UUID transactionId) throws IOException {
     final String actionUri = "/result";
     return transactionGet(transactionId, actionUri, TransactionResultResponse.class);
+  }
+
+  public PivoTransactionResultResponse pivoTransactionResult(UUID transactionId) throws IOException {
+    final String actionUri = "/pivo/result";
+    return transactionGet(transactionId, actionUri, PivoTransactionResultResponse.class);
   }
 
   public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
