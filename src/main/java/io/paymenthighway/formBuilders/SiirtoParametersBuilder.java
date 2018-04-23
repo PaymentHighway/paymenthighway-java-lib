@@ -34,7 +34,7 @@ public class SiirtoParametersBuilder
             orderId,
             description
         );
-        addNameValuePair(FormBuilderConstants.SPH_REFERENCE, referenceNumber);
+        addNameValuePair(FormBuilderConstants.SPH_REFERENCE_NUMBER, referenceNumber);
         serviceUri = "/form/view/siirto";
     }
 
