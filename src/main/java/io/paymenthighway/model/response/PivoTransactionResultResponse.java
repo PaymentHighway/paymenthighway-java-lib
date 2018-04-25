@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *  Pivo Transaction Result response POJO.
- *  Used to find out whether or not an Pivo transaction succeeded.
+ *  Used to find out whether or not a Pivo transaction succeeded.
  */
 public class PivoTransactionResultResponse {
     @JsonProperty("status")
@@ -12,6 +12,8 @@ public class PivoTransactionResultResponse {
     Customer customer;
     @JsonProperty("amount")
     protected Long amount;
+    @JsonProperty("current_amount")
+    protected Long currentAmount;
     @JsonProperty("reference_number")
     protected String referenceNumber;
     @JsonProperty("archive_id")
@@ -29,6 +31,10 @@ public class PivoTransactionResultResponse {
 
     public Long getAmount() {
         return amount;
+    }
+
+    public Long getCurrentAmount() {
+        return currentAmount;
     }
 
     public String getArchiveId() {

@@ -37,7 +37,7 @@ public class PivoParametersBuilder
     }
 
     /**
-     * @param phoneNumber Customer phone number with country code e.q. +358449876543. Makes it easier for the customer to identify himself.
+     * @param phoneNumber User’s phone number. Will be suggested (pre-filled) for User on desktop browser payments. The phone number needs to be in international format (e.g. +358401234567).
      * @return PivoParametersInterface
      */
     public PivoParametersBuilder phoneNumber(String phoneNumber) {

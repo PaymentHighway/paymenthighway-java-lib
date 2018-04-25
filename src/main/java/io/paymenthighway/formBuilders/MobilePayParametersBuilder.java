@@ -36,7 +36,7 @@ public class MobilePayParametersBuilder
     }
 
     /**
-     * @param phoneNumber Customer phone number with country code e.q. +358449876543. Makes it easier for the customer to identify himself toward the MPO Website.
+     * @param phoneNumber User’s phone number. Will be suggested (pre-filled). The phone number needs to be in international format (e.g. +358401234567).
      * @return MobilePayParametersInterface
      */
     public MobilePayParametersBuilder phoneNumber(String phoneNumber) {
