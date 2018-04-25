@@ -158,7 +158,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertPivoTransaction(UUID transactionId, String referenceNumber, String amount) throws IOException {
+  public TransactionResponse revertPivoTransaction(UUID transactionId, String referenceNumber, Long amount) throws IOException {
 
     RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest(referenceNumber, amount);
 
@@ -244,7 +244,7 @@ public class PaymentAPI implements Closeable {
 
   /**
    * Payment Highway Pivo Transaction Result Request
-   * Used to find out whether or not an Pivo transaction succeeded.
+   * Used to find out whether or not a Pivo transaction succeeded.
    *
    * @param transactionId Transaction id
    * @return Transaction result response
