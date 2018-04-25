@@ -175,7 +175,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertSiirtoTransaction(UUID transactionId, String referenceNumber, String amount) throws IOException {
+  public TransactionResponse revertSiirtoTransaction(UUID transactionId, String referenceNumber, Long amount) throws IOException {
 
     RevertSiirtoTransactionRequest revertRequest = new RevertSiirtoTransactionRequest(referenceNumber, amount);
 

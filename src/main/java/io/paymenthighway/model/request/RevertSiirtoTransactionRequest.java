@@ -5,7 +5,7 @@ package io.paymenthighway.model.request;
  */
 public class RevertSiirtoTransactionRequest extends Request {
 
-  String amount = null;
+  Long amount = null;
   String referenceNumber;
 
   /**
@@ -20,7 +20,7 @@ public class RevertSiirtoTransactionRequest extends Request {
    *
    * @param amount Amount to revert
    */
-  public RevertSiirtoTransactionRequest(String referenceNumber, String amount) {
+  public RevertSiirtoTransactionRequest(String referenceNumber, Long amount) {
     this.referenceNumber = referenceNumber;
     this.amount = amount;
   }
@@ -28,7 +28,7 @@ public class RevertSiirtoTransactionRequest extends Request {
   /*
    * Getters.
    */
-  public String getAmount() {
+  public Long getAmount() {
     return amount;
   }
 
