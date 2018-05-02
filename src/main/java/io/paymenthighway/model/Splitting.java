@@ -1,4 +1,4 @@
-package io.paymenthighway.model.request;
+package io.paymenthighway.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

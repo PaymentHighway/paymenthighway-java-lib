@@ -1,5 +1,6 @@
 package io.paymenthighway.model.request;
 
+import io.paymenthighway.model.Splitting;
 import io.paymenthighway.model.Token;
 
 /**
