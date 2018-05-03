@@ -47,7 +47,7 @@ public class PaymentAPITest {
 
   private UUID initTransaction(PaymentAPI paymentAPI) throws IOException {
     InitTransactionResponse response = paymentAPI.initTransaction();
-    assertNotNull(response);
+    assertApiResponseSuccessful(response);
     return response.getId();
   }
 
