@@ -19,6 +19,10 @@ public class Splitting {
     this.amount = amount;
   }
 
+  public Splitting() {
+    // Required for jackson deserialization
+  }
+
   public String getMerchantId() {
     return merchantId;
   }
