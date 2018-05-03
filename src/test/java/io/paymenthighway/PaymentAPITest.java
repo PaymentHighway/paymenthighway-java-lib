@@ -43,20 +43,6 @@ public class PaymentAPITest {
   private String account;
   private String merchant;
 
-  private Card validTestCard = new Card("4153013999700024", "2023", "11", "024");
-
-  private UUID initTransaction(PaymentAPI paymentAPI) throws IOException {
-    InitTransactionResponse response = paymentAPI.initTransaction();
-    assertApiResponseSuccessful(response);
-    return response.getId();
-  }
-
-  private void assertApiResponseSuccessful(Response response)  {
-    assertNotNull(response);
-    assertEquals(response.getResult().getMessage(), "OK");
-    assertEquals(response.getResult().getCode(), "100");
-  }
-
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
   }
@@ -88,6 +74,20 @@ public class PaymentAPITest {
 
   private PaymentAPI createPaymentAPI() {
     return new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
+  }
+
+  private Card validTestCard = new Card("4153013999700024", "2023", "11", "024");
+
+  private UUID initTransaction(PaymentAPI paymentAPI) throws IOException {
+    InitTransactionResponse response = paymentAPI.initTransaction();
+    assertApiResponseSuccessful(response);
+    return response.getId();
+  }
+
+  private void assertApiResponseSuccessful(Response response)  {
+    assertNotNull(response);
+    assertEquals(response.getResult().getMessage(), "OK");
+    assertEquals(response.getResult().getCode(), "100");
   }
 
   @Test
