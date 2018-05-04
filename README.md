@@ -18,7 +18,7 @@ At version 1.5 we changed `FormBuilder` to use _bulder pattern_. Old methods are
 
 ### Maven
 
-You can find the newest release at the[Maven Central Repository](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.paymenthighway%22%20a%3A%22paymenthighway%22)
+You can find the newest release at the [Maven Central Repository](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.paymenthighway%22%20a%3A%22paymenthighway%22)
 
 Add as dependency:
 
