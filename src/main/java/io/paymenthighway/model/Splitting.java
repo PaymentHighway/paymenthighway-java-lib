@@ -1,4 +1,4 @@
-package io.paymenthighway.model.request;
+package io.paymenthighway.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -17,6 +17,10 @@ public class Splitting {
   public Splitting(String merchantId, Long amount) {
     this.merchantId = merchantId;
     this.amount = amount;
+  }
+
+  public Splitting() {
+    // Required for jackson deserialization
   }
 
   public String getMerchantId() {
