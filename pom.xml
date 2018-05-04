@@ -4,7 +4,7 @@
   <groupId>io.paymenthighway</groupId>
   <artifactId>paymenthighway</artifactId>
   <packaging>jar</packaging>
-  <version>1.8.3-SNAPSHOT</version>
+  <version>1.8.3</version>
 
   <name>Payment Highway Java Library</name>
   <description>Payment Highway Java API Library</description>
@@ -14,7 +14,7 @@
     <connection>scm:git:git@github.com:solinor/paymenthighway-java-lib.git</connection>
     <developerConnection>scm:git:git@github.com:solinor/paymenthighway-java-lib.git</developerConnection>
     <url>git@github.com:solinor/paymenthighway-java-lib.git</url>
-    <tag>HEAD</tag>
+    <tag>v1.8.3</tag>
   </scm>
 
   <organization>
