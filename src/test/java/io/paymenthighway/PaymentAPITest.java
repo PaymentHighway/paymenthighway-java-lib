@@ -1,5 +1,6 @@
 package io.paymenthighway;
 
+import io.paymenthighway.model.Splitting;
 import io.paymenthighway.model.Token;
 import io.paymenthighway.model.request.Card;
 import io.paymenthighway.model.request.MasterpassTransactionRequest;
@@ -73,6 +74,20 @@ public class PaymentAPITest {
 
   private PaymentAPI createPaymentAPI() {
     return new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
+  }
+
+  private Card validTestCard = new Card("4153013999700024", "2023", "11", "024");
+
+  private UUID initTransaction(PaymentAPI paymentAPI) throws IOException {
+    InitTransactionResponse response = paymentAPI.initTransaction();
+    assertApiResponseSuccessful(response);
+    return response.getId();
+  }
+
+  private void assertApiResponseSuccessful(Response response)  {
+    assertNotNull(response);
+    assertEquals(response.getResult().getMessage(), "OK");
+    assertEquals(response.getResult().getCode(), "100");
   }
 
   @Test
@@ -426,6 +441,32 @@ public class PaymentAPITest {
     assertEquals(orderSearchResponse.getResult().getCode(), "100");
     assertEquals(orderSearchResponse.getTransactions()[0].getCurrentAmount(), "9999");
     assertEquals(orderSearchResponse.getTransactions()[0].getId(), transactionId);
+  }
+
+  @Test
+  public void testPaymentSplittingDetailsAreReturnedInTransactionStatus() throws IOException {
+
+    Long paymentAmount = 1000L;
+    Long subMerchantReceivesAmount = 900L;
+    String subMerchantId = "12345";
+
+    PaymentAPI paymentAPI = createPaymentAPI();
+    UUID transactionId = initTransaction(paymentAPI);
+
+    Splitting splitting = new Splitting(subMerchantId, subMerchantReceivesAmount);
+    TransactionRequest transaction = new TransactionRequest.Builder(validTestCard, paymentAmount, "EUR")
+        .setSplitting(splitting)
+        .build();
+
+    TransactionResponse transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
+    assertApiResponseSuccessful(transactionResponse);
+
+    TransactionStatusResponse statusResponse = paymentAPI.transactionStatus(transactionId);
+    assertApiResponseSuccessful(statusResponse);
+
+    assertEquals(statusResponse.getTransaction().getAmount(), Long.toString(paymentAmount));
+    assertEquals(statusResponse.getTransaction().getSplitting().getAmount(), subMerchantReceivesAmount);
+    assertEquals(statusResponse.getTransaction().getSplitting().getMerchantId(), subMerchantId);
   }
 
   @Test

@@ -18,17 +18,7 @@ At version 1.5 we changed `FormBuilder` to use _bulder pattern_. Old methods are
 
 ### Maven
 
-Add sonatype-snapshots repository to pom.xml:
-
-```xml
-<repositories>
-    <repository>
-        <id>sonatype-snapshots</id>
-        <name>Sonatype Snapshots</name>
-        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>
-</repositories>
-```
+You can find the newest release at the [Maven Central Repository](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22io.paymenthighway%22%20a%3A%22paymenthighway%22)
 
 Add as dependency:
 
@@ -37,7 +27,7 @@ Add as dependency:
         <dependency>
             <groupId>io.paymenthighway</groupId>
             <artifactId>paymenthighway</artifactId>
-            <version>1.8-SNAPSHOT</version>
+            <version>1.8.3</version>
         </dependency>
     </dependencies>
 ```
