@@ -1,6 +1,7 @@
 package io.paymenthighway.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.paymenthighway.model.Splitting;
 
 import java.util.UUID;
 
@@ -39,6 +40,8 @@ public class TransactionStatus {
   private String committedAmount;
   @JsonProperty("recurring")
   private Boolean recurring;
+  @JsonProperty("splitting")
+  private Splitting splitting;
 
   public UUID getId() {
     return id;
@@ -120,4 +123,11 @@ public class TransactionStatus {
   }
 
   public Boolean getRecurring() { return recurring; }
+
+  /**
+   * @return Splitting information if the transaction was splitted into sub-merchant and commission parts.
+   */
+  public Splitting getSplitting() {
+    return splitting;
+  }
 }

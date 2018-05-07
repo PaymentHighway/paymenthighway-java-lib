@@ -1,5 +1,6 @@
 package io.paymenthighway.model.request;
 
+import io.paymenthighway.model.Splitting;
 import io.paymenthighway.model.Token;
 
 /**
@@ -14,6 +15,7 @@ public class TransactionRequest extends Request {
   private String order = null;
   private Customer customer = null;
   private Boolean commit;
+  private Splitting splitting;
 
   public TransactionRequest(Token token, String amount, String currency) {
     this.token = token;
@@ -144,6 +146,8 @@ public class TransactionRequest extends Request {
     private Customer customer = null;
     private Boolean commit;
 
+    private Splitting splitting;
+
 
     public Builder(Token token, long amount, String currency) {
       this.token = token;
@@ -172,6 +176,11 @@ public class TransactionRequest extends Request {
       return this;
     }
 
+    public Builder setSplitting(Splitting splitting) {
+      this.splitting = splitting;
+      return this;
+    }
+
     public TransactionRequest build() {
       return new TransactionRequest(this);
     }
@@ -189,6 +198,7 @@ public class TransactionRequest extends Request {
     this.order    = builder.order;
     this.customer = builder.customer;
     this.commit   = builder.commit;
+    this.splitting = builder.splitting;
   }
 
   public String getAmount() {
@@ -222,5 +232,9 @@ public class TransactionRequest extends Request {
 
   public Boolean getCommit() {
     return commit;
+  }
+
+  public Splitting getSplitting() {
+    return splitting;
   }
 }
