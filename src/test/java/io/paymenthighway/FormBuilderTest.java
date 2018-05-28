@@ -712,6 +712,41 @@ public class FormBuilderTest {
   }
 
   @Test
+  public void testSiirtoPaymentParameters() {
+
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    long amount = 9999L;
+    String orderId = "1000123A";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "http://www.solinor.com";
+    String cancelUrl = "https://solinor.fi";
+    String language = "EN";
+    String description = "this is payment description";
+    String appUrl = "app://appi";
+    String phoneNumber = "+358441234567";
+    String referenceNumber = "1313";
+
+    FormBuilder formBuilder = createFormBuilder(method, account, merchant);
+
+    FormContainer formContainer = formBuilder.siirtoParametersBuilder(
+        successUrl,
+        failureUrl,
+        cancelUrl,
+        amount,
+        orderId,
+        description,
+        referenceNumber)
+        .language(language)
+        .exitIframeOnResult(true)
+        .phoneNumber(phoneNumber)
+        .build();
+
+    assertTrue(formContainer.getFields().size() == 17);
+  }
+
+  @Test
   public void testPivoPaymentParameters() {
 
     String method = "POST";
