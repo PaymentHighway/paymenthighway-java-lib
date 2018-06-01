@@ -215,6 +215,20 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
+   * Payment Highway Pivo Transaction Status Request
+   *
+   * @param transactionId Transaction id
+   * @return Transaction status response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public PivoTransactionStatusResponse pivoTransactionStatus(UUID transactionId) throws IOException {
+
+    return paymentApi.pivoTransactionStatus(transactionId);
+  }
+
+  /**
    * Payment Highway Order Status Request
    *
    * @param order The ID of the order whose transactions should be searched for
