@@ -173,6 +173,11 @@ public class PaymentAPIConnection implements Closeable {
     return jsonParser.mapResponse(response, PivoTransactionStatusResponse.class);
   }
 
+  public SiirtoTransactionStatusResponse siirtoTransactionStatus(UUID transactionId) throws IOException {
+      String response = executeGet("/transaction/siirto/" + transactionId, createNameValuePairs());
+      return jsonParser.mapResponse(response, SiirtoTransactionStatusResponse.class);
+  }
+
   private <T> T transactionPost(UUID transactionId, String actionUri, Request request, Class<T> clazz) throws IOException {
     final String paymentUri = "/transaction/";
     String uri = paymentUri + transactionId + actionUri;
