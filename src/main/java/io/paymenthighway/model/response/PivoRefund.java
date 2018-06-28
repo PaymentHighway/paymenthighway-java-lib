@@ -8,17 +8,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class PivoRefund {
 
   @JsonProperty("refund_request_id")
-  private String refundRequestequestId;
-  private Status amount;
+  private String refundRequestId;
+  private String amount;
   private String timestamp;
   @JsonProperty("reference_number")
   private String referenceNumber;
 
-  public String getRefundRequestequestId() {
-    return refundRequestequestId;
+  public String getRefundRequestId() {
+    return refundRequestId;
   }
 
-  public Status getAmount() {
+  public String getAmount() {
     return amount;
   }
 
