@@ -5,35 +5,53 @@ package io.paymenthighway.model.request;
  */
 public class RevertPivoTransactionRequest extends Request {
 
-  Long amount = null;
-  String referenceNumber;
+    Long amount = null;
+    String referenceNumber = null;
 
-  /**
-   * Reverts the full amount
-   */
-  public RevertPivoTransactionRequest(String referenceNumber) {
-    this.referenceNumber = referenceNumber;
-  }
+    /**
+     * Reverts the full amount without prefilled reference number
+     */
+    public RevertPivoTransactionRequest() {
+    }
 
-  /**
-   * reverts specified amount
-   *
-   * @param amount Amount to revert
-   */
-  public RevertPivoTransactionRequest(String referenceNumber, Long amount) {
-    this.referenceNumber = referenceNumber;
-    this.amount = amount;
-  }
+    /**
+     * Reverts the full amount
+     *
+     * @param referenceNumber Reference number
+     */
+    public RevertPivoTransactionRequest(String referenceNumber) {
+        this.referenceNumber = referenceNumber;
+    }
 
-  /*
-   * Getters.
-   */
-  public Long getAmount() {
-    return amount;
-  }
+    /**
+     * reverts specified amount without prefilled reference number
+     *
+     * @param amount Amount to revert
+     */
+    public RevertPivoTransactionRequest(Long amount) {
+        this.amount = amount;
+    }
 
-  public String getReferenceNumber() {
-    return referenceNumber;
-  }
+    /**
+     * reverts specified amount
+     *
+     * @param referenceNumber Reference number
+     * @param amount          Amount to revert
+     */
+    public RevertPivoTransactionRequest(String referenceNumber, Long amount) {
+        this.referenceNumber = referenceNumber;
+        this.amount = amount;
+    }
+
+    /*
+     * Getters.
+     */
+    public Long getAmount() {
+        return amount;
+    }
+
+    public String getReferenceNumber() {
+        return referenceNumber;
+    }
 
 }
