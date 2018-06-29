@@ -131,6 +131,22 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
+   * Payment Highway Revert Pivo Transaction without prefilled reference number
+   *
+   * @param transactionId Transaction id
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse revertPivoTransaction(UUID transactionId) throws IOException {
+
+    RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest();
+
+    return paymentApi.revertPivoTransaction(transactionId, revertRequest);
+  }
+
+  /**
    * Payment Highway Revert Pivo Transaction
    *
    * @param transactionId Transaction id
@@ -180,6 +196,23 @@ public class PaymentAPI implements Closeable {
     RevertSiirtoTransactionRequest revertRequest = new RevertSiirtoTransactionRequest(referenceNumber, amount);
 
     return paymentApi.revertSiirtoTransaction(transactionId, revertRequest);
+  }
+
+  /**
+   * Payment Highway Revert Pivo Transaction with amount, but without prefilled reference number
+   *
+   * @param transactionId Transaction id
+   * @param amount Amount to revert
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse revertPivoTransaction(UUID transactionId, Long amount) throws IOException {
+
+    RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest(amount);
+
+    return paymentApi.revertPivoTransaction(transactionId, revertRequest);
   }
 
   /**
