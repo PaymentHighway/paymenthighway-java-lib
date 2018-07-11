@@ -86,7 +86,7 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   public DebitTransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
-    throws IOException {
+      throws IOException {
 
     String requestUri = String.format("/transaction/%s/debit_masterpass", transactionId);
     String response = executePost(requestUri, createNameValuePairs(), request);
@@ -94,7 +94,7 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   public DebitTransactionResponse debitApplePayTransaction(UUID transactionId, ApplePayTransactionRequest request)
-    throws IOException {
+      throws IOException {
 
     String requestUri = String.format("/transaction/%s/debit_applepay", transactionId);
     String response = executePost(requestUri, createNameValuePairs(), request);
@@ -125,56 +125,58 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   public TransactionResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
-
-    final String paymentUri = "/transaction/";
     final String actionUri = "/revert";
-    String revertUri = paymentUri + transactionId + actionUri;
+    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+  }
 
-    String response = executePost(revertUri, createNameValuePairs(), request);
-
-    return jsonParser.mapResponse(response, TransactionResponse.class);
+  public TransactionResponse revertPivoTransaction(UUID transactionId, RevertPivoTransactionRequest request) throws IOException {
+    final String actionUri = "/pivo/revert";
+    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
   }
 
   public CommitTransactionResponse commitTransaction(UUID transactionId, CommitTransactionRequest request) throws IOException {
-
-    final String paymentUri = "/transaction/";
     final String actionUri = "/commit";
-    String commitUri = paymentUri + transactionId + actionUri;
-
-    String response = executePost(commitUri, createNameValuePairs(), request);
-
-    return jsonParser.mapResponse(response, CommitTransactionResponse.class);
+    return transactionPost(transactionId, actionUri, request, CommitTransactionResponse.class);
   }
 
   public UserProfileResponse userProfile(UUID transactionId) throws IOException {
-
-    String userProfileUri = String.format("/transaction/%s/user_profile", transactionId);
-
-    String response = executeGet(userProfileUri, createNameValuePairs());
-
-    return jsonParser.mapResponse(response, UserProfileResponse.class);
+    String actionUri = "/user_profile";
+    return transactionGet(transactionId, actionUri, UserProfileResponse.class);
   }
 
   public TransactionResultResponse transactionResult(UUID transactionId) throws IOException {
-
-    final String paymentUri = "/transaction/";
     final String actionUri = "/result";
-    String transactionResultUrl = paymentUri + transactionId + actionUri;
+    return transactionGet(transactionId, actionUri, TransactionResultResponse.class);
+  }
 
-    String response = executeGet(transactionResultUrl, createNameValuePairs());
-
-    return jsonParser.mapResponse(response, TransactionResultResponse.class);
+  public PivoTransactionResultResponse pivoTransactionResult(UUID transactionId) throws IOException {
+    final String actionUri = "/pivo/result";
+    return transactionGet(transactionId, actionUri, PivoTransactionResultResponse.class);
   }
 
   public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
+    return transactionGet(transactionId, "",  TransactionStatusResponse.class);
+  }
 
+  public PivoTransactionStatusResponse pivoTransactionStatus(UUID transactionId) throws IOException {
+    String response = executeGet("/transaction/pivo/" + transactionId, createNameValuePairs());
+    return jsonParser.mapResponse(response, PivoTransactionStatusResponse.class);
+  }
+
+  private <T> T transactionPost(UUID transactionId, String actionUri, Request request, Class<T> clazz) throws IOException {
     final String paymentUri = "/transaction/";
+    String uri = paymentUri + transactionId + actionUri;
+    String response = executePost(uri, createNameValuePairs(), request);
 
-    String statusUri = paymentUri + transactionId;
+    return jsonParser.mapResponse(response, clazz);
+  }
 
-    String response = executeGet(statusUri, createNameValuePairs());
+  private <T> T transactionGet(UUID transactionId, String actionUri, Class<T> clazz) throws IOException {
+    final String paymentUri = "/transaction/";
+    String uri = paymentUri + transactionId + actionUri;
+    String response = executeGet(uri, createNameValuePairs());
 
-    return jsonParser.mapResponse(response, TransactionStatusResponse.class);
+    return jsonParser.mapResponse(response, clazz);
   }
 
   public OrderSearchResponse searchOrders(String order) throws IOException {

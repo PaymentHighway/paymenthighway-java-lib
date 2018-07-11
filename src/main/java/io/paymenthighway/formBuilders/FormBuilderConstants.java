@@ -34,4 +34,7 @@ public final class FormBuilderConstants {
   public final static String SPH_SHOW_PAYMENT_METHOD_SELECTOR = "sph-show-payment-method-selector";
   public final static String SPH_TOKENIZE = "sph-tokenize";
   public final static String SPH_REQUEST_SHIPPING_ADDRESS = "sph-request-shipping-address";
+  public final static String SPH_PHONE_NUMBER = "sph-phone-number";
+  public final static String SPH_REFERENCE_NUMBER = "sph-reference-number";
+  public final static String SPH_APP_URL = "sph-app-url";
 }

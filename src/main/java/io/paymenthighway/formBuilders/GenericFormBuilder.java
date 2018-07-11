@@ -77,7 +77,7 @@ public class GenericFormBuilder<T> {
   /**
    * Set PaymentHighway form language
    *
-   * @param language Two character language code e.q. FI or EN. If omitted, default language from user's browser's settings is used.
+   * @param language Two character language code e.g. FI or EN. If omitted, default language from user's browser's settings is used.
    * @return Form builder
    */
   @SuppressWarnings("unchecked")
@@ -87,7 +87,7 @@ public class GenericFormBuilder<T> {
   }
 
   /**
-   * The URL the PH server makes request after the transaction is handled. The payment itself may still be rejected.
+   * The URL the PH server makes request to after the transaction is handled. The payment itself may still be rejected.
    *
    * @param successUrl Webhook url to call when request is successfully handled
    * @return Form builders
@@ -99,7 +99,7 @@ public class GenericFormBuilder<T> {
   }
 
   /**
-   * The URL the PH server makes request after a failure such as an authentication or connectivity error.
+   * The URL the PH server makes request to after a failure such as an authentication or connectivity error.
    *
    * @param failureUrl Webhook url to call when request failed
    * @return Form builder
@@ -111,7 +111,7 @@ public class GenericFormBuilder<T> {
   }
 
   /**
-   * The URL the PH server makes request after cancelling the transaction (clicking on the cancel button).
+   * The URL the PH server makes request to after cancelling the transaction (clicking on the cancel button).
    *
    * @param cancelUrl Webhook url to call when user cancels request
    * @return Form builder

@@ -114,6 +114,39 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
+   * Payment Highway Revert Pivo Transaction without prefilled reference number
+   *
+   * @param transactionId Transaction id
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse revertPivoTransaction(UUID transactionId) throws IOException {
+
+    RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest();
+
+    return paymentApi.revertPivoTransaction(transactionId, revertRequest);
+  }
+
+  /**
+   * Payment Highway Revert Pivo Transaction
+   *
+   * @param transactionId Transaction id
+   * @param referenceNumber Reference number
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse revertPivoTransaction(UUID transactionId, String referenceNumber) throws IOException {
+
+    RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest(referenceNumber);
+
+    return paymentApi.revertPivoTransaction(transactionId, revertRequest);
+  }
+
+  /**
    * Payment Highway Revert Transaction with amount
    *
    * @param transactionId Transaction id
@@ -131,6 +164,41 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
+   * Payment Highway Revert Pivo Transaction with amount, but without prefilled reference number
+   *
+   * @param transactionId Transaction id
+   * @param amount Amount to revert
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse revertPivoTransaction(UUID transactionId, Long amount) throws IOException {
+
+    RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest(amount);
+
+    return paymentApi.revertPivoTransaction(transactionId, revertRequest);
+  }
+
+  /**
+   * Payment Highway Revert Pivo Transaction with amount
+   *
+   * @param transactionId Transaction id
+   * @param referenceNumber Reference number
+   * @param amount Amount to revert
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse revertPivoTransaction(UUID transactionId, String referenceNumber, Long amount) throws IOException {
+
+    RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest(referenceNumber, amount);
+
+    return paymentApi.revertPivoTransaction(transactionId, revertRequest);
+  }
+
+  /**
    * Payment Highway Transaction Status Request
    *
    * @param transactionId Transaction id
@@ -142,6 +210,20 @@ public class PaymentAPI implements Closeable {
   public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
 
     return paymentApi.transactionStatus(transactionId);
+  }
+
+  /**
+   * Payment Highway Pivo Transaction Status Request
+   *
+   * @param transactionId Transaction id
+   * @return Transaction status response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public PivoTransactionStatusResponse pivoTransactionStatus(UUID transactionId) throws IOException {
+
+    return paymentApi.pivoTransactionStatus(transactionId);
   }
 
   /**
@@ -205,6 +287,21 @@ public class PaymentAPI implements Closeable {
   public TransactionResultResponse transactionResult(UUID transactionId) throws IOException {
 
     return paymentApi.transactionResult(transactionId);
+  }
+
+  /**
+   * Payment Highway Pivo Transaction Result Request
+   * Used to find out whether or not a Pivo transaction succeeded.
+   *
+   * @param transactionId Transaction id
+   * @return Transaction result response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public PivoTransactionResultResponse pivoTransactionResult(UUID transactionId) throws IOException {
+
+    return paymentApi.pivoTransactionResult(transactionId);
   }
 
   /**
