@@ -224,6 +224,44 @@ public class FormBuilder {
   }
 
   /**
+   * Get parameters for Siirto payment request.
+   *
+   * @param successUrl      The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl      The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl       The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param amount          The amount to pay in Euro cents.
+   * @param orderId         A generated order ID, may for example be always unique or used multiple times for recurring transactions.
+   * @param description     Description of the payment shown in the form.
+   * @param referenceNumber Reference number
+   * @return Form builder
+   */
+  public SiirtoParametersBuilder siirtoParametersBuilder(
+      String successUrl,
+      String failureUrl,
+      String cancelUrl,
+      Long amount,
+      String orderId,
+      String description,
+      String referenceNumber
+  ) {
+    return new SiirtoParametersBuilder(
+        method,
+        signatureKeyId,
+        signatureSecret,
+        account,
+        merchant,
+        baseUrl,
+        successUrl,
+        failureUrl,
+        cancelUrl,
+        amount,
+        orderId,
+        description,
+        referenceNumber
+    );
+  }
+
+  /**
    * Get parameters for Add Card request
    *
    * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.

@@ -134,6 +134,11 @@ public class PaymentAPIConnection implements Closeable {
     return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
   }
 
+  public TransactionResponse revertSiirtoTransaction(UUID transactionId, RevertSiirtoTransactionRequest request) throws IOException {
+    final String actionUri = "/siirto/revert";
+    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+  }
+
   public CommitTransactionResponse commitTransaction(UUID transactionId, CommitTransactionRequest request) throws IOException {
     final String actionUri = "/commit";
     return transactionPost(transactionId, actionUri, request, CommitTransactionResponse.class);
@@ -154,6 +159,11 @@ public class PaymentAPIConnection implements Closeable {
     return transactionGet(transactionId, actionUri, PivoTransactionResultResponse.class);
   }
 
+  public SiirtoTransactionResultResponse siirtoTransactionResult(UUID transactionId) throws IOException {
+    final String actionUri = "/siirto/result";
+    return transactionGet(transactionId, actionUri, SiirtoTransactionResultResponse.class);
+  }
+
   public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
     return transactionGet(transactionId, "",  TransactionStatusResponse.class);
   }
@@ -161,6 +171,11 @@ public class PaymentAPIConnection implements Closeable {
   public PivoTransactionStatusResponse pivoTransactionStatus(UUID transactionId) throws IOException {
     String response = executeGet("/transaction/pivo/" + transactionId, createNameValuePairs());
     return jsonParser.mapResponse(response, PivoTransactionStatusResponse.class);
+  }
+
+  public SiirtoTransactionStatusResponse siirtoTransactionStatus(UUID transactionId) throws IOException {
+      String response = executeGet("/transaction/siirto/" + transactionId, createNameValuePairs());
+      return jsonParser.mapResponse(response, SiirtoTransactionStatusResponse.class);
   }
 
   private <T> T transactionPost(UUID transactionId, String actionUri, Request request, Class<T> clazz) throws IOException {

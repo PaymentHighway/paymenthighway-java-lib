@@ -98,7 +98,7 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
-   * Payment Highway Revert Transaction with amount
+   * Payment Highway Revert Transaction
    *
    * @param transactionId Transaction id
    * @return Transaction response
@@ -111,6 +111,23 @@ public class PaymentAPI implements Closeable {
     RevertTransactionRequest revertRequest = new RevertTransactionRequest();
 
     return paymentApi.revertTransaction(transactionId, revertRequest);
+  }
+
+  /**
+   * Payment Highway Revert Siirto Transaction
+   *
+   * @param transactionId Transaction id
+   * @param referenceNumber Reference number
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse revertSiirtoTransaction(UUID transactionId, String referenceNumber) throws IOException {
+
+    RevertSiirtoTransactionRequest revertRequest = new RevertSiirtoTransactionRequest(referenceNumber);
+
+    return paymentApi.revertSiirtoTransaction(transactionId, revertRequest);
   }
 
   /**
@@ -161,6 +178,24 @@ public class PaymentAPI implements Closeable {
     RevertTransactionRequest revertRequest = new RevertTransactionRequest(amount);
 
     return paymentApi.revertTransaction(transactionId, revertRequest);
+  }
+
+  /**
+   * Payment Highway Revert Siirto Transaction with amount
+   *
+   * @param transactionId Transaction id
+   * @param referenceNumber Reference number
+   * @param amount Amount to revert
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse revertSiirtoTransaction(UUID transactionId, String referenceNumber, Long amount) throws IOException {
+
+    RevertSiirtoTransactionRequest revertRequest = new RevertSiirtoTransactionRequest(referenceNumber, amount);
+
+    return paymentApi.revertSiirtoTransaction(transactionId, revertRequest);
   }
 
   /**
@@ -224,6 +259,20 @@ public class PaymentAPI implements Closeable {
   public PivoTransactionStatusResponse pivoTransactionStatus(UUID transactionId) throws IOException {
 
     return paymentApi.pivoTransactionStatus(transactionId);
+  }
+
+  /**
+   * Payment Highway Siirto Transaction Status Request
+   *
+   * @param transactionId Transaction id
+   * @return Transaction status response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public SiirtoTransactionStatusResponse siirtoTransactionStatus(UUID transactionId) throws IOException {
+
+      return paymentApi.siirtoTransactionStatus(transactionId);
   }
 
   /**
@@ -302,6 +351,21 @@ public class PaymentAPI implements Closeable {
   public PivoTransactionResultResponse pivoTransactionResult(UUID transactionId) throws IOException {
 
     return paymentApi.pivoTransactionResult(transactionId);
+  }
+
+  /**
+   * Payment Highway Siirto Transaction Result Request
+   * Used to find out whether or not an siirto transaction succeeded.
+   *
+   * @param transactionId Transaction id
+   * @return Transaction result response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public SiirtoTransactionResultResponse siirtoTransactionResult(UUID transactionId) throws IOException {
+
+    return paymentApi.siirtoTransactionResult(transactionId);
   }
 
   /**
