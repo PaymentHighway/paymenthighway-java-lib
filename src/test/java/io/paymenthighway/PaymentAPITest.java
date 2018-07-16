@@ -73,12 +73,7 @@ public class PaymentAPITest {
   }
 
   private PaymentAPI createPaymentAPI() {
-
-    PaymentAPI paymentApi = null;
-
-    paymentApi = new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
-
-    return paymentApi;
+    return new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
   }
 
   private Card validTestCard = new Card("4153013999700024", "2023", "11", "024");
