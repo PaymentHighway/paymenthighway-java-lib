@@ -23,11 +23,11 @@ public class PaymentAPI implements Closeable {
 
   /**
    * Payment API with default HTTP client
-   * @param serviceUrl
-   * @param signatureKeyId
-   * @param signatureSecret
-   * @param account
-   * @param merchant
+   * @param serviceUrl Production or Sandbox base URL
+   * @param signatureKeyId The signature key's ID or name
+   * @param signatureSecret The secret signature key
+   * @param account Payment Highway account name
+   * @param merchant Payment Highway merchant name. One account might have multiple merchants.
    */
   public PaymentAPI(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant) {
 
@@ -46,12 +46,12 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment API with customizable HTTP client
    * Pay attention to closing if sharing the http client between multiple instances!
-   * @param serviceUrl
-   * @param signatureKeyId
-   * @param signatureSecret
-   * @param account
-   * @param merchant
-   * @param httpClient
+   * @param serviceUrl Production or Sandbox base URL
+   * @param signatureKeyId The signature key's ID or name
+   * @param signatureSecret The secret signature key
+   * @param account Payment Highway account name
+   * @param merchant Payment Highway merchant name. One account might have multiple merchants.
+   * @param httpClient The underlying HTTP client.
    */
   public PaymentAPI(
       String serviceUrl,
@@ -65,7 +65,7 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
-   * @param httpClient
+   * @param httpClient The underlying HTTP client
    * @deprecated Use the constructor to inject httpClient instead.
    */
   public void setHttpClient(CloseableHttpClient httpClient) {
