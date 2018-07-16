@@ -27,7 +27,7 @@ Add as dependency:
         <dependency>
             <groupId>io.paymenthighway</groupId>
             <artifactId>paymenthighway</artifactId>
-            <version>1.8.3</version>
+            <version>1.9.0</version>
         </dependency>
     </dependencies>
 ```
