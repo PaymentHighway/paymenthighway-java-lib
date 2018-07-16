@@ -76,12 +76,7 @@ public class PaymentAPITest {
 
     PaymentAPI paymentApi = null;
 
-    try {
-      paymentApi = new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
-    } catch(Exception exception) {
-      exception.printStackTrace();
-      fail(String.format("Failed initializing PaymentAPI: %s", exception.getMessage()));
-    }
+    paymentApi = new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
 
     return paymentApi;
   }

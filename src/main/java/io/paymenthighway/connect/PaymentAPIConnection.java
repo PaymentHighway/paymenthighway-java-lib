@@ -10,7 +10,6 @@ import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -81,6 +80,15 @@ public class PaymentAPIConnection implements Closeable {
     this.merchant = merchant;
     this.httpclient = httpClient;
   }
+
+  /**
+   * @param httpClient
+   * @deprecated Use the constructor to inject the httpClient instead.
+   */
+  public void setHttpClient(CloseableHttpClient httpClient) {
+    this.httpclient = httpClient;
+  }
+
 
   public InitTransactionResponse initTransactionHandle() throws IOException {
 

@@ -1,5 +1,6 @@
 package io.paymenthighway;
 
+import io.paymenthighway.connect.FailingHttpClient;
 import io.paymenthighway.connect.PaymentAPIConnection;
 import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.model.request.*;
@@ -27,13 +28,18 @@ public class PaymentAPI implements Closeable {
    * @param signatureSecret
    * @param account
    * @param merchant
-   * @throws NoSuchAlgorithmException
-   * @throws KeyManagementException
    */
-  public PaymentAPI(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant)
-      throws NoSuchAlgorithmException, KeyManagementException {
+  public PaymentAPI(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant) {
 
-    CloseableHttpClient httpClient = PaymentAPIConnection.defaultHttpClient();
+    CloseableHttpClient httpClient;
+
+    try {
+      httpClient = PaymentAPIConnection.defaultHttpClient();
+    } catch(NoSuchAlgorithmException | KeyManagementException exception) {
+      // TODO: Remove once breaking changes are accepted
+      httpClient = new FailingHttpClient(exception);
+    }
+
     paymentApi = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant, httpClient);
   }
 
@@ -56,6 +62,14 @@ public class PaymentAPI implements Closeable {
       CloseableHttpClient httpClient
   ) {
     paymentApi = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant, httpClient);
+  }
+
+  /**
+   * @param httpClient
+   * @deprecated Use the constructor to inject httpClient instead.
+   */
+  public void setHttpClient(CloseableHttpClient httpClient) {
+    this.paymentApi.setHttpClient(httpClient);
   }
 
   /**
