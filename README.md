@@ -12,6 +12,9 @@ For full documentation on the PaymentHighway API visit our developer website: ht
 The Java Client is a Maven project built so that it will work on Java 1.7 and Java 1.8. It requires the following third party frameworks: Apache HttpComponents and Jackson JSON. It also uses JUnit test packages.
 
 **_Note:_**
+Version 1.10 always uses TLS 1.2. This fixes problems with Java 7 when older versions of TLS are no longer supported by the server. Custom HTTP client in PaymentAPI is now a constructor parameter instead of a setter. 
+
+**_Note:_**
 At version 1.5 we changed `FormBuilder` to use _bulder pattern_. Old methods are deprecated. From now on optional parameters can be added to forms more easily (see [Example: How to use optional parameters](#example)). 
 
 ## Installation
