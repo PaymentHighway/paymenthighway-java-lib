@@ -4,12 +4,13 @@ import io.paymenthighway.connect.PaymentAPIConnection;
 import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
-import io.paymenthighway.model.response.MobilePayInitResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 /**
@@ -17,18 +18,44 @@ import java.util.UUID;
  */
 public class PaymentAPI implements Closeable {
 
-  /*
-   * These need to be defined
-   */
   private PaymentAPIConnection paymentApi = null;
 
-  public PaymentAPI(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant) {
+  /**
+   * Payment API with default HTTP client
+   * @param serviceUrl
+   * @param signatureKeyId
+   * @param signatureSecret
+   * @param account
+   * @param merchant
+   * @throws NoSuchAlgorithmException
+   * @throws KeyManagementException
+   */
+  public PaymentAPI(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant)
+      throws NoSuchAlgorithmException, KeyManagementException {
 
-    paymentApi = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
+    CloseableHttpClient httpClient = PaymentAPIConnection.defaultHttpClient();
+    paymentApi = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant, httpClient);
   }
 
-  public void setHttpClient(CloseableHttpClient httpClient) {
-    this.paymentApi.setHttpClient(httpClient);
+  /**
+   * Payment API with customizable HTTP client
+   * Pay attention to closing if sharing the http client between multiple instances!
+   * @param serviceUrl
+   * @param signatureKeyId
+   * @param signatureSecret
+   * @param account
+   * @param merchant
+   * @param httpClient
+   */
+  public PaymentAPI(
+      String serviceUrl,
+      String signatureKeyId,
+      String signatureSecret,
+      String account,
+      String merchant,
+      CloseableHttpClient httpClient
+  ) {
+    paymentApi = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant, httpClient);
   }
 
   /**
@@ -427,6 +454,10 @@ public class PaymentAPI implements Closeable {
     return paymentApi.fetchReconciliationReport(date, useDateProcessed);
   }
 
+  /**
+   * Closes the underlying connection instances. Be careful if using custom HTTP client on multiple instances!
+   * @throws IOException
+   */
   @Override
   public void close() throws IOException {
     if (paymentApi != null) {

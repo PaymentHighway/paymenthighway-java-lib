@@ -73,7 +73,17 @@ public class PaymentAPITest {
   }
 
   private PaymentAPI createPaymentAPI() {
-    return new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
+
+    PaymentAPI paymentApi = null;
+
+    try {
+      paymentApi = new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
+    } catch(Exception exception) {
+      exception.printStackTrace();
+      fail(String.format("Failed initializing PaymentAPI: %s", exception.getMessage()));
+    }
+
+    return paymentApi;
   }
 
   private Card validTestCard = new Card("4153013999700024", "2023", "11", "024");

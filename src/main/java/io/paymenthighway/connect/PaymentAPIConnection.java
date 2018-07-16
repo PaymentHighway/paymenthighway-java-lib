@@ -6,11 +6,11 @@ import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.json.JsonParser;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
-import io.paymenthighway.model.response.MobilePayInitResponse;
 import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -19,9 +19,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.ssl.SSLContexts;
 
+import javax.net.ssl.SSLContext;
 import java.io.Closeable;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -47,25 +51,34 @@ public class PaymentAPIConnection implements Closeable {
 
   private JsonParser jsonParser = new JsonParser();
 
+  public static CloseableHttpClient defaultHttpClient() throws NoSuchAlgorithmException, KeyManagementException {
+    SSLContext sslContext = SSLContexts.custom().setProtocol("TLSv1.2").build();
+    return HttpClients.custom().setSSLContext(sslContext).build();
+  }
+
   /**
-   * Constructor
-   *
-   * @param serviceUrl Service url
-   * @param account Account
-   * @param merchant Merchant
-   * @param signatureKeyId Signature key id
-   * @param signatureSecret Signature secret
+   * Payment API Connection
+   * @param serviceUrl Production or Sandbox base URL
+   * @param signatureKeyId The signature key's ID or name
+   * @param signatureSecret The secret signature key
+   * @param account Payment Highway account name
+   * @param merchant Payment Highway merchant name. One account might have multiple merchants.
+   * @param httpClient The underlying HTTP client. Will be closed if the method close() is called.
    */
-  public PaymentAPIConnection(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant) {
+  public PaymentAPIConnection(
+      String serviceUrl,
+      String signatureKeyId,
+      String signatureSecret,
+      String account,
+      String merchant,
+      CloseableHttpClient httpClient
+  ) {
 
     this.serviceUrl = serviceUrl;
     this.signatureKeyId = signatureKeyId;
     this.signatureSecret = signatureSecret;
     this.account = account;
     this.merchant = merchant;
-  }
-
-  public void setHttpClient(CloseableHttpClient httpClient) {
     this.httpclient = httpClient;
   }
 
@@ -244,8 +257,6 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   protected String executeGet(String requestUri, List<NameValuePair> nameValuePairs) throws IOException {
-    CloseableHttpClient httpclient = returnHttpClients();
-
     SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
 
     HttpRequestBase httpRequest = new HttpGet(this.serviceUrl + requestUri);
@@ -261,8 +272,6 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   protected String executePost(String requestUri, List<NameValuePair> nameValuePairs, Request requestBody) throws IOException {
-    CloseableHttpClient httpclient = returnHttpClients();
-
     SecureSigner ss = new SecureSigner(this.signatureKeyId, this.signatureSecret);
 
     HttpPost httpRequest = new HttpPost(this.serviceUrl + requestUri);
@@ -328,18 +337,10 @@ public class PaymentAPIConnection implements Closeable {
     return nameValuePairs;
   }
 
-  private CloseableHttpClient returnHttpClients() {
-    if (httpclient == null) {
-      httpclient = HttpClients.createDefault();
-    }
-    return httpclient;
-  }
-
   @Override
   public void close() throws IOException {
     if (httpclient != null) {
       httpclient.close();
     }
   }
-
 }

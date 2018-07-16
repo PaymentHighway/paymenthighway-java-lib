@@ -48,7 +48,7 @@ public class PaymentAPIConnectionTest {
     account = p.getProperty("sph-account");
     merchant = p.getProperty("sph-merchant");
 
-    conn = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
+    conn = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant, PaymentAPIConnection.defaultHttpClient());
   }
 
   @AfterClass
