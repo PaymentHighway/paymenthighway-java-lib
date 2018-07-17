@@ -1,6 +1,5 @@
 package io.paymenthighway;
 
-import io.paymenthighway.connect.FailingHttpClient;
 import io.paymenthighway.connect.PaymentAPIConnection;
 import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.model.request.*;
@@ -31,13 +30,13 @@ public class PaymentAPI implements Closeable {
    */
   public PaymentAPI(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant) {
 
-    CloseableHttpClient httpClient;
+    CloseableHttpClient httpClient = null;
 
     try {
       httpClient = PaymentAPIConnection.defaultHttpClient();
     } catch(NoSuchAlgorithmException | KeyManagementException exception) {
-      // TODO: Remove once breaking changes are accepted
-      httpClient = new FailingHttpClient(exception);
+      // If TLSv1.2 is not supported. Hides exceptions for backwards compatibility.
+      exception.printStackTrace();
     }
 
     paymentApi = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant, httpClient);
