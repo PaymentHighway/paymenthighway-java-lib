@@ -11,8 +11,19 @@ For full documentation on the PaymentHighway API visit our developer website: ht
 
 The Java Client is a Maven project built so that it will work on Java 1.7 and Java 1.8. It requires the following third party frameworks: Apache HttpComponents and Jackson JSON. It also uses JUnit test packages.
 
-**_Note:_**
-At version 1.5 we changed `FormBuilder` to use _bulder pattern_. Old methods are deprecated. From now on optional parameters can be added to forms more easily (see [Example: How to use optional parameters](#example)). 
+### Significant Changes
+
+#### V1.10.0: Older TLS versions no longer supported
+- TLS 1.2 is now always used. This fixes errors with Java 7.
+- Custom HTTP client in PaymentAPI is now a constructor parameter and the setter is deprecated.
+- org.apache.httpcomponents.httpclient version >= 4.5.5 is now required by the default PaymentAPI constructor, due to changes in SSLContexts namespace and HttpClientBuilder.setSSLContext function!
+
+**_Note_**
+If you are unable to update the apache httpcomponents, you need to provide your own HTTP client instance, see [Example: Providing a custom HTTP client <= 4.5.3](#custom_http_client_old)
+
+#### V1.5.0: Builder pattern in FormBuilder
+- `FormBuilder` now uses _bulder pattern_. Old methods are deprecated.
+- From now on, optional parameters can be added to forms more easily (see [Example: How to use optional parameters](#example)). 
 
 ## Installation
 
@@ -380,7 +391,22 @@ In order to be sure that a tokenized card is valid and is able to process paymen
 ### Example Order Status
 
     OrderSearchResponse orderSearchResponse = paymentAPI.searchOrders("order");
-	
+
+### Providing a custom HTTP client
+
+#### httpcomponents.httpclient version > 4.5.4
+```
+SSLContext sslContext = SSLContexts.custom().setProtocol("TLSv1.2").build();
+CloseableHttpClient httpClient = HttpClients.custom().setSSLContext(sslContext).build();
+PaymentAPI paymentApi = new PaymentAPI(serviceUrl, keyId, keySecret, account, merchant, httpClient);
+```
+
+#### <a name="custom_http_client_old"></a>httpcomponents.httpclient version <= 4.5.3 (deprecated)
+```
+SSLContext sslContext = SSLContexts.custom().useProtocol("TLSv1.2").build();
+CloseableHttpClient httpClient = HttpClients.custom().setSslcontext(sslContext).build();
+PaymentAPI paymentApi = new PaymentAPI(serviceUrl, keyId, keySecret, account, merchant, httpClient);
+```
 
 # Errors
 

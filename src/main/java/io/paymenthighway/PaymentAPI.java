@@ -4,12 +4,13 @@ import io.paymenthighway.connect.PaymentAPIConnection;
 import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
-import io.paymenthighway.model.response.MobilePayInitResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.impl.client.CloseableHttpClient;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 /**
@@ -17,16 +18,55 @@ import java.util.UUID;
  */
 public class PaymentAPI implements Closeable {
 
-  /*
-   * These need to be defined
-   */
   private PaymentAPIConnection paymentApi = null;
 
+  /**
+   * Payment API with default HTTP client
+   * @param serviceUrl Production or Sandbox base URL
+   * @param signatureKeyId The signature key's ID or name
+   * @param signatureSecret The secret signature key
+   * @param account Payment Highway account name
+   * @param merchant Payment Highway merchant name. One account might have multiple merchants.
+   */
   public PaymentAPI(String serviceUrl, String signatureKeyId, String signatureSecret, String account, String merchant) {
 
-    paymentApi = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
+    CloseableHttpClient httpClient = null;
+
+    try {
+      httpClient = PaymentAPIConnection.defaultHttpClient();
+    } catch(NoSuchAlgorithmException | KeyManagementException exception) {
+      // If TLSv1.2 is not supported. Hides exceptions for backwards compatibility.
+      exception.printStackTrace();
+    }
+
+    paymentApi = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant, httpClient);
   }
 
+  /**
+   * Payment API with customizable HTTP client
+   * Pay attention to closing if sharing the http client between multiple instances!
+   * @param serviceUrl Production or Sandbox base URL
+   * @param signatureKeyId The signature key's ID or name
+   * @param signatureSecret The secret signature key
+   * @param account Payment Highway account name
+   * @param merchant Payment Highway merchant name. One account might have multiple merchants.
+   * @param httpClient The underlying HTTP client.
+   */
+  public PaymentAPI(
+      String serviceUrl,
+      String signatureKeyId,
+      String signatureSecret,
+      String account,
+      String merchant,
+      CloseableHttpClient httpClient
+  ) {
+    paymentApi = new PaymentAPIConnection(serviceUrl, signatureKeyId, signatureSecret, account, merchant, httpClient);
+  }
+
+  /**
+   * @param httpClient The underlying HTTP client
+   * @deprecated Use the constructor to inject httpClient instead.
+   */
   public void setHttpClient(CloseableHttpClient httpClient) {
     this.paymentApi.setHttpClient(httpClient);
   }
@@ -427,6 +467,10 @@ public class PaymentAPI implements Closeable {
     return paymentApi.fetchReconciliationReport(date, useDateProcessed);
   }
 
+  /**
+   * Closes the underlying connection instances. Be careful if using custom HTTP client on multiple instances!
+   * @throws IOException
+   */
   @Override
   public void close() throws IOException {
     if (paymentApi != null) {
