@@ -1,13 +1,15 @@
 package io.paymenthighway.model.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Order Search Response POJO
  */
 public class OrderSearchResponse extends Response {
 
   TransactionStatus[] transactions;
-  SiirtoTransactionStatus[] siirtoTransactions;
-  PivoTransactionStatus[] pivoTransactions;
+  @JsonProperty("siirto_transactions") SiirtoTransactionStatus[] siirtoTransactions;
+  @JsonProperty("pivo_transactions") PivoTransactionStatus[] pivoTransactions;
 
   public TransactionStatus[] getTransactions() {
     return this.transactions;
