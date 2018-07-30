@@ -14,7 +14,7 @@ The Java Client is a Maven project built so that it will work on Java 1.7 and Ja
 ### Significant Changes
 
 #### V1.10.0: Older TLS versions no longer supported
-- TLS 1.2 is now always used. This fixes errors with Java 7.
+- TLS 1.2 is now always used. This fixes errors with Java 7. Java 8 does not suffer from the same problems, thus upgrading the library is not mandatory for it.
 - Custom HTTP client in PaymentAPI is now a constructor parameter and the setter is deprecated.
 - org.apache.httpcomponents.httpclient version >= 4.5.5 is now required by the default PaymentAPI constructor, due to changes in SSLContexts namespace and HttpClientBuilder.setSSLContext function!
 
