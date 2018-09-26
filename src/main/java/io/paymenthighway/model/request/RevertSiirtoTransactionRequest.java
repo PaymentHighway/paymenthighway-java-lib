@@ -1,11 +1,16 @@
 package io.paymenthighway.model.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Revert Siirto Transaction request POJO
  */
 public class RevertSiirtoTransactionRequest extends Request {
 
+  @JsonProperty
   Long amount = null;
+
+  @JsonProperty("reference_number")
   String referenceNumber;
 
   /**
