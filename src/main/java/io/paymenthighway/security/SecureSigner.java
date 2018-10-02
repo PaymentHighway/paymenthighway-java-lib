@@ -4,16 +4,15 @@
 package io.paymenthighway.security;
 
 import io.paymenthighway.PaymentHighwayUtility;
+import io.paymenthighway.codec.Hex;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import javax.crypto.Mac;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
@@ -45,15 +44,7 @@ public class SecureSigner {
 
   private SecretKeySpec initSecretKeySpec() {
 
-      SecretKeySpec keySpec = null;
-
-      try {
-          keySpec = new SecretKeySpec(this.secretKey.getBytes("UTF-8"), Algorithm);
-      } catch (UnsupportedEncodingException e) {
-          e.printStackTrace();
-      }
-
-      return keySpec;
+    return new SecretKeySpec(this.secretKey.getBytes(StandardCharsets.UTF_8), Algorithm);
   }
 
   /**
@@ -118,12 +109,12 @@ public class SecureSigner {
 
     byte[] signature = null;
     try {
-      signature = initSigner().doFinal(stringToSign.getBytes("UTF-8"));
-    } catch (IllegalStateException | UnsupportedEncodingException e) {
+      signature = initSigner().doFinal(stringToSign.getBytes(StandardCharsets.UTF_8));
+    } catch (IllegalStateException e) {
       e.printStackTrace();
     }
 
-    return DatatypeConverter.printHexBinary(signature).toLowerCase();
+    return Hex.printHexBinary(Objects.requireNonNull(signature), Hex.HEX_CODE_LOWER);
   }
 
   /**

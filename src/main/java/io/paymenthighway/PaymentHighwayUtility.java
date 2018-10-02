@@ -4,6 +4,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -64,7 +65,7 @@ public class PaymentHighwayUtility {
       // so lets try to find the file from resources
       InputStream file = ClassLoader.getSystemResourceAsStream(propFilename);
       try {
-        br = new BufferedReader(new InputStreamReader(file, "UTF-8"));
+        br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8));
       } catch (Exception e) {
         System.err.println("Could not find property File.");
         e.printStackTrace();
