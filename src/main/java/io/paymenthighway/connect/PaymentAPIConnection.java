@@ -34,8 +34,17 @@ import java.util.UUID;
  */
 public class PaymentAPIConnection implements Closeable {
 
+  private static String JAVA_VERSION = "-";
+
+  static {
+    try {
+      JAVA_VERSION = System.getProperty("java.version", JAVA_VERSION);
+    } catch (SecurityException ignored) {
+    }
+  }
+
   /* Payment API headers */
-  private static final String USER_AGENT = "PaymentHighway Java Lib/" + Constants.API_VERSION;
+  private static final String USER_AGENT = "PaymentHighway Java Lib/" + Constants.API_VERSION + " (Java/" + JAVA_VERSION + ")";
   private static final String METHOD_POST = "POST";
   private static final String METHOD_GET = "GET";
   private static final String SPH_API_VERSION = Constants.API_VERSION;

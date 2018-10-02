@@ -1,5 +1,5 @@
 package io.paymenthighway;
 
 public class Constants {
-  public final static String API_VERSION = "20180725";
+  public final static String API_VERSION = "20180927";
 }

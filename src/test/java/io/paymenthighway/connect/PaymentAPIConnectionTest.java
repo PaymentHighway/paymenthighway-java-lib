@@ -133,6 +133,16 @@ public class PaymentAPIConnectionTest {
     assertEquals("83.145.208.186", response.getCustomer().getNetworkAddress());
     assertEquals("FI", response.getCustomer().getCountryCode());
     assertEquals("no", response.getCardholderAuthentication());
+
+    assertEquals(
+      "e858e18daac509247f463292641237d6a74ce44e0971ba2de4a14874928a8805",
+      response.getCard().getPanFingerprint()
+    );
+    assertEquals(
+      "da6b0df36efd17c0e7f6967b9e440a0c61b6bd3d96b62f14c90155a1fb883597",
+      response.getCard().getCardFingerprint()
+    );
+
     assertNotNull(response.getFilingCode());
     assertTrue(response.getFilingCode().length() == 12);
   }
@@ -993,6 +1003,15 @@ public class PaymentAPIConnectionTest {
     assertEquals("no", statusResponse.getTransaction().getCardholderAuthentication());
     assertEquals(true, statusResponse.getTransaction().getCommitted());
     assertEquals("9999", statusResponse.getTransaction().getCommittedAmount());
+
+    assertEquals(
+      "e858e18daac509247f463292641237d6a74ce44e0971ba2de4a14874928a8805",
+      statusResponse.getTransaction().getCard().getPanFingerprint()
+    );
+    assertEquals(
+      "da6b0df36efd17c0e7f6967b9e440a0c61b6bd3d96b62f14c90155a1fb883597",
+      statusResponse.getTransaction().getCard().getCardFingerprint()
+    );
   }
 
   /**
