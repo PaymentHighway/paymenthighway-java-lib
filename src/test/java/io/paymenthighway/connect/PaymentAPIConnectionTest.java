@@ -134,17 +134,11 @@ public class PaymentAPIConnectionTest {
     assertEquals("FI", response.getCustomer().getCountryCode());
     assertEquals("no", response.getCardholderAuthentication());
 
-    assertEquals(
-      "e858e18daac509247f463292641237d6a74ce44e0971ba2de4a14874928a8805",
-      response.getCard().getPanFingerprint()
-    );
-    assertEquals(
-      "da6b0df36efd17c0e7f6967b9e440a0c61b6bd3d96b62f14c90155a1fb883597",
-      response.getCard().getCardFingerprint()
-    );
+    assertFingerprint(response.getCard().getPanFingerprint());
+    assertFingerprint(response.getCard().getCardFingerprint());
 
     assertNotNull(response.getFilingCode());
-    assertTrue(response.getFilingCode().length() == 12);
+    assertEquals(12, response.getFilingCode().length());
   }
 
   private UUID initAndDebitTransaction(Card card, Long amount, Boolean commit) {
@@ -181,6 +175,14 @@ public class PaymentAPIConnectionTest {
   private void assertRecurring(AbstractTransactionOutcomeResponse response, Boolean isRecurring) {
     assertNotNull(response.getRecurring());
     assertEquals(isRecurring, response.getRecurring());
+  }
+
+  private void assertFingerprint(String fingerprint) {
+    assertNotNull("Card fingerprint should not be null", fingerprint);
+    assertTrue(
+      "Card fingerprint didn't contain 64 hex chars",
+      Pattern.compile("^[0-9a-f]{64}$").matcher(fingerprint).matches()
+    );
   }
 
   @Test
@@ -1004,14 +1006,8 @@ public class PaymentAPIConnectionTest {
     assertEquals(true, statusResponse.getTransaction().getCommitted());
     assertEquals("9999", statusResponse.getTransaction().getCommittedAmount());
 
-    assertEquals(
-      "e858e18daac509247f463292641237d6a74ce44e0971ba2de4a14874928a8805",
-      statusResponse.getTransaction().getCard().getPanFingerprint()
-    );
-    assertEquals(
-      "da6b0df36efd17c0e7f6967b9e440a0c61b6bd3d96b62f14c90155a1fb883597",
-      statusResponse.getTransaction().getCard().getCardFingerprint()
-    );
+    assertFingerprint(statusResponse.getTransaction().getCard().getPanFingerprint());
+    assertFingerprint(statusResponse.getTransaction().getCard().getCardFingerprint());
   }
 
   /**
