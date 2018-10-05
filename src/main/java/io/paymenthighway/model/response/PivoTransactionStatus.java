@@ -30,7 +30,7 @@ public class PivoTransactionStatus {
   private String archiveId;
   private String modified;
   private PivoRefund[] refunds;
-  private TokenizationResponse.Card card;
+  private PartialCard card;
   @JsonProperty("authorization_code")
   private String authorizationCode;
   @JsonProperty("filing_code")
@@ -100,7 +100,7 @@ public class PivoTransactionStatus {
     return refunds;
   }
 
-  public TokenizationResponse.Card getCard() {
+  public PartialCard getCard() {
     return card;
   }
 

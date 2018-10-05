@@ -21,7 +21,7 @@ public class PivoTransactionResultResponse {
     @JsonProperty("payment_type")
     protected String paymentType;
     @JsonProperty("card")
-    protected TokenizationResponse.Card card;
+    protected PartialCard card;
     @JsonProperty("authorization_code")
     protected String authorizationCode;
     @JsonProperty("filing_code")
@@ -61,7 +61,7 @@ public class PivoTransactionResultResponse {
         return referenceNumber;
     }
 
-    public TokenizationResponse.Card getCard() {
+    public PartialCard getCard() {
         return card;
     }
 
