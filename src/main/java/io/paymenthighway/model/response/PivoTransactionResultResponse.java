@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  *  Used to find out whether or not a Pivo transaction succeeded.
  */
 public class PivoTransactionResultResponse {
-    @JsonProperty("status")
-    protected String status;
+    @JsonProperty("state")
+    protected String state;
     Customer customer;
     @JsonProperty("amount")
     protected Long amount;
@@ -20,9 +20,21 @@ public class PivoTransactionResultResponse {
     protected String archiveId;
     @JsonProperty("payment_type")
     protected String paymentType;
+    @JsonProperty("card")
+    protected PartialCard card;
+    @JsonProperty("authorization_code")
+    protected String authorizationCode;
+    @JsonProperty("filing_code")
+    protected String filingCode;
 
-    public String getStatus() {
-        return status;
+    /**
+     *@deprecated Use getState instead.
+     */
+    @Deprecated
+    public String getStatus() { return state; }
+
+    public String getState() {
+        return state;
     }
 
     public Customer getCustomer() {
@@ -47,5 +59,17 @@ public class PivoTransactionResultResponse {
 
     public String getReferenceNumber() {
         return referenceNumber;
+    }
+
+    public PartialCard getCard() {
+        return card;
+    }
+
+    public String getAuthorizationCode() {
+        return authorizationCode;
+    }
+
+    public String getFilingCode() {
+        return filingCode;
     }
 }
