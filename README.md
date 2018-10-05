@@ -13,6 +13,9 @@ The Java Client is a Maven project built so that it will work on Java 1.7 and Ja
 
 ### Significant Changes
 
+#### V1.11.0: Removed TokenizationResponse.Card
+[TokenizationResponse.card](/src/main/java/io/paymenthighway/model/response/TokenizationResponse.java) - field type was changed to use [PartialCard](/src/main/java/io/paymenthighway/model/response/PartialCard.java)
+
 #### V1.10.0: Older TLS versions no longer supported
 - TLS 1.2 is now always used. This fixes errors with Java 7. Java 8 does not suffer from the same problems, thus upgrading the library is not mandatory for it.
 - Custom HTTP client in PaymentAPI is now a constructor parameter and the setter is deprecated.
