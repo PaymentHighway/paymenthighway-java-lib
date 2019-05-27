@@ -1,7 +1,5 @@
 package io.paymenthighway.formBuilders;
 
-import org.apache.http.message.BasicNameValuePair;
-
 public class GenericPaymentParametersBuilder<T>
   extends GenericCardFormBuilder<T> {
 
