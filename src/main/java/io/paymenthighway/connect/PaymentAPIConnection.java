@@ -91,7 +91,7 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   /**
-   * @param httpClient
+   * @param httpClient http client
    * @deprecated Use the constructor to inject the httpClient instead.
    */
   public void setHttpClient(CloseableHttpClient httpClient) {

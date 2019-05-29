@@ -15,6 +15,8 @@ public class RevertSiirtoTransactionRequest extends Request {
 
   /**
    * Reverts the full amount
+   *
+   * @param referenceNumber reference number
    */
   public RevertSiirtoTransactionRequest(String referenceNumber) {
     this.referenceNumber = referenceNumber;
@@ -23,6 +25,7 @@ public class RevertSiirtoTransactionRequest extends Request {
   /**
    * reverts specified amount
    *
+   * @param referenceNumber reference number
    * @param amount Amount to revert
    */
   public RevertSiirtoTransactionRequest(String referenceNumber, Long amount) {

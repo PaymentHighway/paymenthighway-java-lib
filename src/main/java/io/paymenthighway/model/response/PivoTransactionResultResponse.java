@@ -29,6 +29,7 @@ public class PivoTransactionResultResponse {
 
     /**
      *@deprecated Use getState instead.
+     * @return status
      */
     @Deprecated
     public String getStatus() { return state; }
