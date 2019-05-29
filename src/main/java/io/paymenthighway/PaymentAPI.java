@@ -152,6 +152,17 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
+   * Pivo app switch request
+   *
+   * @param request Pivo init request
+   * @return Pivo init response
+   * @throws IOException Exception
+   */
+  public PivoInitResponse initPivoSession(PivoInitRequest request) throws  IOException {
+    return paymentApi.initPivoSession(request);
+  }
+
+  /**
    * Payment Highway Revert Transaction
    *
    * @param transactionId Transaction id
@@ -483,7 +494,7 @@ public class PaymentAPI implements Closeable {
 
   /**
    * Closes the underlying connection instances. Be careful if using custom HTTP client on multiple instances!
-   * @throws IOException
+   * @throws IOException Exception
    */
   @Override
   public void close() throws IOException {
