@@ -129,10 +129,24 @@ public class PaymentAPI implements Closeable {
     return paymentApi.debitApplePayTransaction(transactionId, request);
   }
 
+  /**
+   * MobilePay app switch request.
+   *
+   * @param request MobilePay init request
+   * @return MobilePayInit response
+   * @throws IOException Exception
+   */
   public MobilePayInitResponse initMobilePaySession(MobilePayInitRequest request) throws IOException {
     return paymentApi.initMobilePaySession(request);
   }
 
+  /**
+   * MobilePay session status
+   *
+   * @param sessionToken Session token
+   * @return MobilePayStatus response
+   * @throws IOException Exception
+   */
   public MobilePayStatusResponse mobilePaySessionStatus(String sessionToken) throws IOException {
     return paymentApi.mobilePaySessionStatus(sessionToken);
   }
