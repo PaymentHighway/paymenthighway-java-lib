@@ -27,7 +27,7 @@ public class GenericPaymentInitRequest<T> extends Request {
      * @return builder
      */
     @SuppressWarnings("unchecked")
-    public T order(String order) {
+    public T setOrder(String order) {
         this.order = order;
         return (T) this;
     }
@@ -39,7 +39,7 @@ public class GenericPaymentInitRequest<T> extends Request {
      * @return builder
      */
     @SuppressWarnings("unchecked")
-    public T webhookSuccessUrl(String url) {
+    public T setWebhookSuccessUrl(String url) {
         this.webhookSuccessUrl = url;
         return (T) this;
     }
@@ -51,7 +51,7 @@ public class GenericPaymentInitRequest<T> extends Request {
      * @return builder
      */
     @SuppressWarnings("unchecked")
-    public T webhookCancelUrl(String url) {
+    public T setWebhookCancelUrl(String url) {
         this.webhookCancelUrl = url;
         return (T) this;
     }
@@ -63,7 +63,7 @@ public class GenericPaymentInitRequest<T> extends Request {
      * @return builder
      */
     @SuppressWarnings("unchecked")
-    public T webhookFailureUrl(String url) {
+    public T setWebhookFailureUrl(String url) {
         this.webhookFailureUrl = url;
         return (T) this;
     }
@@ -75,7 +75,7 @@ public class GenericPaymentInitRequest<T> extends Request {
      * @return builder
      */
     @SuppressWarnings("unchecked")
-    public T description(String description) {
+    public T setDescription(String description) {
         this.description = description;
         return (T) this;
     }
@@ -87,7 +87,7 @@ public class GenericPaymentInitRequest<T> extends Request {
      * @return builder
      */
     @SuppressWarnings("unchecked")
-    public T language(String language) {
+    public T setLanguage(String language) {
         this.language = language;
         return (T) this;
     }
@@ -99,7 +99,7 @@ public class GenericPaymentInitRequest<T> extends Request {
      * @return builder
      */
     @SuppressWarnings("unchecked")
-    public T subMerchantId(String id) {
+    public T setSubMerchantId(String id) {
         this.subMerchantId = id;
         return (T) this;
     }
@@ -110,7 +110,7 @@ public class GenericPaymentInitRequest<T> extends Request {
      * @return builder
      */
     @SuppressWarnings("unchecked")
-    public T subMerchantName(String name) {
+    public T setSubMerchantName(String name) {
         this.subMerchantName = name;
         return (T) this;
     }

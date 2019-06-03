@@ -8,13 +8,13 @@ public class PaymentRequestBuilderTest {
     @Test
     public void testPivoRequestBuilder() {
         PivoInitRequest request = PaymentRequestBuilder.pivoInitRequest(1L, "EUR")
-            .webhookCancelUrl("http://www.example.com/cancel")
-            .webhookFailureUrl("http://www.example.com/failure")
-            .webhookSuccessUrl("http://www.example.com/success")
-            .language("FI")
-            .appUrl("app://url")
-            .order("orderNumber")
-            .description("simple description");
+            .setWebhookCancelUrl("http://www.example.com/cancel")
+            .setWebhookFailureUrl("http://www.example.com/failure")
+            .setWebhookSuccessUrl("http://www.example.com/success")
+            .setLanguage("FI")
+            .setAppUrl("app://url")
+            .setOrder("orderNumber")
+            .setDescription("simple description");
 
         JsonGenerator jsonGenerator = new JsonGenerator();
         String json = jsonGenerator.createTransactionJson(request);

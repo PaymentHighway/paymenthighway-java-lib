@@ -18,7 +18,7 @@ public class PivoInitRequest extends GenericPaymentInitRequest<PivoInitRequest> 
      * @param referenceNumber Reference number
      * @return builder
      */
-    public PivoInitRequest referenceNumber(String referenceNumber) {
+    public PivoInitRequest setReferenceNumber(String referenceNumber) {
         this.referenceNumber = referenceNumber;
         return this;
     }
@@ -28,7 +28,7 @@ public class PivoInitRequest extends GenericPaymentInitRequest<PivoInitRequest> 
      * @param phoneNumber phone number
      * @return builder
      */
-    public PivoInitRequest phoneNumber(String phoneNumber) {
+    public PivoInitRequest setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
         return this;
     }
@@ -39,7 +39,7 @@ public class PivoInitRequest extends GenericPaymentInitRequest<PivoInitRequest> 
      * @param appUrl App url
      * @return builder
      */
-    public PivoInitRequest appUrl(String appUrl) {
+    public PivoInitRequest setAppUrl(String appUrl) {
         this.appUrl = appUrl;
         return this;
     }
