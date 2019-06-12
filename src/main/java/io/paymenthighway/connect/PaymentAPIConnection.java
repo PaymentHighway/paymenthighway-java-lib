@@ -143,7 +143,7 @@ public class PaymentAPIConnection implements Closeable {
     return jsonParser.mapResponse(response, MobilePayStatusResponse.class);
   }
 
-  public PivoInitResponse initPivoSession(PivoInitRequest request) throws IOException {
+  public PivoInitResponse initPivoTransaction(PivoInitRequest request) throws IOException {
     String requestUri = "/app/pivo";
     String response = executePost(requestUri, createNameValuePairs(), request);
     return jsonParser.mapResponse(response, PivoInitResponse.class);

@@ -158,8 +158,8 @@ public class PaymentAPI implements Closeable {
    * @return Pivo init response
    * @throws IOException Exception
    */
-  public PivoInitResponse initPivoSession(PivoInitRequest request) throws  IOException {
-    return paymentApi.initPivoSession(request);
+  public PivoInitResponse initPivoTransaction(PivoInitRequest request) throws  IOException {
+    return paymentApi.initPivoTransaction(request);
   }
 
   /**
