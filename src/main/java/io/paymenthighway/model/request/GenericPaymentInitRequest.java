@@ -2,117 +2,95 @@ package io.paymenthighway.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class GenericPaymentInitRequest<T> extends Request {
-    @JsonProperty("amount") private Long amount;
-    @JsonProperty("currency") private String currency;
-    @JsonProperty("order") private String order;
-    @JsonProperty("language") private String language;
-    @JsonProperty("description") private String description;
-    @JsonProperty("sub_merchant_id") private String subMerchantId;
-    @JsonProperty("sub_merchant_name") private String subMerchantName;
-    @JsonProperty("is_estimated_amount") private boolean isEstimatedAmount;
-    @JsonProperty("webhook_success_url") private String webhookSuccessUrl;
-    @JsonProperty("webhook_cancel_url") private String webhookCancelUrl;
-    @JsonProperty("webhook_failure_url") private String webhookFailureUrl;
-
-    public GenericPaymentInitRequest(Long amount, String currency) {
-        this.amount = amount;
-        this.currency = currency;
-    }
-
+public class GenericPaymentInitRequest extends Request {
+    @JsonProperty("amount") protected Long amount;
+    @JsonProperty("currency") protected String currency;
+    @JsonProperty("order") protected String order;
+    @JsonProperty("language") protected String language;
+    @JsonProperty("description") protected String description;
+    @JsonProperty("sub_merchant_id") protected String subMerchantId;
+    @JsonProperty("sub_merchant_name") protected String subMerchantName;
+    @JsonProperty("is_estimated_amount") protected boolean isEstimatedAmount;
+    @JsonProperty("webhook_success_url") protected String webhookSuccessUrl;
+    @JsonProperty("webhook_cancel_url") protected String webhookCancelUrl;
+    @JsonProperty("webhook_failure_url") protected String webhookFailureUrl;
     /**
-     * Merchant defined order identifier. Should be unique per transaction.
      *
-     * @param order Order identifier
-     * @return builder
+     * @return amount
      */
-    @SuppressWarnings("unchecked")
-    public T setOrder(String order) {
-        this.order = order;
-        return (T) this;
+    public Long getAmount() {
+        return amount;
     }
 
     /**
-     * The URL the PH server makes request to after the transaction is handled. The payment itself may still be rejected.
      *
-     * @param url Webhook url to call when request is successfully handled
-     * @return builder
+     * @return currency
      */
-    @SuppressWarnings("unchecked")
-    public T setWebhookSuccessUrl(String url) {
-        this.webhookSuccessUrl = url;
-        return (T) this;
+    public String getCurrency() {
+        return currency;
     }
 
     /**
-     * The URL the PH server makes request to after cancelling the transaction (clicking on the cancel button).
      *
-     * @param url Webhook url to call when user cancels request
-     * @return builder
+     * @return order
      */
-    @SuppressWarnings("unchecked")
-    public T setWebhookCancelUrl(String url) {
-        this.webhookCancelUrl = url;
-        return (T) this;
+    public String getOrder() {
+        return order;
     }
 
     /**
-     * The URL the PH server makes request to after a failure such as an authentication or connectivity error.
      *
-     * @param url Webhook url to call when request failed
-     * @return builder
+     * @return language code
      */
-    @SuppressWarnings("unchecked")
-    public T setWebhookFailureUrl(String url) {
-        this.webhookFailureUrl = url;
-        return (T) this;
+    public String getLanguage() {
+        return language;
     }
 
     /**
-     * The order description shown to the user
      *
-     * @param description Description
-     * @return builder
+     * @return webhook success url
      */
-    @SuppressWarnings("unchecked")
-    public T setDescription(String description) {
-        this.description = description;
-        return (T) this;
+    public String getWebhookSuccessUrl() {
+        return webhookSuccessUrl;
     }
 
     /**
-     * Set PaymentHighway form language
      *
-     * @param language Two character language code e.g. FI or EN. If omitted, default language from user's browser's settings is used.
-     * @return builder
+     * @return webhook cancel url
      */
-    @SuppressWarnings("unchecked")
-    public T setLanguage(String language) {
-        this.language = language;
-        return (T) this;
+    public String getWebhookCancelUrl() {
+        return webhookCancelUrl;
     }
 
     /**
-     * Sub merchant id
      *
-     * @param id Sub merchant id
-     * @return builder
+     * @return webhook failure url
      */
-    @SuppressWarnings("unchecked")
-    public T setSubMerchantId(String id) {
-        this.subMerchantId = id;
-        return (T) this;
+    public String getWebhookFailureUrl() {
+        return webhookFailureUrl;
     }
 
     /**
-     * Sub merchant name
-     * @param name Sub merchant name
-     * @return builder
+     *
+     * @return sub merchant id
      */
-    @SuppressWarnings("unchecked")
-    public T setSubMerchantName(String name) {
-        this.subMerchantName = name;
-        return (T) this;
+    public String getSubMerchantId() {
+        return subMerchantId;
     }
 
+    /**
+     *
+     * @return sub merchant name
+     */
+    public String getSubMerchantName() {
+        return subMerchantName;
+    }
+
+    /**
+     *
+     * @return is estimated amount
+     */
+    public boolean getIsEstimatedAmount() {
+        return isEstimatedAmount;
+    }
 }

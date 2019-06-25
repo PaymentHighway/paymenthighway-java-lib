@@ -906,13 +906,14 @@ public class PaymentAPITest {
   @Test
   @Category(ExternalServiceTest.class)
   public void initPivoAppFlow() throws Exception {
-    PivoInitRequest request = PaymentRequestBuilder.pivoInitRequest(100L, "EUR")
+    PivoInitRequest request = PivoInitRequest.Builder(100L, "EUR")
         .setWebhookSuccessUrl("https://myserver.com/success")
         .setWebhookCancelUrl("https://myserver.com/cancel")
         .setWebhookFailureUrl("https://myserver.com/failure")
         .setAppUrl("myapp://paid")
         .setLanguage("FI")
-        .setOrder(UUID.randomUUID().toString());
+        .setOrder(UUID.randomUUID().toString())
+        .build();
 
     PaymentAPI paymentAPI = createPaymentAPI();
     PivoInitResponse response = paymentAPI.initPivoTransaction(request);

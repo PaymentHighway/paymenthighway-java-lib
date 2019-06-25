@@ -7,14 +7,15 @@ import org.junit.Test;
 public class PaymentRequestBuilderTest {
     @Test
     public void testPivoRequestBuilder() {
-        PivoInitRequest request = PaymentRequestBuilder.pivoInitRequest(1L, "EUR")
+        PivoInitRequest request = PivoInitRequest.Builder(1L, "EUR")
             .setWebhookCancelUrl("http://www.example.com/cancel")
             .setWebhookFailureUrl("http://www.example.com/failure")
             .setWebhookSuccessUrl("http://www.example.com/success")
             .setLanguage("FI")
             .setAppUrl("app://url")
             .setOrder("orderNumber")
-            .setDescription("simple description");
+            .setDescription("simple description")
+            .build();
 
         JsonGenerator jsonGenerator = new JsonGenerator();
         String json = jsonGenerator.createTransactionJson(request);
