@@ -262,6 +262,44 @@ public class FormBuilder {
   }
 
   /**
+   * Get parameters for AfterPay form payment request.
+   *
+   * @param successUrl  The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
+   * @param failureUrl  The URL the user is redirected after a failure such as an authentication or connectivity error.
+   * @param cancelUrl   The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @param amount      The amount to pay in Euro cents.
+   * @param orderId     Payment Highway order ID. Also used for AfterPay's parent transaction reference, which reduces the max length to 128.
+   * @param description Description of the payment shown in the form.
+   * @param orderDescription Description of the purchase. Will be shown on the customer's invoice. Max length 255.
+   * @return Form builder
+   */
+  public AfterPayParametersBuilder afterPayParametersBuilder(
+    String successUrl,
+    String failureUrl,
+    String cancelUrl,
+    Long amount,
+    String orderId,
+    String description,
+    String orderDescription
+  ) {
+    return new AfterPayParametersBuilder(
+      method,
+      signatureKeyId,
+      signatureSecret,
+      account,
+      merchant,
+      baseUrl,
+      successUrl,
+      failureUrl,
+      cancelUrl,
+      amount,
+      orderId,
+      description,
+      orderDescription
+    );
+  }
+
+  /**
    * Get parameters for Add Card request
    *
    * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.

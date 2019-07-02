@@ -37,4 +37,7 @@ public final class FormBuilderConstants {
   public final static String SPH_PHONE_NUMBER = "sph-phone-number";
   public final static String SPH_REFERENCE_NUMBER = "sph-reference-number";
   public final static String SPH_APP_URL = "sph-app-url";
+  public final static String SPH_ORDER_DESCRIPTION = "sph-order-description";
+  public final static String SPH_SOCIAL_SECURITY_NUMBER = "sph-social-security-number";
+  public final static String SPH_EMAIL_ADDRESS = "sph-email-address";
 }
