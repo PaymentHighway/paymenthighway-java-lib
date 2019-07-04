@@ -179,9 +179,9 @@ public class PaymentAPIConnection implements Closeable {
     return transactionGet(transactionId, actionUri, AfterPayTransactionResultResponse.class);
   }
 
-  public CommitAfterPayTransactionResponse commitAfterPayTransaction(UUID transactionId, CommitAfterPayTransactionRequest request) throws IOException {
+  public AfterPayTransactionCommitResponse commitAfterPayTransaction(UUID transactionId, CommitAfterPayTransactionRequest request) throws IOException {
     final String actionUri = "/afterpay/commit";
-    return transactionPost(transactionId, actionUri, request, CommitAfterPayTransactionResponse.class);
+    return transactionPost(transactionId, actionUri, request, AfterPayTransactionCommitResponse.class);
   }
 
   public AfterPayTransactionStatusResponse afterPayTransactionStatus(UUID transactionId) throws IOException {

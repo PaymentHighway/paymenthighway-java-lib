@@ -349,7 +349,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public CommitAfterPayTransactionResponse commitAfterPayTransaction(UUID transactionId, Long amount) throws IOException {
+  public AfterPayTransactionCommitResponse commitAfterPayTransaction(UUID transactionId, Long amount) throws IOException {
 
     CommitAfterPayTransactionRequest commitRequest = new CommitAfterPayTransactionRequest(amount);
 
