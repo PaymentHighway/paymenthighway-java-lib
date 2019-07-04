@@ -323,6 +323,22 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
+   * AfterPay Transaction Result Request
+   * Used to find out whether or not an uncommitted transaction succeeded, without actually committing (capturing) it.
+   *
+   * @param transactionId Transaction id
+   * @return AfterPay transaction result response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public AfterPayTransactionResultResponse afterPayTransactionResult(UUID transactionId) throws IOException {
+
+    return paymentApi.afterPayTransactionResult(transactionId);
+  }
+
+
+  /**
    * AfterPay Transaction Commit Request
    * Used to commit (capture) the transaction.
    *
