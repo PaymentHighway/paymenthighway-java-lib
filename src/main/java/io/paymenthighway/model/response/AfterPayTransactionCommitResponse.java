@@ -1,8 +1,7 @@
 package io.paymenthighway.model.response;
 
 /**
- * Commit Transaction response POJO
- * Commit Transaction is used to commit (capture) the transaction.
+ * AfterPay Transaction Commit response POJO
  */
 public class AfterPayTransactionCommitResponse extends Response {
 
