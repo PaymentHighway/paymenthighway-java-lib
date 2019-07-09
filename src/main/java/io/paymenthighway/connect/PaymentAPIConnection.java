@@ -169,6 +169,26 @@ public class PaymentAPIConnection implements Closeable {
     return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
   }
 
+  public TransactionResponse revertAfterPayTransaction(UUID transactionId, RevertAfterPayTransactionRequest request) throws IOException {
+    final String actionUri = "/afterpay/revert";
+    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+  }
+
+  public AfterPayTransactionResultResponse afterPayTransactionResult(UUID transactionId) throws IOException {
+    final String actionUri = "/afterpay/result";
+    return transactionGet(transactionId, actionUri, AfterPayTransactionResultResponse.class);
+  }
+
+  public AfterPayTransactionCommitResponse commitAfterPayTransaction(UUID transactionId, CommitAfterPayTransactionRequest request) throws IOException {
+    final String actionUri = "/afterpay/commit";
+    return transactionPost(transactionId, actionUri, request, AfterPayTransactionCommitResponse.class);
+  }
+
+  public AfterPayTransactionStatusResponse afterPayTransactionStatus(UUID transactionId) throws IOException {
+    String response = executeGet("/transaction/" + transactionId + "/afterpay", createNameValuePairs());
+    return jsonParser.mapResponse(response, AfterPayTransactionStatusResponse.class);
+  }
+
   public CommitTransactionResponse commitTransaction(UUID transactionId, CommitTransactionRequest request) throws IOException {
     final String actionUri = "/commit";
     return transactionPost(transactionId, actionUri, request, CommitTransactionResponse.class);

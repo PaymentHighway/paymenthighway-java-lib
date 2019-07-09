@@ -11,8 +11,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  */
@@ -22,6 +21,19 @@ public class FormBuilderTest {
   private String serviceUrl;
   private String signatureKeyId;
   private String signatureSecret;
+
+  public static class TestValues {
+    static final String methodPost = "POST";
+    static final String account = "test";
+    static final String merchant = "test_merchantId";
+    static final long amount = 9999L;
+    static final String orderId = "1000123A";
+    static final String successUrl = "https://www.paymenthighway.fi/";
+    static final String failureUrl = "http://www.solinor.com";
+    static final String cancelUrl = "https://solinor.fi";
+    static final String language = "EN";
+    static final String description = "this is payment description";
+  }
 
   /**
    * @throws java.lang.Exception
@@ -782,4 +794,30 @@ public class FormBuilderTest {
     assertTrue(formContainer.getFields().size() == 18);
   }
 
+  @Test
+  public void testAfterPayParameters() {
+
+     String orderDescription = "Description on the invoice";
+     String prefilledSocialSecurityNumber = "121222-123X";
+     String prefilledEmailAddress = "test@example.com";
+
+     FormBuilder formBuilder = createFormBuilder(TestValues.methodPost, TestValues.account, TestValues.merchant);
+
+     FormContainer formContainer = formBuilder.afterPayParametersBuilder(
+       TestValues.successUrl,
+       TestValues.failureUrl,
+       TestValues.cancelUrl,
+       TestValues.amount,
+       TestValues.orderId,
+       TestValues.description,
+       orderDescription
+     )
+       .language(TestValues.language)
+       .exitIframeOnResult(true)
+       .socialSecurityNumber(prefilledSocialSecurityNumber)
+       .emailAddress(prefilledEmailAddress)
+       .build();
+
+     assertEquals(18, formContainer.getFields().size());
+  }
 }

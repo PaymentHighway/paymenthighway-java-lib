@@ -288,6 +288,90 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
+   * Revert AfterPay Transaction fully
+   * Committed payments will be refunded, uncommitted ones voided.
+   *
+   * @param transactionId Transaction id
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse revertAfterPayTransaction(UUID transactionId) throws IOException {
+
+    RevertAfterPayTransactionRequest revertRequest = new RevertAfterPayTransactionRequest();
+
+    return paymentApi.revertAfterPayTransaction(transactionId, revertRequest);
+  }
+
+  /**
+   * Revert AfterPay Transaction with the given amount
+   * Committed payments will be refunded, uncommitted ones voided.
+   *
+   * @param transactionId Transaction id
+   * @param amount Amount to revert
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public TransactionResponse revertAfterPayTransaction(UUID transactionId, Long amount) throws IOException {
+
+    RevertAfterPayTransactionRequest revertRequest = new RevertAfterPayTransactionRequest(amount);
+
+    return paymentApi.revertAfterPayTransaction(transactionId, revertRequest);
+  }
+
+  /**
+   * AfterPay Transaction Result Request
+   * Used to find out whether or not an uncommitted transaction succeeded, without actually committing (capturing) it.
+   *
+   * @param transactionId Transaction id
+   * @return AfterPay transaction result response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public AfterPayTransactionResultResponse afterPayTransactionResult(UUID transactionId) throws IOException {
+
+    return paymentApi.afterPayTransactionResult(transactionId);
+  }
+
+
+  /**
+   * AfterPay Transaction Commit Request
+   * Used to commit (capture) the transaction.
+   *
+   * @param transactionId Transaction id
+   * @param amount The amount to commit, must be less or equal than the initial transaction amount
+   * @return Commit transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public AfterPayTransactionCommitResponse commitAfterPayTransaction(UUID transactionId, Long amount) throws IOException {
+
+    CommitAfterPayTransactionRequest commitRequest = new CommitAfterPayTransactionRequest(amount);
+
+    return paymentApi.commitAfterPayTransaction(transactionId, commitRequest);
+  }
+
+  /**
+   * AfterPay Transaction Status Request
+   *
+   * @param transactionId Transaction id
+   * @return AfterPay transaction status response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public AfterPayTransactionStatusResponse afterPayTransactionStatus(UUID transactionId) throws IOException {
+
+    return paymentApi.afterPayTransactionStatus(transactionId);
+  }
+
+
+  /**
    * Payment Highway Transaction Status Request
    *
    * @param transactionId Transaction id
