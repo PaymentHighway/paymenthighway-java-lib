@@ -374,7 +374,7 @@ public class PaymentAPIConnection implements Closeable {
     nameValuePairs.add(new BasicNameValuePair("sph-account", this.account));
     nameValuePairs.add(new BasicNameValuePair("sph-merchant", this.merchant));
     nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-    nameValuePairs.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
+    nameValuePairs.add(new BasicNameValuePair("sph-request-id", requestId));
     return nameValuePairs;
   }
 
