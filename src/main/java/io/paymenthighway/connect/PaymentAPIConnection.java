@@ -6,6 +6,8 @@ import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.json.JsonParser;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.model.response.transaction.ChargeCitResponse;
+import io.paymenthighway.model.response.transaction.ChargeMitResponse;
 import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
@@ -113,6 +115,20 @@ public class PaymentAPIConnection implements Closeable {
     String requestUri = String.format("/transaction/%s/debit", transactionId);
     String response = executePost(requestUri, createNameValuePairs(request.getRequestId()), request);
     return jsonParser.mapResponse(response, DebitTransactionResponse.class);
+  }
+
+  public ChargeCitResponse chargeCustomerInitiatedTransaction(UUID transactionId, ChargeCitRequest request) throws IOException {
+
+    String requestUri = String.format("/transaction/%s/card/charge/customer_initiated", transactionId);
+    String response = executePost(requestUri, createNameValuePairs(request.getRequestId()), request);
+    return jsonParser.mapResponse(response, ChargeCitResponse.class);
+  }
+
+  public ChargeMitResponse chargeMerchantInitiatedTransaction(UUID transactionId, ChargeMitRequest request) throws IOException {
+
+    String requestUri = String.format("/transaction/%s/card/charge/merchant_initiated", transactionId);
+    String response = executePost(requestUri, createNameValuePairs(request.getRequestId()), request);
+    return jsonParser.mapResponse(response, ChargeMitResponse.class);
   }
 
   public DebitTransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
