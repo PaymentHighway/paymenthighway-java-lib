@@ -509,7 +509,7 @@ public class PaymentAPIConnectionTest {
   /**
    * This will test successful tokenization payment without auto commit and using token that requires cvc
    */
-  @Test
+  @Ignore("Requiring CVC is no longer an option in the post PSD2 world") @Test
   public void testDebitTransaction6() {
 
     TokenizationResponse tokenResponse = createAndTestTokenizationId("4324643990016048", "11", "2023", "048");
