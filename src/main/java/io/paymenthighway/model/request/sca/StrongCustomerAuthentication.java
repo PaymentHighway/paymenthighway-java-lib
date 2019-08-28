@@ -41,6 +41,7 @@ public class StrongCustomerAuthentication {
     purchase = builder.purchase;
     billingAddress = builder.billingAddress;
     shippingAddress = builder.shippingAddress;
+    customerAuthenticationInfo = builder.customerAuthenticationInfo;
     desiredChallengeWindowSize = builder.desiredChallengeWindowSize;
     exitIframeOnResult = builder.exitIframeOnResult;
     exitIframeOnThreeDSecure = builder.exitIframeOnThreeDSecure;
