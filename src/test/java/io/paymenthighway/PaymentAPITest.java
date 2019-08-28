@@ -94,6 +94,21 @@ public class PaymentAPITest {
     assertEquals(response.getResult().getCode(), "100");
   }
 
+  private ChargeCitResponse performCustomerInitiatedTransaction(
+      Long amount,
+      Card card,
+      StrongCustomerAuthentication strongCustomerAuthentication
+  ) throws IOException {
+    PaymentAPI paymentAPI = createPaymentAPI();
+    UUID transactionId = initTransaction(paymentAPI);
+
+    ChargeCitRequest request = new ChargeCitRequest.Builder(
+        card, amount, "EUR", strongCustomerAuthentication
+    ).build();
+
+    return  paymentAPI.chargeCustomerInitiatedTransaction(transactionId, request);
+  }
+
   @Test
   public void testInitTransaction() {
 
@@ -149,22 +164,6 @@ public class PaymentAPITest {
     assertNotNull(transactionResponse);
     assertEquals(transactionResponse.getResult().getCode(), "100");
     assertEquals(transactionResponse.getResult().getMessage(), "OK");
-  }
-
-
-  private ChargeCitResponse performCustomerInitiatedTransaction(
-      Long amount,
-      Card card,
-      StrongCustomerAuthentication strongCustomerAuthentication
-  ) throws IOException {
-    PaymentAPI paymentAPI = createPaymentAPI();
-    UUID transactionId = initTransaction(paymentAPI);
-
-    ChargeCitRequest request = new ChargeCitRequest.Builder(
-        card, amount, "EUR", strongCustomerAuthentication
-    ).build();
-
-    return  paymentAPI.chargeCustomerInitiatedTransaction(transactionId, request);
   }
 
   @Test
