@@ -6,6 +6,7 @@ import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.request.sca.*;
 import io.paymenthighway.model.response.*;
 import io.paymenthighway.model.response.transaction.ChargeCitResponse;
+import io.paymenthighway.model.response.transaction.ChargeMitResponse;
 import io.paymenthighway.test.ExternalServiceTest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -281,6 +282,23 @@ public class PaymentAPITest {
     assertNotNull(citResponse);
     assertEquals(RESULT_CODE_OK, citResponse.getResult().getCode());
     assertEquals("OK", citResponse.getResult().getMessage());
+  }
+
+  @Test
+  public void testSoftDeclineCardIsAcceptedWithMitRequest() throws IOException {
+
+    PaymentAPI paymentAPI = createPaymentAPI();
+    UUID transactionId = initTransaction(paymentAPI);
+
+    ChargeMitRequest request = ChargeMitRequest.Builder(
+      softDeclineCard, 99L, "EUR"
+    ).build();
+
+    ChargeMitResponse chargeMitResponse = paymentAPI.chargeMerchantInitiatedTransaction(transactionId, request);
+
+    assertNotNull(chargeMitResponse);
+    assertEquals(RESULT_CODE_OK, chargeMitResponse.getResult().getCode());
+    assertEquals("OK", chargeMitResponse.getResult().getMessage());
   }
 
   @Test
