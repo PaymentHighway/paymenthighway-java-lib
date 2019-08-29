@@ -43,10 +43,11 @@ public class ChargeMitRequest extends Request {
    * @param token Card token to charge
    * @param amount Payment amount
    * @param currency Payment currency
+   * @param order Merchant-provided order ID for the purchase. Alphanumeric with dashes and underscores. Max length 254.
    * @return Builder
    */
-  public static Builder Builder(Token token, Long amount, String currency) {
-    return new Builder(token, amount, currency);
+  public static Builder Builder(Token token, Long amount, String currency, String order) {
+    return new Builder(token, amount, currency, order);
   }
 
   /**
@@ -56,10 +57,11 @@ public class ChargeMitRequest extends Request {
    * @param card Card to charge (Only for PCI DSS certified parties!)
    * @param amount Payment amount
    * @param currency Payment currency
+   * @param order Merchant-provided order ID for the purchase. Alphanumeric with dashes and underscores. Max length 254.
    * @return Builder
    */
-  public static Builder Builder(Card card, Long amount, String currency) {
-    return new Builder(card, amount, currency);
+  public static Builder Builder(Card card, Long amount, String currency, String order) {
+    return new Builder(card, amount, currency, order);
   }
 
   public static final class Builder {
@@ -77,11 +79,13 @@ public class ChargeMitRequest extends Request {
      * @param token Card token to charge
      * @param amount Payment amount
      * @param currency Payment currency
+     * @param order Merchant-provided order ID for the purchase. Alphanumeric with dashes and underscores. Max length 254.
      */
-    public Builder(Token token, Long amount, String currency) {
+    public Builder(Token token, Long amount, String currency, String order) {
       this.token = token;
       this.amount = amount;
       this.currency = currency;
+      this.order = order;
     }
 
     /**
@@ -91,16 +95,13 @@ public class ChargeMitRequest extends Request {
      * @param card Card to charge (Only for PCI DSS certified parties!)
      * @param amount Payment amount
      * @param currency Payment currency
+     * @param order Merchant-provided order ID for the purchase. Alphanumeric with dashes and underscores. Max length 254.
      */
-    public Builder(Card card, Long amount, String currency) {
+    public Builder(Card card, Long amount, String currency, String order) {
       this.card = card;
       this.amount = amount;
       this.currency = currency;
-    }
-
-    public Builder setOrder(String order) {
       this.order = order;
-      return this;
     }
 
     public Builder setCustomer(Customer customer) {

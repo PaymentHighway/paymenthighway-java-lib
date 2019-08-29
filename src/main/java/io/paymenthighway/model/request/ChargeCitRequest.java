@@ -44,11 +44,12 @@ public class ChargeCitRequest extends Request {
    * @param token Card token to charge
    * @param amount Payment amount
    * @param currency Payment currency
+   * @param order Merchant-provided order ID for the purchase. Alphanumeric with dashes and underscores. Max length 254.
    * @param strongCustomerAuthentication Information provided for the SCA in case of a soft decline response from the issuer
    * @return Builder
    */
-  public static Builder Builder(Token token, Long amount, String currency, StrongCustomerAuthentication strongCustomerAuthentication) {
-    return new Builder(token, amount, currency, strongCustomerAuthentication);
+  public static Builder Builder(Token token, Long amount, String currency, String order, StrongCustomerAuthentication strongCustomerAuthentication) {
+    return new Builder(token, amount, currency, order, strongCustomerAuthentication);
   }
 
   /**
@@ -57,11 +58,12 @@ public class ChargeCitRequest extends Request {
    * @param card Card to charge (Only for PCI DSS certified parties!)
    * @param amount Payment amount
    * @param currency Payment currency
+   * @param order Merchant-provided order ID for the purchase. Alphanumeric with dashes and underscores. Max length 254.
    * @param strongCustomerAuthentication Information provided for the SCA in case of a soft decline response from the issuer
    * @return Builder
    */
-  public static Builder Builder(Card card, Long amount, String currency, StrongCustomerAuthentication strongCustomerAuthentication) {
-    return new Builder(card, amount, currency, strongCustomerAuthentication);
+  public static Builder Builder(Card card, Long amount, String currency, String order, StrongCustomerAuthentication strongCustomerAuthentication) {
+    return new Builder(card, amount, currency, order, strongCustomerAuthentication);
   }
 
   public static final class Builder {
@@ -80,12 +82,14 @@ public class ChargeCitRequest extends Request {
      * @param token Card token to charge
      * @param amount Payment amount
      * @param currency Payment currency
+     * @param order Merchant-provided order ID for the purchase. Alphanumeric with dashes and underscores. Max length 254.
      * @param strongCustomerAuthentication Information provided for the SCA in case of a soft decline response from the issuer
      */
-    public Builder(Token token, Long amount, String currency, StrongCustomerAuthentication strongCustomerAuthentication) {
+    public Builder(Token token, Long amount, String currency, String order, StrongCustomerAuthentication strongCustomerAuthentication) {
       this.token = token;
       this.amount = amount;
       this.currency = currency;
+      this.order = order;
       this.strongCustomerAuthentication = strongCustomerAuthentication;
     }
 
@@ -95,18 +99,15 @@ public class ChargeCitRequest extends Request {
      * @param card Card to charge (Only for PCI DSS certified parties!)
      * @param amount Payment amount
      * @param currency Payment currency
+     * @param order Merchant-provided order ID for the purchase. Alphanumeric with dashes and underscores. Max length 254.
      * @param strongCustomerAuthentication Information provided for the SCA in case of a soft decline response from the issuer
      */
-    public Builder(Card card, Long amount, String currency, StrongCustomerAuthentication strongCustomerAuthentication) {
+    public Builder(Card card, Long amount, String currency, String order, StrongCustomerAuthentication strongCustomerAuthentication) {
       this.card = card;
       this.amount = amount;
       this.currency = currency;
-      this.strongCustomerAuthentication = strongCustomerAuthentication;
-    }
-
-    public Builder setOrder(String order) {
       this.order = order;
-      return this;
+      this.strongCustomerAuthentication = strongCustomerAuthentication;
     }
 
     public Builder setCustomer(Customer customer) {

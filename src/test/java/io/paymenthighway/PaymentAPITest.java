@@ -102,9 +102,7 @@ public class PaymentAPITest {
     PaymentAPI paymentAPI = createPaymentAPI();
     UUID transactionId = initTransaction(paymentAPI);
 
-    ChargeCitRequest request = new ChargeCitRequest.Builder(
-        card, amount, "EUR", strongCustomerAuthentication
-    ).setOrder("test-order-id").build();
+    ChargeCitRequest request = new ChargeCitRequest.Builder(card, amount, "EUR", "test-order-id", strongCustomerAuthentication).build();
 
     return  paymentAPI.chargeCustomerInitiatedTransaction(transactionId, request);
   }
@@ -289,9 +287,7 @@ public class PaymentAPITest {
     PaymentAPI paymentAPI = createPaymentAPI();
     UUID transactionId = initTransaction(paymentAPI);
 
-    ChargeMitRequest request = ChargeMitRequest.Builder(
-      softDeclineCard, 99L, "EUR"
-    ).setOrder("test-order-id").build();
+    ChargeMitRequest request = ChargeMitRequest.Builder(softDeclineCard, 99L, "EUR", "test-order-id").build();
 
     ChargeMitResponse chargeMitResponse = paymentAPI.chargeMerchantInitiatedTransaction(transactionId, request);
 

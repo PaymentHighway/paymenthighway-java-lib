@@ -418,9 +418,13 @@ In order to be sure that a tokenized card is valid and is able to process paymen
 
     Token cardToken = new Token("49026753-ff50-4c35-aff0-0335a26ea0ff");
 
-    ChargeCitRequest request = new ChargeCitRequest.Builder(cardToken, 123L, "EUR", strongCustomerAuthentication)
-        .setOrder("order-123456")
-        .build();
+    ChargeCitRequest request = new ChargeCitRequest.Builder(
+        cardToken,
+        123L,
+        "EUR",
+        "order-123456",
+        strongCustomerAuthentication
+    ).build();
     
     String requestId = request.getRequestId();
 
@@ -435,9 +439,7 @@ In order to be sure that a tokenized card is valid and is able to process paymen
 
     Token cardToken = new Token("49026753-ff50-4c35-aff0-0335a26ea0ff");
 
-    ChargeMitRequest request = ChargeMitRequest.Builder(cardToken, 99L, "EUR")
-        .setOrder("order-123456")
-        .build();
+    ChargeMitRequest request = ChargeMitRequest.Builder(cardToken, 99L, "EUR", "order-123456").build();
         
     String requestId = request.getRequestId();
 
