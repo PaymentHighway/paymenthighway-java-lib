@@ -41,10 +41,10 @@ public class ChargeCitRequest extends Request {
 
   /**
    * Payment using a card token when the customer is participating in the payment flow.
-   * @param token
-   * @param amount
-   * @param currency
-   * @param strongCustomerAuthentication
+   * @param token Card token to charge
+   * @param amount Payment amount
+   * @param currency Payment currency
+   * @param strongCustomerAuthentication Information provided for the SCA in case of a soft decline response from the issuer
    * @return Builder
    */
   public static Builder Builder(Token token, Long amount, String currency, StrongCustomerAuthentication strongCustomerAuthentication) {
@@ -54,10 +54,10 @@ public class ChargeCitRequest extends Request {
   /**
    * Payment with card details when the customer is participating in the payment flow. Only for PCI DSS certified parties!
    * The usage of card must be specifically agreed upon. Normally use the token instead.
-   * @param card
-   * @param amount
-   * @param currency
-   * @param strongCustomerAuthentication
+   * @param card Card to charge (Only for PCI DSS certified parties!)
+   * @param amount Payment amount
+   * @param currency Payment currency
+   * @param strongCustomerAuthentication Information provided for the SCA in case of a soft decline response from the issuer
    * @return Builder
    */
   public static Builder Builder(Card card, Long amount, String currency, StrongCustomerAuthentication strongCustomerAuthentication) {
@@ -77,10 +77,10 @@ public class ChargeCitRequest extends Request {
 
     /**
      * Payment using a card token when the customer is participating in the payment flow.
-     * @param token
-     * @param amount
-     * @param currency
-     * @param strongCustomerAuthentication
+     * @param token Card token to charge
+     * @param amount Payment amount
+     * @param currency Payment currency
+     * @param strongCustomerAuthentication Information provided for the SCA in case of a soft decline response from the issuer
      */
     public Builder(Token token, Long amount, String currency, StrongCustomerAuthentication strongCustomerAuthentication) {
       this.token = token;
@@ -92,10 +92,10 @@ public class ChargeCitRequest extends Request {
     /**
      * Payment with card details when the customer is participating in the payment flow. Only for PCI DSS certified parties!
      * The usage of card must be specifically agreed upon. Normally use the token instead.
-     * @param card
-     * @param amount
-     * @param currency
-     * @param strongCustomerAuthentication
+     * @param card Card to charge (Only for PCI DSS certified parties!)
+     * @param amount Payment amount
+     * @param currency Payment currency
+     * @param strongCustomerAuthentication Information provided for the SCA in case of a soft decline response from the issuer
      */
     public Builder(Card card, Long amount, String currency, StrongCustomerAuthentication strongCustomerAuthentication) {
       this.card = card;

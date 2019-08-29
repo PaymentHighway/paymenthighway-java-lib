@@ -141,11 +141,11 @@ public class StrongCustomerAuthentication {
    * Desired challenge window size for 3DS 2.x.
    * Dimensions of the challenge window that has been displayed to the Cardholder.
    * The ACS shall reply with content that is formatted to appropriately render in this window to provide the best possible user experience.
-   * <li>{@link #Window250x400}</li>
-   * <li>{@link #Window390x400}</li>
-   * <li>{@link #Window500x600}</li>
-   * <li>{@link #Window600x400}</li>
-   * <li>{@link #FullScreen}</li>
+   * {@link #Window250x400}
+   * {@link #Window390x400}
+   * {@link #Window500x600}
+   * {@link #Window600x400}
+   * {@link #FullScreen}
    */
   public enum DesiredChallengeWindowSize {
 

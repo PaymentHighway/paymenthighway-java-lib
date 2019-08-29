@@ -39,6 +39,7 @@ public class Urls {
    * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.
    * @param cancelUrl  The URL the user is redirected after cancelling the transaction (clicking on the cancel button).
+   * @return Builder
    */
   public static Builder Builder(String successUrl, String failureUrl, String cancelUrl) {
     return new Builder(successUrl, failureUrl, cancelUrl);
@@ -72,7 +73,7 @@ public class Urls {
      * The URL the PH server makes request to after the transaction is handled. The payment itself may still be rejected.
      *
      * @param webhookSuccessUrl Webhook url to call when request is successfully handled
-     * @return a reference to this Builder
+     * @return Builder
      */
     public Builder setWebhookSuccessUrl(String webhookSuccessUrl) {
       this.webhookSuccessUrl = webhookSuccessUrl;
@@ -83,7 +84,7 @@ public class Urls {
      * The URL the PH server makes request to after a failure such as an authentication or connectivity error.
      *
      * @param webhookFailureUrl Webhook url to call when request failed
-     * @return a reference to this Builder
+     * @return Builder
      */
     public Builder setWebhookFailureUrl(String webhookFailureUrl) {
       this.webhookFailureUrl = webhookFailureUrl;
@@ -94,7 +95,7 @@ public class Urls {
      * The URL the PH server makes request to after cancelling the transaction (clicking on the cancel button).
      *
      * @param webhookCancelUrl Webhook url to call when user cancels request
-     * @return a reference to this Builder
+     * @return Builder
      */
     public Builder setWebhookCancelUrl(String webhookCancelUrl) {
       this.webhookCancelUrl = webhookCancelUrl;
@@ -105,7 +106,7 @@ public class Urls {
      * Delay for webhook in seconds. Between 0-900
      *
      * @param webhookDelay Webhook triggering delay in seconds
-     * @return a reference to this Builder
+     * @return Builder
      */
     public Builder setWebhookDelay(Integer webhookDelay) {
       this.webhookDelay = webhookDelay;

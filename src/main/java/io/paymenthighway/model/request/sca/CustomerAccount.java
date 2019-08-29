@@ -203,11 +203,11 @@ public class CustomerAccount {
 
   /**
    * Length of time that the cardholder has had the account.
-   * <li>{@link #NoAccount}</li>
-   * <li>{@link #CreatedDuringTransaction}</li>
-   * <li>{@link #LessThan30Days}</li>
-   * <li>{@link #Between30And60Days}</li>
-   * <li>{@link #MoreThan60Days}</li>
+   * {@link #NoAccount}
+   * {@link #CreatedDuringTransaction}
+   * {@link #LessThan30Days}
+   * {@link #Between30And60Days}
+   * {@link #MoreThan60Days}
    */
   public enum AccountAgeIndicator {
 
@@ -245,11 +245,11 @@ public class CustomerAccount {
   /**
    * Length of time since the cardholder’s account information was last changed.
    * Including Billing or Shipping address, new payment account, or new user(s) added.
-   * <li>{@link #ChangedDuringTransaction}</li>
-   * <li>{@link #LessThan30Days}</li>
-   * <li>{@link #Between30And60Days}</li>
-   * <li>{@link #Between30And60Days}</li>
-   * <li>{@link #MoreThan60Days}</li>
+   * {@link #ChangedDuringTransaction}
+   * {@link #LessThan30Days}
+   * {@link #Between30And60Days}
+   * {@link #Between30And60Days}
+   * {@link #MoreThan60Days}
    */
   public enum ChangeIndicator {
 
@@ -280,11 +280,11 @@ public class CustomerAccount {
 
   /**
    * Length of time since the cardholder’s account had a password change or account reset.
-   * <li>{@link #NoChange}</li>
-   * <li>{@link #ChangedDuringTransaction}</li>
-   * <li>{@link #LessThan30Days}</li>
-   * <li>{@link #Between30And60Days}</li>
-   * <li>{@link #MoreThan60Days}</li>
+   * {@link #NoChange}
+   * {@link #ChangedDuringTransaction}
+   * {@link #LessThan30Days}
+   * {@link #Between30And60Days}
+   * {@link #MoreThan60Days}
    */
   public enum PasswordChangeIndicator {
 
@@ -321,11 +321,11 @@ public class CustomerAccount {
 
   /**
    * Indicates when the shipping address used for this transaction was first used.
-   * <li>{@link #ThisTransaction}</li>
-   * <li>{@link #LessThan30Days}</li>
-   * <li>{@link #Between30And60Days}</li>
-   * <li>{@link #Between30And60Days}</li>
-   * <li>{@link #MoreThan60Days}</li>
+   * {@link #ThisTransaction}
+   * {@link #LessThan30Days}
+   * {@link #Between30And60Days}
+   * {@link #Between30And60Days}
+   * {@link #MoreThan60Days}
    */
   public enum ShippingAddressIndicator {
 
@@ -356,8 +356,8 @@ public class CustomerAccount {
 
   /**
    * Indicates whether suspicious activity has been experienced (including previous fraud) on the cardholder account.
-   * <li>{@link #NoSuspiciousActivity}</li>
-   * <li>{@link #SuspiciousActivityObserved}</li>
+   * {@link #NoSuspiciousActivity}
+   * {@link #SuspiciousActivityObserved}
    */
   public enum SuspiciousActivity {
 

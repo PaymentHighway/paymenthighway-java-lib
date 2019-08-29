@@ -157,13 +157,13 @@ public class Purchase {
    * Indicates shipping method chosen for the transaction.
    * Merchants must choose the Shipping Indicator code that most accurately describes the cardholder’s specific transaction, not their general business.
    * If one or more items are included in the sale, use the Shipping Indicator code for the physical goods, or if all digital goods, use the Shipping Indicator code that describes the most expensive item.
-   * <li>{@link #ShipToCardholdersAddress}</li>
-   * <li>{@link #ShipToVerifiedAddress}</li>
-   * <li>{@link #ShipToDifferentAddress}</li>
-   * <li>{@link #ShipToStore}</li>
-   * <li>{@link #DigitalGoods}</li>
-   * <li>{@link #TravelAndEventTickets}</li>
-   * <li>{@link #Other}</li>
+   * {@link #ShipToCardholdersAddress}
+   * {@link #ShipToVerifiedAddress}
+   * {@link #ShipToDifferentAddress}
+   * {@link #ShipToStore}
+   * {@link #DigitalGoods}
+   * {@link #TravelAndEventTickets}
+   * {@link #Other}
    */
   public enum ShippingIndicator
   {
@@ -212,10 +212,10 @@ public class Purchase {
 
   /**
    * Indicates the merchandise delivery timeframe.
-   * <li>{@link #ElectronicDelivery}</li>
-   * <li>{@link #SameDayShipping}</li>
-   * <li>{@link #OvernightShipping}</li>
-   * <li>{@link #TwoDarOrMoreShipping}</li>
+   * {@link #ElectronicDelivery}
+   * {@link #SameDayShipping}
+   * {@link #OvernightShipping}
+   * {@link #TwoDarOrMoreShipping}
    */
   public enum DeliveryTimeFrame {
 
@@ -246,8 +246,8 @@ public class Purchase {
 
   /**
    * Indicates whether the cardholder is reordering previously purchased merchandise.
-   * <li>{@link #FirstTimeOrdered}</li>
-   * <li>{@link #Reorder}</li>
+   * {@link #FirstTimeOrdered}
+   * {@link #Reorder}
    */
   public enum ReorderItemsIndicator {
 
@@ -266,8 +266,8 @@ public class Purchase {
 
   /**
    * Indicates whether Cardholder is placing an order for merchandise with a future availability or release date.
-   * <li>{@link #MerchandiseAvailable}</li>
-   * <li>{@link #FutureAvailability}</li>
+   * {@link #MerchandiseAvailable}
+   * {@link #FutureAvailability}
    */
   public enum PreOrderItemsIndicator {
 
@@ -286,8 +286,8 @@ public class Purchase {
 
   /**
    * Indicates if the Cardholder Name on the account is identical to the shipping Name used for this transaction.
-   * <li>{@link #AccountNameMatchesShippingName}</li>
-   * <li>{@link #AccountNameDifferentThanShippingName}</li>
+   * {@link #AccountNameMatchesShippingName}
+   * {@link #AccountNameDifferentThanShippingName}
    */
   public enum ShippingNameIndicator {
 

@@ -40,9 +40,9 @@ public class ChargeMitRequest extends Request {
   /**
    * Payment using a card token when the customer is not participating in the payment flow.
    * A contract and understanding between the merchant and the customer must be established, allowing this kind of payments.
-   * @param token
-   * @param amount
-   * @param currency
+   * @param token Card token to charge
+   * @param amount Payment amount
+   * @param currency Payment currency
    * @return Builder
    */
   public static Builder Builder(Token token, Long amount, String currency) {
@@ -53,9 +53,9 @@ public class ChargeMitRequest extends Request {
    * Payment with card details when the customer is participating in the payment flow. Only for PCI DSS certified parties!
    * A contract and understanding between the merchant and the customer must be established, allowing this kind of payments.
    * The usage of card must be specifically agreed upon. Normally use the token instead.
-   * @param card
-   * @param amount
-   * @param currency
+   * @param card Card to charge (Only for PCI DSS certified parties!)
+   * @param amount Payment amount
+   * @param currency Payment currency
    * @return Builder
    */
   public static Builder Builder(Card card, Long amount, String currency) {
@@ -74,9 +74,9 @@ public class ChargeMitRequest extends Request {
 
     /**
      * Payment using a card token when the customeris participating in the payment flow.
-     * @param token
-     * @param amount
-     * @param currency
+     * @param token Card token to charge
+     * @param amount Payment amount
+     * @param currency Payment currency
      */
     public Builder(Token token, Long amount, String currency) {
       this.token = token;
@@ -88,9 +88,9 @@ public class ChargeMitRequest extends Request {
      * Payment with card details when the customer is participating in the payment flow. Only for PCI DSS certified parties!
      * A contract and understanding between the merchant and the customer must be established, allowing this kind of payments.
      * The usage of card must be specifically agreed upon. Normally use the token instead.
-     * @param card
-     * @param amount
-     * @param currency
+     * @param card Card to charge (Only for PCI DSS certified parties!)
+     * @param amount Payment amount
+     * @param currency Payment currency
      */
     public Builder(Card card, Long amount, String currency) {
       this.card = card;

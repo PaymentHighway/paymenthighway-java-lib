@@ -68,14 +68,14 @@ public class CustomerAuthenticationInfo {
 
   /**
    * Information about how the cardholder is authenticated before or during the transaction.
-   * <li>{@link #NoAuthentication}</li>
-   * <li>{@link #OwnCredentials}</li>
-   * <li>{@link #FederatedId}</li>
-   * <li>{@link #IssuerCredentials}</li>
-   * <li>{@link #ThirdPartyAuthentication}</li>
-   * <li>{@link #FidoAuthenticator}</li>
-   * <li>{@link #FidoAuthenticatorWithAssuranceDataSigned}</li>
-   * <li>{@link #SrcAssuranceData}</li>
+   * {@link #NoAuthentication}
+   * {@link #OwnCredentials}
+   * {@link #FederatedId}
+   * {@link #IssuerCredentials}
+   * {@link #ThirdPartyAuthentication}
+   * {@link #FidoAuthenticator}
+   * {@link #FidoAuthenticatorWithAssuranceDataSigned}
+   * {@link #SrcAssuranceData}
    */
   public enum Method {
 
