@@ -104,7 +104,7 @@ public class PaymentAPITest {
 
     ChargeCitRequest request = new ChargeCitRequest.Builder(
         card, amount, "EUR", strongCustomerAuthentication
-    ).build();
+    ).setOrder("test-order-id").build();
 
     return  paymentAPI.chargeCustomerInitiatedTransaction(transactionId, request);
   }
@@ -202,7 +202,7 @@ public class PaymentAPITest {
 
     Urls returnUrls = Urls.Builder("https://success.example.com", "https://failure.example.com","https://cancel.example.com")
         .setWebhookSuccessUrl("https://example.com/webhook/success")
-        .setWebhookFailureUrl("https://example.com/webhook/cancel")
+        .setWebhookCancelUrl("https://example.com/webhook/cancel")
         .setWebhookFailureUrl("https://example.com/webhook/failure")
         .setWebhookDelay(0)
         .build();
@@ -291,7 +291,7 @@ public class PaymentAPITest {
 
     ChargeMitRequest request = ChargeMitRequest.Builder(
       softDeclineCard, 99L, "EUR"
-    ).build();
+    ).setOrder("test-order-id").build();
 
     ChargeMitResponse chargeMitResponse = paymentAPI.chargeMerchantInitiatedTransaction(transactionId, request);
 
