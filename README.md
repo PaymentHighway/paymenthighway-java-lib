@@ -394,38 +394,38 @@ In order to be sure that a tokenized card is valid and is able to process paymen
  
  ##### Example Customer Initiated Transaction
  
-        Urls returnUrls = Urls.Builder(
-            "https://example.com/success/12345",
-            "https://example.com/failure/12345",
-            "https://example.com/cancel/12345"
-        )
-            .setWebhookSuccessUrl("https://example.com/success/12345/?webhook=1")
-            .setWebhookCancelUrl("https://example.com/failure/12345/?webhook=1")
-            .setWebhookFailureUrl("https://example.com/webhook/failure/?webhook=1")
-            .build();
+    Urls returnUrls = Urls.Builder(
+        "https://example.com/success/12345",
+        "https://example.com/failure/12345",
+        "https://example.com/cancel/12345"
+    )
+        .setWebhookSuccessUrl("https://example.com/success/12345/?webhook=1")
+        .setWebhookCancelUrl("https://example.com/failure/12345/?webhook=1")
+        .setWebhookFailureUrl("https://example.com/webhook/failure/?webhook=1")
+        .build();
+
+    CustomerDetails customerDetails = CustomerDetails.Builder()
+        .setShippingAddressMatchesBillingAddress(true)
+        .setName("Eric Example")
+        .setEmail("eric.example@example.com")
+        // ...
+        .build();
+
+    StrongCustomerAuthentication strongCustomerAuthentication = new StrongCustomerAuthentication.Builder(returnUrls)
+        .setCustomerDetails(customerDetails)
+        // ...
+        .build();
+
+    Token cardToken = new Token("49026753-ff50-4c35-aff0-0335a26ea0ff");
+
+    ChargeCitRequest request = new ChargeCitRequest.Builder(cardToken, 123L, "EUR", strongCustomerAuthentication)
+        .setOrder("order-123456")
+        .build();
     
-        CustomerDetails customerDetails = CustomerDetails.Builder()
-            .setShippingAddressMatchesBillingAddress(true)
-            .setName("Eric Example")
-            .setEmail("eric.example@example.com")
-            // ...
-            .build();
-    
-        StrongCustomerAuthentication strongCustomerAuthentication = new StrongCustomerAuthentication.Builder(returnUrls)
-            .setCustomerDetails(customerDetails)
-            // ...
-            .build();
-    
-        Token cardToken = new Token("49026753-ff50-4c35-aff0-0335a26ea0ff");
-    
-        ChargeCitRequest request = new ChargeCitRequest.Builder(cardToken, 123L, "EUR", strongCustomerAuthentication)
-            .setOrder("order-123456")
-            .build();
-        
-        String requestId = request.getRequestId();
-    
-        UUID transactionId = paymentAPI.initTransaction().getId();
-        ChargeCitResponse citResponse = paymentAPI.chargeCustomerInitiatedTransaction(transactionId, request);
+    String requestId = request.getRequestId();
+
+    UUID transactionId = paymentAPI.initTransaction().getId();
+    ChargeCitResponse citResponse = paymentAPI.chargeCustomerInitiatedTransaction(transactionId, request);
 
 #### Charging a merchant initiated transaction (MIT)
 
