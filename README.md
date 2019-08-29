@@ -392,13 +392,58 @@ In order to be sure that a tokenized card is valid and is able to process paymen
 
  In addition to the return urls, the [`StrongCustomerAuthentication`](/src/main/java/io/paymenthighway/model/request/sca/StrongCustomerAuthentication.java) object contains many optional fields for information about the customer and the transaction. This information is used in transaction risk analysis (TRA) and may increase the likelihood of transaction being considered as low-risk, thus avoiding the need for strong authentication.
  
-TODO: example
+ ##### Example Customer Initiated Transaction
+ 
+        Urls returnUrls = Urls.Builder(
+            "https://example.com/success/12345",
+            "https://example.com/failure/12345",
+            "https://example.com/cancel/12345"
+        )
+            .setWebhookSuccessUrl("https://example.com/success/12345/?webhook=1")
+            .setWebhookCancelUrl("https://example.com/failure/12345/?webhook=1")
+            .setWebhookFailureUrl("https://example.com/webhook/failure/?webhook=1")
+            .build();
+    
+        CustomerDetails customerDetails = CustomerDetails.Builder()
+            .setShippingAddressMatchesBillingAddress(true)
+            .setName("Eric Example")
+            .setEmail("eric.example@example.com")
+            // ...
+            .build();
+    
+        StrongCustomerAuthentication strongCustomerAuthentication = new StrongCustomerAuthentication.Builder(returnUrls)
+            .setCustomerDetails(customerDetails)
+            // ...
+            .build();
+    
+        Token cardToken = new Token("49026753-ff50-4c35-aff0-0335a26ea0ff");
+    
+        ChargeCitRequest request = new ChargeCitRequest.Builder(cardToken, 123L, "EUR", strongCustomerAuthentication)
+            .setOrder("order-123456")
+            .build();
+        
+        String requestId = request.getRequestId();
+    
+        UUID transactionId = paymentAPI.initTransaction().getId();
+        ChargeCitResponse citResponse = paymentAPI.chargeCustomerInitiatedTransaction(transactionId, request);
 
 #### Charging a merchant initiated transaction (MIT)
 
  When charging the customer's card in a context, where the customer is not actively participating in the transaction, you should use the `chargeMerchantInitiatedTransaction` method. The MIT transactions are exempt from the strong customer authentication requirements of PSD2, thus the payment cannot receive the "soft-decline" response (code 400), unlike in the case of customer initiated transactions.
  
-TODO: example
+##### Example Merchant Initiated Transaction
+
+    Token cardToken = new Token("49026753-ff50-4c35-aff0-0335a26ea0ff");
+
+    ChargeMitRequest request = ChargeMitRequest.Builder(cardToken, 99L, "EUR")
+        .setOrder("order-123456")
+        .build();
+        
+    String requestId = request.getRequestId();
+
+    UUID transactionId = paymentAPI.initTransaction().getId();
+    ChargeMitResponse chargeMitResponse = paymentAPI.chargeMerchantInitiatedTransaction(transactionId, request);
+
 
 #### Example Debit with Token (DEPRECATED)
 
