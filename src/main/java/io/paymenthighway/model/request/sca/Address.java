@@ -56,36 +56,88 @@ public class Address {
 
     public Builder() { }
 
+    /**
+     * @param city Max length 50
+     * @return Builder
+     */
     public Builder setCity(String city) {
       this.city = city;
       return this;
     }
 
+    /**
+     * 3 digit country code, ISO 3166-1
+     * For example:
+     *  Canada: 124
+     *  China: 156
+     *  Denmark: 208
+     *  Estonia: 233
+     *  Finland: 246
+     *  France: 250
+     *  Germany: 276
+     *  Japan: 392
+     *  Netherlands: 528
+     *  Norway: 578
+     *  Poland: 616
+     *  Russia: 643
+     *  Spain: 724
+     *  Sweden: 752
+     *  Switzerland: 756
+     *  United Kingdom: 826
+     *  United States of America: 840
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/ISO_3166-1_numeric">https://www.iso.org/obp/ui/#search/code/</a>
+     * @see <a href="https://en.wikipedia.org/wiki/ISO_3166-1_numeric">https://en.wikipedia.org/wiki/ISO_3166-1_numeric</a>
+     *
+     * @param country 3 digits country code, ISO 3166-1 numeric
+     * @return Builder
+     */
     public Builder setCountry(String country) {
       this.country = country;
       return this;
     }
 
+    /**
+     * @param addressLine1 Max length 50
+     * @return Builder
+     */
     public Builder setAddressLine1(String addressLine1) {
       this.addressLine1 = addressLine1;
       return this;
     }
 
+    /**
+     * @param addressLine2 Max length 50
+     * @return Builder
+     */
     public Builder setAddressLine2(String addressLine2) {
       this.addressLine2 = addressLine2;
       return this;
     }
 
+    /**
+     * @param addressLine3 Max length 50
+     * @return Builder
+     */
     public Builder setAddressLine3(String addressLine3) {
       this.addressLine3 = addressLine3;
       return this;
     }
 
+    /**
+     * Post code, Zip Code
+     * @param postCode Max length 16
+     * @return Builder
+     */
     public Builder setPostCode(String postCode) {
       this.postCode = postCode;
       return this;
     }
 
+    /**
+     * @param state Two digit ISO 3166-2 country subdivision code
+     * @return Builder
+     */
     public Builder setState(String state) {
       this.state = state;
       return this;
