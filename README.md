@@ -45,7 +45,7 @@ Add as dependency:
         <dependency>
             <groupId>io.paymenthighway</groupId>
             <artifactId>paymenthighway</artifactId>
-            <version>1.11.0</version>
+            <version>1.12.0-RC2</version>
         </dependency>
     </dependencies>
 ```
