@@ -13,6 +13,10 @@ The Java Client is a Maven project built so that it will work on Java 1.7 and Ja
 
 ### Significant Changes
 
+#### V1.12.0: New PSD2 APIs and Debit Transaction token payment deprecated
+- The `debitTransaction` method is deprecated since Sep 14th 2019.
+- New [card token charging APIs](#charging_a_card_token) `chargeCustomerInitiatedTransaction` (CIT) and `chargeMerchantInitiatedTransaction` (MIT) in order to comply with the EU's PSD2 directive.
+
 #### V1.11.0: Removed TokenizationResponse.Card
 [TokenizationResponse.card](/src/main/java/io/paymenthighway/model/response/TokenizationResponse.java) - field type was changed to use [PartialCard](/src/main/java/io/paymenthighway/model/response/PartialCard.java)
 
@@ -41,7 +45,7 @@ Add as dependency:
         <dependency>
             <groupId>io.paymenthighway</groupId>
             <artifactId>paymenthighway</artifactId>
-            <version>1.11.0</version>
+            <version>1.12.0</version>
         </dependency>
     </dependencies>
 ```
@@ -369,8 +373,83 @@ In order to be sure that a tokenized card is valid and is able to process paymen
 ### Example Tokenize (get the actual card token by using token id)
 
 	TokenizationResponse tokenResponse = paymentAPI.tokenize("tokenizationId");
-			
-### Example Debit with Token
+
+### <a name="charging_a_card_token"></a>Charging a card token
+
+ After the introduction of the European PSD2 directive, the electronic payment transactions are categorised in so called customer initiated transactions (CIT) and merchant initiated transactions (MIT). 
+
+ Customer initiated transactions are scenarios, where the customer actively takes part in the payment process. This also includes token, or "one-click" purchases, where the transaction uses a previously saved payment method.
+
+ Merchant initiated transactions are payments triggered without the customer's participation. This kind of transactions can be used for example in scenarios where the final price is not known at the time of the purchase or the customer is not present when the charge is made. A prior agreement, or "mandate" between the customer and the merchant is required.
+ 
+#### Charging a customer initiated transaction (CIT)
+
+ When charging a token using customer initiated transaction, applicable exemptions are attempted in order to avoid the need for strong customer authentication, 3D Secure. These exemptions may include but are not limited to: low-value (under 30 EUR) or transaction risk analysis.
+  
+ Regardless, there is always a possibility the card issuer requires strong customer authentication by requesting a step-up. In this case, the response will contain "soft decline" result code 400 and an URL, where the customer needs to be redirected to, in order to perform the authentication. The merchant's URLs where the customer will be redirected back to - after completing the authentication - need to be defined in the `returnUrls` parameter in [`StrongCustomerAuthentication`](/src/main/java/io/paymenthighway/model/request/sca/StrongCustomerAuthentication.java).
+
+ When the customer is redirected back to the success URL, after completing the payment using strong customer authentication, the payment needs to be committed exactly as in the normal FormAPI payment flow. Please note, a new transaction ID is created for this payment and the original transaction ID from the CIT request is considered as failed. The merchant supplied "order", the request ID, or custom merchant parameters specified in the return URLs, can be used to connect the returning customer to the specific payment.
+
+ In addition to the return urls, the [`StrongCustomerAuthentication`](/src/main/java/io/paymenthighway/model/request/sca/StrongCustomerAuthentication.java) object contains many optional fields for information about the customer and the transaction. This information is used in transaction risk analysis (TRA) and may increase the likelihood of transaction being considered as low-risk, thus avoiding the need for strong authentication.
+ 
+ ##### Example Customer Initiated Transaction
+ 
+    Urls returnUrls = Urls.Builder(
+        "https://example.com/success/12345",
+        "https://example.com/failure/12345",
+        "https://example.com/cancel/12345"
+    )
+        .setWebhookSuccessUrl("https://example.com/success/12345/?webhook=1")
+        .setWebhookCancelUrl("https://example.com/failure/12345/?webhook=1")
+        .setWebhookFailureUrl("https://example.com/webhook/failure/?webhook=1")
+        .build();
+
+    CustomerDetails customerDetails = CustomerDetails.Builder()
+        .setShippingAddressMatchesBillingAddress(true)
+        .setName("Eric Example")
+        .setEmail("eric.example@example.com")
+        // ...
+        .build();
+
+    StrongCustomerAuthentication strongCustomerAuthentication = new StrongCustomerAuthentication.Builder(returnUrls)
+        .setCustomerDetails(customerDetails)
+        // ...
+        .build();
+
+    Token cardToken = new Token("49026753-ff50-4c35-aff0-0335a26ea0ff");
+
+    ChargeCitRequest request = new ChargeCitRequest.Builder(
+        cardToken,
+        123L,
+        "EUR",
+        "order-123456",
+        strongCustomerAuthentication
+    ).build();
+    
+    String requestId = request.getRequestId();
+
+    UUID transactionId = paymentAPI.initTransaction().getId();
+    ChargeCitResponse citResponse = paymentAPI.chargeCustomerInitiatedTransaction(transactionId, request);
+
+#### Charging a merchant initiated transaction (MIT)
+
+ When charging the customer's card in a context, where the customer is not actively participating in the transaction, you should use the `chargeMerchantInitiatedTransaction` method. The MIT transactions are exempt from the strong customer authentication requirements of PSD2, thus the payment cannot receive the "soft-decline" response (code 400), unlike in the case of customer initiated transactions.
+ 
+##### Example Merchant Initiated Transaction
+
+    Token cardToken = new Token("49026753-ff50-4c35-aff0-0335a26ea0ff");
+
+    ChargeMitRequest request = ChargeMitRequest.Builder(cardToken, 99L, "EUR", "order-123456").build();
+        
+    String requestId = request.getRequestId();
+
+    UUID transactionId = paymentAPI.initTransaction().getId();
+    ChargeMitResponse chargeMitResponse = paymentAPI.chargeMerchantInitiatedTransaction(transactionId, request);
+
+
+#### Example Debit with Token (DEPRECATED)
+
+NOTE: The `debitTransaction` method is deprecated since Sep 14th 2019 in favor of the new `chargeCustomerInitiatedTransaction` and `chargeMerchantInitiatedTransaction` in order to comply with the EU's PSD2 directive.
 
     Token token = new Token("id");
     long amount = 1095L;

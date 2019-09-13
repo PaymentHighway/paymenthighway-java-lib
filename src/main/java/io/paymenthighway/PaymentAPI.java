@@ -4,6 +4,8 @@ import io.paymenthighway.connect.PaymentAPIConnection;
 import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.model.response.transaction.ChargeCitResponse;
+import io.paymenthighway.model.response.transaction.ChargeMitResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -97,6 +99,39 @@ public class PaymentAPI implements Closeable {
   public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
     return paymentApi.debitTransaction(transactionId, request);
+  }
+
+  /**
+   * Merchant Customer Initiated Transaction (MIT)
+   * Used when a customer is not participating in the payment flow.
+   * A contract and understanding between the merchant and the customer must be established, allowing this kind of payments.
+   *
+   * @param transactionId Transaction id
+   * @param request Charge Mit Transaction Request
+   * @return ChargeMitResponse response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public ChargeMitResponse chargeMerchantInitiatedTransaction(UUID transactionId, ChargeMitRequest request) throws IOException {
+
+    return paymentApi.chargeMerchantInitiatedTransaction(transactionId, request);
+  }
+
+  /**
+   * Charge Customer Initiated Transaction (CIT)
+   * Used when a customer is participating in the payment flow.
+   *
+   * @param transactionId Transaction id
+   * @param request Charge Cit Transaction Request
+   * @return ChargeCitResponse response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public ChargeCitResponse chargeCustomerInitiatedTransaction(UUID transactionId, ChargeCitRequest request) throws IOException {
+
+    return paymentApi.chargeCustomerInitiatedTransaction(transactionId, request);
   }
 
   /**
