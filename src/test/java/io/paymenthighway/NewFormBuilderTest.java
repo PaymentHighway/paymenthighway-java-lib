@@ -237,6 +237,7 @@ public class NewFormBuilderTest {
       .exitIframeOnResult(true)
       .exitIframeOn3ds(true)
       .language(this.language)
+      .referenceNumber("1313")
       .build();
 
     String response = null;
@@ -379,6 +380,7 @@ public class NewFormBuilderTest {
       .skipFormNotifications(true)
       .exitIframeOnResult(true)
       .exitIframeOn3ds(true)
+      .referenceNumber("1313")
       .build();
 
     String response = null;
@@ -439,9 +441,10 @@ public class NewFormBuilderTest {
       .subMerchantId(submerchantId)
       .subMerchantName(submerchantName)
       .language(this.language)
+      .referenceNumber("1313")
       .build();
 
-    assertEquals(20, formContainer.getFields().size());
+    assertEquals(21, formContainer.getFields().size());
   }
 
   @Test
@@ -548,6 +551,7 @@ public class NewFormBuilderTest {
       .webhookCancelUrl(this.webhookCancelUrl)
       .webhookDelay(this.webhookDelay)
       .language(this.language)
+      .referenceNumber("1313")
       .build();
 
     String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();

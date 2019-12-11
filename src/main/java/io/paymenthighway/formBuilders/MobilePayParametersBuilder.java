@@ -70,4 +70,16 @@ public class MobilePayParametersBuilder
         addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_NAME, subMerchantName);
         return this;
     }
+
+    /**
+     * In RF-format or in Finnish reference number format.
+     * Used only when transactions are configured to be paid out one by one.
+     *
+     * @param referenceNumber Reference Number
+     * @return MobilePayParametersInterface
+     */
+    public MobilePayParametersBuilder referenceNumber(String referenceNumber) {
+        addNameValuePair(FormBuilderConstants.SPH_REFERENCE_NUMBER, referenceNumber);
+        return this;
+    }
 }
