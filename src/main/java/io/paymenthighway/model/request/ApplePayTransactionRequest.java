@@ -20,6 +20,8 @@ public class ApplePayTransactionRequest extends Request {
   private String order;
   @JsonProperty
   private Customer customer;
+  @JsonProperty("reference_number")
+  private String referenceNumber;
 
   public static Builder Builder(PaymentData paymentData, long amount, String currency) {
     return new Builder(paymentData, amount, currency);
@@ -35,6 +37,7 @@ public class ApplePayTransactionRequest extends Request {
     private String order = null;
     private Customer customer = null;
     private Boolean commit;
+    private String referenceNumber;
 
     public Builder(PaymentData paymentData, long amount, String currency) {
       this.paymentData = paymentData;
@@ -57,6 +60,17 @@ public class ApplePayTransactionRequest extends Request {
       return this;
     }
 
+    /**
+     * Reference number used when settling the transaction to the merchant account.
+     * Only used if one-by-ony transaction settling is configured.
+     * @param referenceNumber In RF or Finnish reference number format.
+     * @return Builder
+     */
+    public Builder setReferenceNumber(String referenceNumber) {
+      this.referenceNumber = referenceNumber;
+      return this;
+    }
+
     public ApplePayTransactionRequest build() {
       return new ApplePayTransactionRequest(this);
     }
@@ -73,5 +87,6 @@ public class ApplePayTransactionRequest extends Request {
     this.order        = builder.order;
     this.customer     = builder.customer;
     this.commit       = builder.commit;
+    this.referenceNumber = builder.referenceNumber;
   }
 }
