@@ -55,10 +55,10 @@ public class GenericPaymentParametersBuilder<T>
   }
 
   /**
-   * In RF-format or in Finnish reference number format.
-   * Used only when transactions are configured to be paid out one by one.
+   * Reference number used when settling the transaction to the merchant account.
+   * Only used if one-by-ony transaction settling is configured.
    *
-   * @param referenceNumber Reference Number
+   * @param referenceNumber In RF or Finnish reference number format.
    * @return Form builder
    */
   @SuppressWarnings("unchecked")
