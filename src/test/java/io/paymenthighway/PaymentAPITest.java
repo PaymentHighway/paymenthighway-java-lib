@@ -287,7 +287,9 @@ public class PaymentAPITest {
     PaymentAPI paymentAPI = createPaymentAPI();
     UUID transactionId = initTransaction(paymentAPI);
 
-    ChargeMitRequest request = ChargeMitRequest.Builder(softDeclineCard, 99L, "EUR", "test-order-id").build();
+    ChargeMitRequest request = ChargeMitRequest.Builder(
+        softDeclineCard, 99L, "EUR", "test-order-id"
+    ).setReferenceNumber("1313").build();
 
     ChargeMitResponse chargeMitResponse = paymentAPI.chargeMerchantInitiatedTransaction(transactionId, request);
 

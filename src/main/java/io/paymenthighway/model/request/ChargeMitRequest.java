@@ -25,6 +25,8 @@ public class ChargeMitRequest extends Request {
   private Boolean commit;
   @JsonProperty
   private Splitting splitting;
+  @JsonProperty("reference_number")
+  private String referenceNumber;
 
   private ChargeMitRequest(Builder builder) {
     amount = builder.amount;
@@ -35,6 +37,7 @@ public class ChargeMitRequest extends Request {
     customer = builder.customer;
     commit = builder.commit;
     splitting = builder.splitting;
+    referenceNumber = builder.referenceNumber;
   }
 
   /**
@@ -73,6 +76,7 @@ public class ChargeMitRequest extends Request {
     private Customer customer;
     private Boolean commit;
     private Splitting splitting;
+    private String referenceNumber;
 
     /**
      * Payment using a card token when the customeris participating in the payment flow.
@@ -116,6 +120,17 @@ public class ChargeMitRequest extends Request {
 
     public Builder setSplitting(Splitting splitting) {
       this.splitting = splitting;
+      return this;
+    }
+
+    /**
+     * Reference number used when settling the transaction to the merchant account.
+     * Only used if one-by-ony transaction settling is configured.
+     * @param referenceNumber In RF or Finnish reference number format.
+     * @return Builder
+     */
+    public Builder setReferenceNumber(String referenceNumber) {
+      this.referenceNumber = referenceNumber;
       return this;
     }
 
