@@ -72,10 +72,9 @@ public class MobilePayParametersBuilder
     }
 
     /**
-     * In RF-format or in Finnish reference number format.
-     * Used only when transactions are configured to be paid out one by one.
-     *
-     * @param referenceNumber Reference Number
+     * Reference number used when settling the transaction to the merchant account.
+     * Only used if one-by-ony transaction settling is configured.
+     * @param referenceNumber In RF or Finnish reference number format.
      * @return MobilePayParametersInterface
      */
     public MobilePayParametersBuilder referenceNumber(String referenceNumber) {
