@@ -26,6 +26,8 @@ public class ChargeCitRequest extends Request {
   private Splitting splitting;
   @JsonProperty("strong_customer_authentication")
   private StrongCustomerAuthentication strongCustomerAuthentication;
+  @JsonProperty("reference_number")
+  private String referenceNumber;
 
   private ChargeCitRequest(Builder builder) {
     amount = builder.amount;
@@ -37,6 +39,7 @@ public class ChargeCitRequest extends Request {
     commit = builder.commit;
     splitting = builder.splitting;
     strongCustomerAuthentication = builder.strongCustomerAuthentication;
+    referenceNumber = builder.referenceNumber;
   }
 
   /**
@@ -76,6 +79,7 @@ public class ChargeCitRequest extends Request {
     private Boolean commit;
     private Splitting splitting;
     private StrongCustomerAuthentication strongCustomerAuthentication;
+    private String referenceNumber;
 
     /**
      * Payment using a card token when the customer is participating in the payment flow.
@@ -122,6 +126,17 @@ public class ChargeCitRequest extends Request {
 
     public Builder setSplitting(Splitting splitting) {
       this.splitting = splitting;
+      return this;
+    }
+
+    /**
+     * Reference number used when settling the transaction to the merchant account.
+     * Only used if one-by-ony transaction settling is configured.
+     * @param referenceNumber In RF or Finnish reference number format.
+     * @return Builder
+     */
+    public Builder setReferenceNumber(String referenceNumber) {
+      this.referenceNumber = referenceNumber;
       return this;
     }
 

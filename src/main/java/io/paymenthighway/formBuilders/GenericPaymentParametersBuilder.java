@@ -1,7 +1,5 @@
 package io.paymenthighway.formBuilders;
 
-import org.apache.http.message.BasicNameValuePair;
-
 public class GenericPaymentParametersBuilder<T>
   extends GenericCardFormBuilder<T> {
 
@@ -53,6 +51,19 @@ public class GenericPaymentParametersBuilder<T>
   @SuppressWarnings("unchecked")
   public T tokenize(Boolean tokenize) {
     addNameValuePair(FormBuilderConstants.SPH_TOKENIZE, tokenize);
+    return (T) this;
+  }
+
+  /**
+   * Reference number used when settling the transaction to the merchant account.
+   * Only used if one-by-ony transaction settling is configured.
+   *
+   * @param referenceNumber In RF or Finnish reference number format.
+   * @return Form builder
+   */
+  @SuppressWarnings("unchecked")
+  public T referenceNumber(String referenceNumber) {
+    addNameValuePair(FormBuilderConstants.SPH_REFERENCE_NUMBER, referenceNumber);
     return (T) this;
   }
 }

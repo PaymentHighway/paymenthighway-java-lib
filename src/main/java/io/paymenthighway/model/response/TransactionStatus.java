@@ -42,6 +42,8 @@ public class TransactionStatus {
   private Boolean recurring;
   @JsonProperty("splitting")
   private Splitting splitting;
+  @JsonProperty("reference_number")
+  private String referenceNumber;
 
   public UUID getId() {
     return id;
@@ -129,5 +131,9 @@ public class TransactionStatus {
    */
   public Splitting getSplitting() {
     return splitting;
+  }
+
+  public String getReferenceNumber() {
+    return referenceNumber;
   }
 }

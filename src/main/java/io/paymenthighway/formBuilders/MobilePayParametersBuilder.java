@@ -70,4 +70,15 @@ public class MobilePayParametersBuilder
         addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_NAME, subMerchantName);
         return this;
     }
+
+    /**
+     * Reference number used when settling the transaction to the merchant account.
+     * Only used if one-by-ony transaction settling is configured.
+     * @param referenceNumber In RF or Finnish reference number format.
+     * @return MobilePayParametersInterface
+     */
+    public MobilePayParametersBuilder referenceNumber(String referenceNumber) {
+        addNameValuePair(FormBuilderConstants.SPH_REFERENCE_NUMBER, referenceNumber);
+        return this;
+    }
 }

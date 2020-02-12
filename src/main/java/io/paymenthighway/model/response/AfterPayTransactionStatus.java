@@ -40,6 +40,9 @@ public class AfterPayTransactionStatus {
   @JsonProperty("afterpay_outcome")
   private String afterPayOutcome;
 
+  @JsonProperty("reference_number")
+  private String referenceNumber;
+
   public UUID getId() {
     return id;
   }
@@ -114,5 +117,9 @@ public class AfterPayTransactionStatus {
 
   public String getAfterPayOutcome() {
     return afterPayOutcome;
+  }
+
+  public String getReferenceNumber() {
+    return referenceNumber;
   }
 }
