@@ -1320,7 +1320,10 @@ public class PaymentAPIConnectionTest {
     assertNotNull(result);
     assertEquals("100", result.getResult().getCode());
     assertEquals("OK", result.getResult().getMessage());
-    assertEquals("90000001", result.getSettlements()[0].getMerchant().getAcquirerMerchantId());
+    assertTrue(
+      Arrays.stream(result.getSettlements())
+        .anyMatch(settlement -> settlement.getMerchant().getAcquirerMerchantId().equals("90000001"))
+    );
   }
 
   /**
