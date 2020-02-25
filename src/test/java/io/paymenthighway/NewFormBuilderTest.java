@@ -1,6 +1,5 @@
 package io.paymenthighway;
 
-
 import io.paymenthighway.connect.FormAPIConnection;
 import io.paymenthighway.formBuilders.FormBuilderConstants;
 import io.paymenthighway.formBuilders.PaymentParameters;
@@ -15,7 +14,6 @@ import java.util.UUID;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
-
 
 public class NewFormBuilderTest {
 
@@ -560,32 +558,6 @@ public class NewFormBuilderTest {
 
     this.validateWebhookParameters(formContainer.getFields(), false);
   }
-
-    @Test
-    public void testSiirtoParameters() {
-        FormContainer formContainer = this.formBuilder.siirtoParametersBuilder(
-            this.successUrl,
-            this.failureUrl,
-            this.cancelUrl,
-            Long.valueOf(this.amount),
-            this.orderId,
-            this.description,
-            "1313"
-        )
-            .language(this.language)
-            .phoneNumber("+358441234567")
-            .webhookSuccessUrl(this.webhookSuccessUrl)
-            .webhookFailureUrl(this.webhookFailureUrl)
-            .webhookCancelUrl(this.webhookCancelUrl)
-            .webhookDelay(this.webhookDelay)
-            .build();
-
-        String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-        assertNotNull(signature);
-        assertTrue(signature.startsWith("SPH1"));
-        assertTrue(formContainer.getFields().size() == 20);
-        this.validateWebhookParameters(formContainer.getFields(), false);
-    }
 
   private void validateWebhookParameters(List<NameValuePair> nameValuePairs, boolean ignoreDelay) {
     for (NameValuePair nameValuePair : nameValuePairs) {

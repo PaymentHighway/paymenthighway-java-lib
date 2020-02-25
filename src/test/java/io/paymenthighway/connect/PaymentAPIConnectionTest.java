@@ -1320,7 +1320,17 @@ public class PaymentAPIConnectionTest {
     assertNotNull(result);
     assertEquals("100", result.getResult().getCode());
     assertEquals("OK", result.getResult().getMessage());
-    assertEquals("90000001", result.getSettlements()[0].getMerchant().getAcquirerMerchantId());
+
+    boolean found = false;
+
+    for (Settlement settlement : result.getSettlements()) {
+      if (settlement.getMerchant().getAcquirerMerchantId().equals("90000001")) {
+        found = true;
+        break;
+      }
+    }
+
+    assertTrue("Didn't find Acquirer Merchant ID with value 90000001", found);
   }
 
   /**
