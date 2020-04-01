@@ -43,15 +43,6 @@ public interface CardFormParametersInterface {
      */
     CardFormParametersInterface language(String language);
 
-
-    /**
-     * Show payment method selection page.
-     *
-     * @param show Show payment method selection page.
-     * @return Form builder
-     */
-    CardFormParametersInterface showPaymentMethodSelectionPage(Boolean show);
-
     /**
      * Tokenize card or mobile wallet.
      *
