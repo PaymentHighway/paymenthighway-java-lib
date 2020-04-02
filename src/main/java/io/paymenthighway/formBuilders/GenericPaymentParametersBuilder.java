@@ -37,8 +37,8 @@ public class GenericPaymentParametersBuilder<T>
    * @return Form builder
    */
   @SuppressWarnings("unchecked")
+  @Deprecated
   public T showPaymentMethodSelectionPage(Boolean show) {
-    addNameValuePair(FormBuilderConstants.SPH_SHOW_PAYMENT_METHOD_SELECTOR, show);
     return (T) this;
   }
 

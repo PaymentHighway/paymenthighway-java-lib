@@ -230,7 +230,6 @@ public class NewFormBuilderTest {
   public void testGetPaymentParameters3() {
 
     FormContainer formContainer = generatePaymentParameters()
-      .showPaymentMethodSelectionPage(false)
       .skipFormNotifications(true)
       .exitIframeOnResult(true)
       .exitIframeOn3ds(true)
