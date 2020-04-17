@@ -6,6 +6,7 @@ import io.paymenthighway.model.Token;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.request.Customer;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.model.response.transaction.ChargeMitResponse;
 import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
@@ -570,6 +571,44 @@ public class PaymentAPIConnectionTest {
   @Test
   public void testCreditTransaction1() {
     fail("Not yet implemented"); // TODO
+  }
+
+
+  @Test
+  public void testMitTransaction() {
+
+    UUID transactionId = createAndTestTransactionInit();
+
+    String pan = "4153013999700024";
+    String cvc = "024";
+    String expiryYear = "2023";
+    String expiryMonth = "11";
+    Card card = new Card(pan, expiryYear, expiryMonth, cvc);
+
+    ChargeMitRequest transaction = new ChargeMitRequest.Builder(card, 9999L, "EUR", "order").build();
+
+
+    ChargeMitResponse transactionResponse = null;
+    try {
+      transactionResponse = conn.chargeMerchantInitiatedTransaction(transactionId, transaction);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(transactionResponse);
+    assertEquals(
+        "OK",
+        transactionResponse.getResult().getMessage()
+    );
+    assertEquals(
+        "100",
+        transactionResponse.getResult().getCode()
+    );
+    assertNotNull(transactionResponse.getAcquirer());
+    assertEquals("nets", transactionResponse.getAcquirer().getId());
+    assertEquals("Nets", transactionResponse.getAcquirer().getName());
+    assertEquals("000", transactionResponse.getAcquirerResponseCode());
+    assertEquals("666", transactionResponse.getAuthorizer());
   }
 
   /**

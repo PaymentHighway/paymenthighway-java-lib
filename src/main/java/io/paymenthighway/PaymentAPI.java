@@ -6,6 +6,7 @@ import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
 import io.paymenthighway.model.response.transaction.ChargeCitResponse;
 import io.paymenthighway.model.response.transaction.ChargeMitResponse;
+import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -96,6 +97,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
+  @Deprecated
   public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
     return paymentApi.debitTransaction(transactionId, request);
@@ -160,7 +162,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse debitApplePayTransaction(UUID transactionId, ApplePayTransactionRequest request) throws IOException {
+  public DebitTransactionResponse debitApplePayTransaction(UUID transactionId, ApplePayTransactionRequest request) throws IOException {
     return paymentApi.debitApplePayTransaction(transactionId, request);
   }
 
