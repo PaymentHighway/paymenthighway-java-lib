@@ -1,7 +1,6 @@
 package io.paymenthighway.model.response.transaction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.paymenthighway.model.response.TransactionResponse;
 
 public class ChargeCitResponse extends DebitTransactionResponse {
   @JsonProperty("three_d_secure_url")

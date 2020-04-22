@@ -7,6 +7,7 @@ import io.paymenthighway.model.request.sca.*;
 import io.paymenthighway.model.response.*;
 import io.paymenthighway.model.response.transaction.ChargeCitResponse;
 import io.paymenthighway.model.response.transaction.ChargeMitResponse;
+import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.test.ExternalServiceTest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -151,7 +152,7 @@ public class PaymentAPITest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -323,7 +324,7 @@ public class PaymentAPITest {
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -380,7 +381,7 @@ public class PaymentAPITest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -393,7 +394,7 @@ public class PaymentAPITest {
     assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
     // revert transaction
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
     try {
       revertResponse = paymentAPI.revertTransaction(transactionId, "9999");
     } catch (IOException e) {
@@ -431,7 +432,7 @@ public class PaymentAPITest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -444,7 +445,7 @@ public class PaymentAPITest {
     assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
     // revert transaction
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
     try {
       revertResponse = paymentAPI.revertTransaction(transactionId);
     } catch (IOException e) {
@@ -497,7 +498,7 @@ public class PaymentAPITest {
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -509,7 +510,7 @@ public class PaymentAPITest {
     assertEquals(transactionResponse.getResult().getCode(), "100");
     assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
 
     try {
       revertResponse = paymentAPI.revertTransaction(transactionId, "9950");
@@ -566,7 +567,7 @@ public class PaymentAPITest {
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", orderId.toString());
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -609,7 +610,7 @@ public class PaymentAPITest {
         .setSplitting(splitting)
         .build();
 
-    TransactionResponse transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
+    DebitTransactionResponse transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
     assertApiResponseSuccessful(transactionResponse);
 
     TransactionStatusResponse statusResponse = paymentAPI.transactionStatus(transactionId);
@@ -875,7 +876,7 @@ public class PaymentAPITest {
     Token token = new Token(tokenResponse.getCardToken().toString());
     TransactionRequest transaction = new TransactionRequest(token, "1111", "EUR");
 
-    TransactionResponse debitResponse = null;
+    DebitTransactionResponse debitResponse = null;
 
     try {
       debitResponse = paymentAPI.debitTransaction(initResponse.getId(), transaction);
@@ -991,7 +992,7 @@ public class PaymentAPITest {
 
     MasterpassTransactionRequest request = MasterpassTransactionRequest.Builder(50L, "EUR").build();
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitMasterpassTransaction(preGeneratedMasterpassTransaction, request);
