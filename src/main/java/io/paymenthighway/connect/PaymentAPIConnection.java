@@ -159,17 +159,6 @@ public class PaymentAPIConnection implements Closeable {
     return jsonParser.mapResponse(response, MobilePayStatusResponse.class);
   }
 
-  public DebitTransactionResponse creditTransaction(UUID transactionId, TransactionRequest request) throws IOException {
-
-    final String paymentUri = "/transaction/";
-    final String actionUri = "/credit";
-    String creditUri = paymentUri + transactionId + actionUri;
-
-    String response = executePost(creditUri, createNameValuePairs(request.getRequestId()), request);
-
-    return jsonParser.mapResponse(response, DebitTransactionResponse.class);
-  }
-
   public RevertResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
     final String actionUri = "/revert";
     return transactionPost(transactionId, actionUri, request, RevertResponse.class);

@@ -587,16 +587,6 @@ public class PaymentAPIConnectionTest {
     assertEquals("yes", statusResponse.getTransaction().getCard().getCvcRequired());
   }
 
-  /**
-   * This will test successful credit transaction NOTE: NOT YET IMPLEMENTED
-   */
-  @Ignore
-  @Test
-  public void testCreditTransaction1() {
-    fail("Not yet implemented"); // TODO
-  }
-
-
   @Test
   public void testMitTransaction() {
 
