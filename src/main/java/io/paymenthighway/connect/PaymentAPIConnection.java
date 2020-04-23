@@ -159,30 +159,19 @@ public class PaymentAPIConnection implements Closeable {
     return jsonParser.mapResponse(response, MobilePayStatusResponse.class);
   }
 
-  public TransactionResponse creditTransaction(UUID transactionId, TransactionRequest request) throws IOException {
-
-    final String paymentUri = "/transaction/";
-    final String actionUri = "/credit";
-    String creditUri = paymentUri + transactionId + actionUri;
-
-    String response = executePost(creditUri, createNameValuePairs(request.getRequestId()), request);
-
-    return jsonParser.mapResponse(response, TransactionResponse.class);
-  }
-
-  public TransactionResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
+  public RevertResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
     final String actionUri = "/revert";
-    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+    return transactionPost(transactionId, actionUri, request, RevertResponse.class);
   }
 
-  public TransactionResponse revertPivoTransaction(UUID transactionId, RevertPivoTransactionRequest request) throws IOException {
+  public RevertResponse revertPivoTransaction(UUID transactionId, RevertPivoTransactionRequest request) throws IOException {
     final String actionUri = "/pivo/revert";
-    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+    return transactionPost(transactionId, actionUri, request, RevertResponse.class);
   }
 
-  public TransactionResponse revertAfterPayTransaction(UUID transactionId, RevertAfterPayTransactionRequest request) throws IOException {
+  public RevertResponse revertAfterPayTransaction(UUID transactionId, RevertAfterPayTransactionRequest request) throws IOException {
     final String actionUri = "/afterpay/revert";
-    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+    return transactionPost(transactionId, actionUri, request, RevertResponse.class);
   }
 
   public AfterPayTransactionResultResponse afterPayTransactionResult(UUID transactionId) throws IOException {

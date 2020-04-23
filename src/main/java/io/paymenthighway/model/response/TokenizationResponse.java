@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  * Tokenization response POJO
  */
-public class TokenizationResponse extends Response {
+public class TokenizationResponse extends AcquirerInfoResponse {
 
   @JsonProperty("card_token")
   UUID cardToken;
@@ -16,7 +16,7 @@ public class TokenizationResponse extends Response {
   @JsonProperty("cardholder_authentication")
   String cardholderAuthentication;
   @JsonProperty("recurring")
-  Boolean recurring;
+  private Boolean recurring;
 
   public UUID getCardToken() {
     return cardToken;
@@ -35,5 +35,4 @@ public class TokenizationResponse extends Response {
   }
 
   public Boolean getRecurring() { return recurring; }
-
 }

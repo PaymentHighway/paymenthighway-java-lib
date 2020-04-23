@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  * Common response for e.g. Commit and Result transaction requests.
  */
-abstract public class AbstractTransactionOutcomeResponse extends Response {
+abstract public class AbstractTransactionOutcomeResponse extends AcquirerInfoResponse {
 
   @JsonProperty("card_token")
   UUID cardToken;
@@ -63,5 +63,4 @@ abstract public class AbstractTransactionOutcomeResponse extends Response {
   public String getReferenceNumber() {
     return referenceNumber;
   }
-
 }

@@ -13,6 +13,15 @@ The Java Client is a Maven project built so that it will work on Java 1.7 and Ja
 
 ### Significant Changes
 
+#### V2.0.0: Siirto API removed, new response fields for card transactions, TransactionResponse removed 
+- New API version 20200401
+- Removed Siirto API 
+- `TransactionResponse` removed (replaced with more specific classes)
+- Responses for card based payments contains now new fields:
+    - `acquirer` (`id` and `name`)
+    - `acquirer_response_code` 
+    - `authorizer`
+
 #### V1.12.0: New PSD2 APIs and Debit Transaction token payment deprecated
 - The `debitTransaction` method is deprecated since Sep 14th 2019.
 - New [card token charging APIs](#charging_a_card_token) `chargeCustomerInitiatedTransaction` (CIT) and `chargeMerchantInitiatedTransaction` (MIT) in order to comply with the EU's PSD2 directive.

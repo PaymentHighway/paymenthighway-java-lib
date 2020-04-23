@@ -44,6 +44,10 @@ public class TransactionStatus {
   private Splitting splitting;
   @JsonProperty("reference_number")
   private String referenceNumber;
+  @JsonProperty("acquirer_response_code")
+  private String acquirerResponseCode;
+  @JsonProperty("authorizer")
+  private String authorizer;
 
   public UUID getId() {
     return id;
@@ -135,5 +139,13 @@ public class TransactionStatus {
 
   public String getReferenceNumber() {
     return referenceNumber;
+  }
+
+  public String getAcquirerResponseCode() {
+    return acquirerResponseCode;
+  }
+
+  public String getAuthorizer() {
+    return authorizer;
   }
 }

@@ -6,6 +6,7 @@ import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
 import io.paymenthighway.model.response.transaction.ChargeCitResponse;
 import io.paymenthighway.model.response.transaction.ChargeMitResponse;
+import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -96,7 +97,8 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
+  @Deprecated
+  public DebitTransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
     return paymentApi.debitTransaction(transactionId, request);
   }
@@ -144,7 +146,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
+  public DebitTransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
     throws IOException {
 
     return paymentApi.debitMasterpassTransaction(transactionId, request);
@@ -160,7 +162,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse debitApplePayTransaction(UUID transactionId, ApplePayTransactionRequest request) throws IOException {
+  public DebitTransactionResponse debitApplePayTransaction(UUID transactionId, ApplePayTransactionRequest request) throws IOException {
     return paymentApi.debitApplePayTransaction(transactionId, request);
   }
 
@@ -195,7 +197,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertTransaction(UUID transactionId) throws IOException {
+  public RevertResponse revertTransaction(UUID transactionId) throws IOException {
 
     RevertTransactionRequest revertRequest = new RevertTransactionRequest();
 
@@ -211,7 +213,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertPivoTransaction(UUID transactionId) throws IOException {
+  public RevertResponse revertPivoTransaction(UUID transactionId) throws IOException {
 
     RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest();
 
@@ -228,7 +230,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertPivoTransaction(UUID transactionId, String referenceNumber) throws IOException {
+  public RevertResponse revertPivoTransaction(UUID transactionId, String referenceNumber) throws IOException {
 
     RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest(referenceNumber);
 
@@ -245,7 +247,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertTransaction(UUID transactionId, String amount) throws IOException {
+  public RevertResponse revertTransaction(UUID transactionId, String amount) throws IOException {
 
     RevertTransactionRequest revertRequest = new RevertTransactionRequest(amount);
 
@@ -262,7 +264,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertPivoTransaction(UUID transactionId, Long amount) throws IOException {
+  public RevertResponse revertPivoTransaction(UUID transactionId, Long amount) throws IOException {
 
     RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest(amount);
 
@@ -280,7 +282,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertPivoTransaction(UUID transactionId, String referenceNumber, Long amount) throws IOException {
+  public RevertResponse revertPivoTransaction(UUID transactionId, String referenceNumber, Long amount) throws IOException {
 
     RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest(referenceNumber, amount);
 
@@ -297,7 +299,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertAfterPayTransaction(UUID transactionId) throws IOException {
+  public RevertResponse revertAfterPayTransaction(UUID transactionId) throws IOException {
 
     RevertAfterPayTransactionRequest revertRequest = new RevertAfterPayTransactionRequest();
 
@@ -315,7 +317,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertAfterPayTransaction(UUID transactionId, Long amount) throws IOException {
+  public RevertResponse revertAfterPayTransaction(UUID transactionId, Long amount) throws IOException {
 
     RevertAfterPayTransactionRequest revertRequest = new RevertAfterPayTransactionRequest(amount);
 

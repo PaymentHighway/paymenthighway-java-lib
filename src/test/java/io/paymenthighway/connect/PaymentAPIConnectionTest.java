@@ -6,6 +6,7 @@ import io.paymenthighway.model.Token;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.request.Customer;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.model.response.transaction.ChargeMitResponse;
 import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
@@ -66,6 +67,20 @@ public class PaymentAPIConnectionTest {
   public void tearDown() throws Exception {
   }
 
+  private void checkAcquirerInfo(AcquirerInfoResponse response, String acquirerResponseCode) {
+    assertEquals("nets", response.getAcquirer().getId());
+    assertEquals("Nets", response.getAcquirer().getName());
+    assertEquals(acquirerResponseCode, response.getAcquirerResponseCode());
+    assertEquals("666", response.getAuthorizer());
+  }
+
+  private void checkAcquirerInfo(TransactionStatus transactionStatus, String acquirerResponseCode) {
+    assertEquals("nets", transactionStatus.getAcquirer().getId());
+    assertEquals("Nets", transactionStatus.getAcquirer().getName());
+    assertEquals(acquirerResponseCode, transactionStatus.getAcquirerResponseCode());
+    assertEquals("666", transactionStatus.getAuthorizer());
+  }
+
   private UUID createAndTestTransactionInit() {
 
     InitTransactionResponse response = null;
@@ -113,6 +128,7 @@ public class PaymentAPIConnectionTest {
         tokenResponse.getCardholderAuthentication()
     );
     assertNotNull(tokenResponse.getCustomer());
+    checkAcquirerInfo(tokenResponse, "060");
 
     return tokenResponse;
   }
@@ -152,7 +168,7 @@ public class PaymentAPIConnectionTest {
         .setCommit(commit)
         .build();
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
@@ -170,6 +186,7 @@ public class PaymentAPIConnectionTest {
     assertNotNull(response.getCommitted());
     assertEquals(isCommitted, response.getCommitted());
     assertEquals(committedAmount, response.getCommittedAmount());
+    checkAcquirerInfo(response, "000");
   }
 
   private void assertRecurring(AbstractTransactionOutcomeResponse response, Boolean isRecurring) {
@@ -301,14 +318,15 @@ public class PaymentAPIConnectionTest {
         transactionResponse.getResult().getCode()
     );
     assertNotNull(transactionResponse.getFilingCode());
-    assertTrue(transactionResponse.getFilingCode().length() == 12);
+    assertEquals(12, transactionResponse.getFilingCode().length());
+    checkAcquirerInfo(transactionResponse, "000");
   }
 
   private void performAndTestRejectedDebitRequest(UUID transactionId, Long amount) {
 
     TransactionRequest transaction = new TransactionRequest.Builder(testCardTokenizeOkPaymentFails, amount, "EUR").build();
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId,
           transaction);
@@ -319,6 +337,7 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("Authorization failed", transactionResponse.getResult().getMessage());
     assertEquals("200", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "116");
   }
 
   private CommitTransactionResponse commitTransaction(UUID transactionId, String amount, String currency) {
@@ -373,7 +392,7 @@ public class PaymentAPIConnectionTest {
 
     TransactionRequest transaction = TransactionRequest.Builder(card, 99900L, "EUR").build();
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
@@ -382,6 +401,7 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("Authorization failed", transactionResponse.getResult().getMessage());
     assertEquals("200", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "209");
   }
 
   /**
@@ -401,7 +421,7 @@ public class PaymentAPIConnectionTest {
 
     TransactionRequest transaction = TransactionRequest.Builder(card, 9999L, "EUR").setCustomer(customer).build();
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId,
               transaction);
@@ -412,6 +432,7 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("OK", transactionResponse.getResult().getMessage());
     assertEquals("100", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "000");
 
     // status response test
     TransactionStatusResponse statusResponse = null;
@@ -447,6 +468,7 @@ public class PaymentAPIConnectionTest {
         "not_tested",
         statusResponse.getTransaction().getCard().getCvcRequired()
     );
+   checkAcquirerInfo(statusResponse.getTransaction(), "000");
   }
 
   /**
@@ -468,7 +490,7 @@ public class PaymentAPIConnectionTest {
         .setCommit(false)
         .build();
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
@@ -478,6 +500,7 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("OK", transactionResponse.getResult().getMessage());
     assertEquals("100", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "000");
 
     // status response test
     TransactionStatusResponse statusResponse = null;
@@ -504,6 +527,7 @@ public class PaymentAPIConnectionTest {
     assertEquals("9999", statusResponse.getTransaction().getCurrentAmount());
     assertEquals(transactionId, statusResponse.getTransaction().getId());
     assertEquals("no", statusResponse.getTransaction().getCard().getCvcRequired());
+    checkAcquirerInfo(statusResponse.getTransaction(), "000");
   }
 
   /**
@@ -525,7 +549,7 @@ public class PaymentAPIConnectionTest {
         .setCommit(false)
         .build();
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
@@ -563,13 +587,38 @@ public class PaymentAPIConnectionTest {
     assertEquals("yes", statusResponse.getTransaction().getCard().getCvcRequired());
   }
 
-  /**
-   * This will test successful credit transaction NOTE: NOT YET IMPLEMENTED
-   */
-  @Ignore
   @Test
-  public void testCreditTransaction1() {
-    fail("Not yet implemented"); // TODO
+  public void testMitTransaction() {
+
+    UUID transactionId = createAndTestTransactionInit();
+
+    String pan = "4153013999700024";
+    String cvc = "024";
+    String expiryYear = "2023";
+    String expiryMonth = "11";
+    Card card = new Card(pan, expiryYear, expiryMonth, cvc);
+
+    ChargeMitRequest transaction = new ChargeMitRequest.Builder(card, 9999L, "EUR", "order").build();
+
+
+    ChargeMitResponse transactionResponse = null;
+    try {
+      transactionResponse = conn.chargeMerchantInitiatedTransaction(transactionId, transaction);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    assertNotNull(transactionResponse);
+    assertEquals(
+        "OK",
+        transactionResponse.getResult().getMessage()
+    );
+    assertEquals(
+        "100",
+        transactionResponse.getResult().getCode()
+    );
+    assertNotNull(transactionResponse.getAcquirer());
+    checkAcquirerInfo(transactionResponse, "000");
   }
 
   /**
@@ -602,7 +651,7 @@ public class PaymentAPIConnectionTest {
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
@@ -612,9 +661,10 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("OK", transactionResponse.getResult().getMessage());
     assertEquals("100", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "000");
 
     // revert transaction test
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
 
     RevertTransactionRequest revertTransaction = new RevertTransactionRequest("9999", true);
 
@@ -659,7 +709,7 @@ public class PaymentAPIConnectionTest {
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId,
           transaction);
@@ -670,9 +720,10 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("OK", transactionResponse.getResult().getMessage());
     assertEquals("100", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "000");
 
     // revert transaction test
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
 
     RevertTransactionRequest revertTransaction = new RevertTransactionRequest("1000", true);
 
@@ -718,7 +769,7 @@ public class PaymentAPIConnectionTest {
 
     TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
@@ -728,9 +779,10 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("OK", transactionResponse.getResult().getMessage());
     assertEquals("100", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "000");
 
     // revert transaction test
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
 
     RevertTransactionRequest revertTransaction = new RevertTransactionRequest("1001");
 
@@ -776,7 +828,7 @@ public class PaymentAPIConnectionTest {
 
     TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId,
           transaction);
@@ -787,9 +839,10 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("OK", transactionResponse.getResult().getMessage());
     assertEquals("100", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "000");
 
     // revert transaction test
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
 
     RevertTransactionRequest revertTransaction = new RevertTransactionRequest();
 
@@ -836,7 +889,7 @@ public class PaymentAPIConnectionTest {
 
     TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
@@ -846,9 +899,10 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("OK", transactionResponse.getResult().getMessage());
     assertEquals("100", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "000");
 
     // revert transaction test
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
 
     RevertTransactionRequest revertTransaction = new RevertTransactionRequest("500");
 
@@ -903,7 +957,7 @@ public class PaymentAPIConnectionTest {
 
     TransactionRequest transaction = new TransactionRequest(card, "1000", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
@@ -913,9 +967,10 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("OK", transactionResponse.getResult().getMessage());
     assertEquals("100", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "000");
 
     // revert transaction test
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
 
     RevertTransactionRequest revertTransaction = new RevertTransactionRequest("500");
 
@@ -970,7 +1025,7 @@ public class PaymentAPIConnectionTest {
 
     TransactionRequest transaction = TransactionRequest.Builder(card, 9999L, "EUR").setCustomer(customer).build();
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
@@ -980,6 +1035,7 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("OK", transactionResponse.getResult().getMessage());
     assertEquals("100", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "000");
 
     // status response test
     TransactionStatusResponse statusResponse = null;
@@ -1008,6 +1064,7 @@ public class PaymentAPIConnectionTest {
 
     assertFingerprint(statusResponse.getTransaction().getCard().getPanFingerprint());
     assertFingerprint(statusResponse.getTransaction().getCard().getCardFingerprint());
+    checkAcquirerInfo(statusResponse.getTransaction(), "000");
   }
 
   /**
@@ -1042,7 +1099,7 @@ public class PaymentAPIConnectionTest {
 
     TransactionRequest transaction = TransactionRequest.Builder(card, 9999L, "EUR").setOrder(orderId).setCommit(false).setCustomer(customer).build();
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
@@ -1052,6 +1109,7 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("OK", transactionResponse.getResult().getMessage());
     assertEquals("100", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "000");
 
     // status response test
     TransactionStatusResponse statusResponse = null;
@@ -1076,9 +1134,9 @@ public class PaymentAPIConnectionTest {
     assertEquals("FI", statusResponse.getTransaction().getCustomer().getCountryCode());
     assertEquals("no", statusResponse.getTransaction().getCardholderAuthentication());
     assertEquals(orderId, statusResponse.getTransaction().getOrder());
-    assertEquals(false, statusResponse.getTransaction().getCommitted());
-    assertEquals(null, statusResponse.getTransaction().getCommittedAmount());
-
+    assertFalse(statusResponse.getTransaction().getCommitted());
+    assertNull(statusResponse.getTransaction().getCommittedAmount());
+    checkAcquirerInfo(statusResponse.getTransaction(), "000");
   }
 
   /**
@@ -1112,7 +1170,7 @@ public class PaymentAPIConnectionTest {
 
     TransactionRequest transaction = TransactionRequest.Builder(card, 9999L, "EUR").setOrder(orderId.toString()).setCustomer(customer).build();
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
     try {
       transactionResponse = conn.debitTransaction(transactionId, transaction);
     } catch (IOException e) {
@@ -1122,6 +1180,7 @@ public class PaymentAPIConnectionTest {
     assertNotNull(transactionResponse);
     assertEquals("OK", transactionResponse.getResult().getMessage());
     assertEquals("100", transactionResponse.getResult().getCode());
+    checkAcquirerInfo(transactionResponse, "000");
 
     // order search test
     OrderSearchResponse orderSearchResponse = null;
@@ -1148,6 +1207,7 @@ public class PaymentAPIConnectionTest {
     assertEquals(true, orderSearchResponse.getTransactions()[0].getCommitted());
     assertEquals(false, orderSearchResponse.getTransactions()[0].getRecurring());
     assertEquals("9999", orderSearchResponse.getTransactions()[0].getCommittedAmount());
+    checkAcquirerInfo(orderSearchResponse.getTransactions()[0], "000");
   }
 
   /**
@@ -1268,6 +1328,7 @@ public class PaymentAPIConnectionTest {
     assertNull(tokenResponse.getCustomer());
     assertEquals("no", tokenResponse.getCardholderAuthentication());
     assertEquals(Boolean.FALSE, tokenResponse.getRecurring());
+    checkAcquirerInfo(tokenResponse, "060");
   }
 
   /**
@@ -1297,6 +1358,7 @@ public class PaymentAPIConnectionTest {
     assertEquals("83.145.208.185", tokenResponse.getCustomer().getNetworkAddress()); // Manually updated :/
     assertEquals("FI", tokenResponse.getCustomer().getCountryCode());
     assertEquals("no", tokenResponse.getCardholderAuthentication());
+    checkAcquirerInfo(tokenResponse, "060");
   }
 
   /**
