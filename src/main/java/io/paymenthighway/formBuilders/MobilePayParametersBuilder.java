@@ -1,17 +1,13 @@
 package io.paymenthighway.formBuilders;
 
 public class MobilePayParametersBuilder
-  extends GenericFormBuilder<MobilePayParametersBuilder>
+  extends GenericPaymentParametersBuilder<MobilePayParametersBuilder>
   implements MobilePayParametersInterface {
 
     public MobilePayParametersBuilder(String method, String signatureKeyId, String signatureSecret, String account, String merchant,
                                       String baseUrl, String successUrl, String failureUrl, String cancelUrl,
                                       String amount, String currency, String orderId, String description) {
-        super(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl, failureUrl, cancelUrl);
-        addNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount);
-        addNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency);
-        addNameValuePair(FormBuilderConstants.SPH_ORDER, orderId);
-        addNameValuePair(FormBuilderConstants.DESCRIPTION, description);
+        super(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl, failureUrl, cancelUrl, amount, currency, orderId, description);
         serviceUri = "/form/view/mobilepay";
     }
 
@@ -68,17 +64,6 @@ public class MobilePayParametersBuilder
      */
     public MobilePayParametersBuilder subMerchantName(String subMerchantName) {
         addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_NAME, subMerchantName);
-        return this;
-    }
-
-    /**
-     * Reference number used when settling the transaction to the merchant account.
-     * Only used if one-by-ony transaction settling is configured.
-     * @param referenceNumber In RF or Finnish reference number format.
-     * @return MobilePayParametersInterface
-     */
-    public MobilePayParametersBuilder referenceNumber(String referenceNumber) {
-        addNameValuePair(FormBuilderConstants.SPH_REFERENCE_NUMBER, referenceNumber);
         return this;
     }
 }

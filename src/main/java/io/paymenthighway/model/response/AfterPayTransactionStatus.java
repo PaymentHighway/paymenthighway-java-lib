@@ -1,6 +1,7 @@
 package io.paymenthighway.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.paymenthighway.model.Splitting;
 
 import java.util.UUID;
 
@@ -39,9 +40,10 @@ public class AfterPayTransactionStatus {
   private String afterPayCaptureNumber;
   @JsonProperty("afterpay_outcome")
   private String afterPayOutcome;
-
   @JsonProperty("reference_number")
   private String referenceNumber;
+  @JsonProperty("splitting")
+  private Splitting splitting;
 
   public UUID getId() {
     return id;
@@ -121,5 +123,12 @@ public class AfterPayTransactionStatus {
 
   public String getReferenceNumber() {
     return referenceNumber;
+  }
+
+  /**
+   * @return Splitting information if the transaction was splitted into sub-merchant and commission parts.
+   */
+  public Splitting getSplitting() {
+    return splitting;
   }
 }

@@ -1,6 +1,7 @@
 package io.paymenthighway.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.paymenthighway.model.Splitting;
 import io.paymenthighway.model.applepay.PaymentData;
 
 public class ApplePayTransactionRequest extends Request {
@@ -22,6 +23,8 @@ public class ApplePayTransactionRequest extends Request {
   private Customer customer;
   @JsonProperty("reference_number")
   private String referenceNumber;
+  @JsonProperty
+  private Splitting splitting;
 
   public static Builder Builder(PaymentData paymentData, long amount, String currency) {
     return new Builder(paymentData, amount, currency);
@@ -38,6 +41,7 @@ public class ApplePayTransactionRequest extends Request {
     private Customer customer = null;
     private Boolean commit;
     private String referenceNumber;
+    private Splitting splitting;
 
     public Builder(PaymentData paymentData, long amount, String currency) {
       this.paymentData = paymentData;
@@ -57,6 +61,11 @@ public class ApplePayTransactionRequest extends Request {
 
     public Builder setCommit(Boolean commit) {
       this.commit = commit;
+      return this;
+    }
+
+    public Builder setSplitting(Splitting splitting) {
+      this.splitting = splitting;
       return this;
     }
 
@@ -88,5 +97,6 @@ public class ApplePayTransactionRequest extends Request {
     this.customer     = builder.customer;
     this.commit       = builder.commit;
     this.referenceNumber = builder.referenceNumber;
+    this.splitting = builder.splitting;
   }
 }

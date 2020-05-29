@@ -39,4 +39,6 @@ public final class FormBuilderConstants {
   public final static String SPH_ORDER_DESCRIPTION = "sph-order-description";
   public final static String SPH_SOCIAL_SECURITY_NUMBER = "sph-social-security-number";
   public final static String SPH_EMAIL_ADDRESS = "sph-email-address";
+  public final static String SPH_SPLITTING_MERCHANT_ID = "sph-splitting-merchant-id";
+  public final static String SPH_SPLITTING_AMOUNT = "sph-splitting-amount";
 }
