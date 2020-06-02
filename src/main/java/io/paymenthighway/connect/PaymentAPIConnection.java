@@ -6,6 +6,8 @@ import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.json.JsonParser;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.model.response.transaction.ChargeCitResponse;
+import io.paymenthighway.model.response.transaction.ChargeMitResponse;
 import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
@@ -111,15 +113,29 @@ public class PaymentAPIConnection implements Closeable {
   public DebitTransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
     String requestUri = String.format("/transaction/%s/debit", transactionId);
-    String response = executePost(requestUri, createNameValuePairs(), request);
+    String response = executePost(requestUri, createNameValuePairs(request.getRequestId()), request);
     return jsonParser.mapResponse(response, DebitTransactionResponse.class);
+  }
+
+  public ChargeCitResponse chargeCustomerInitiatedTransaction(UUID transactionId, ChargeCitRequest request) throws IOException {
+
+    String requestUri = String.format("/transaction/%s/card/charge/customer_initiated", transactionId);
+    String response = executePost(requestUri, createNameValuePairs(request.getRequestId()), request);
+    return jsonParser.mapResponse(response, ChargeCitResponse.class);
+  }
+
+  public ChargeMitResponse chargeMerchantInitiatedTransaction(UUID transactionId, ChargeMitRequest request) throws IOException {
+
+    String requestUri = String.format("/transaction/%s/card/charge/merchant_initiated", transactionId);
+    String response = executePost(requestUri, createNameValuePairs(request.getRequestId()), request);
+    return jsonParser.mapResponse(response, ChargeMitResponse.class);
   }
 
   public DebitTransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
       throws IOException {
 
     String requestUri = String.format("/transaction/%s/debit_masterpass", transactionId);
-    String response = executePost(requestUri, createNameValuePairs(), request);
+    String response = executePost(requestUri, createNameValuePairs(request.getRequestId()), request);
     return jsonParser.mapResponse(response, DebitTransactionResponse.class);
   }
 
@@ -127,13 +143,13 @@ public class PaymentAPIConnection implements Closeable {
       throws IOException {
 
     String requestUri = String.format("/transaction/%s/debit_applepay", transactionId);
-    String response = executePost(requestUri, createNameValuePairs(), request);
+    String response = executePost(requestUri, createNameValuePairs(request.getRequestId()), request);
     return jsonParser.mapResponse(response, DebitTransactionResponse.class);
   }
 
   public MobilePayInitResponse initMobilePaySession(MobilePayInitRequest request) throws IOException {
     String requestUri = "/app/mobilepay";
-    String response = executePost(requestUri, createNameValuePairs(), request);
+    String response = executePost(requestUri, createNameValuePairs(request.getRequestId()), request);
     return jsonParser.mapResponse(response, MobilePayInitResponse.class);
   }
 
@@ -149,30 +165,34 @@ public class PaymentAPIConnection implements Closeable {
     return jsonParser.mapResponse(response, PivoInitResponse.class);
   }
 
-  public TransactionResponse creditTransaction(UUID transactionId, TransactionRequest request) throws IOException {
-
-    final String paymentUri = "/transaction/";
-    final String actionUri = "/credit";
-    String creditUri = paymentUri + transactionId + actionUri;
-
-    String response = executePost(creditUri, createNameValuePairs(), request);
-
-    return jsonParser.mapResponse(response, TransactionResponse.class);
-  }
-
-  public TransactionResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
+  public RevertResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
     final String actionUri = "/revert";
-    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+    return transactionPost(transactionId, actionUri, request, RevertResponse.class);
   }
 
-  public TransactionResponse revertPivoTransaction(UUID transactionId, RevertPivoTransactionRequest request) throws IOException {
+  public RevertResponse revertPivoTransaction(UUID transactionId, RevertPivoTransactionRequest request) throws IOException {
     final String actionUri = "/pivo/revert";
-    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+    return transactionPost(transactionId, actionUri, request, RevertResponse.class);
   }
 
-  public TransactionResponse revertSiirtoTransaction(UUID transactionId, RevertSiirtoTransactionRequest request) throws IOException {
-    final String actionUri = "/siirto/revert";
-    return transactionPost(transactionId, actionUri, request, TransactionResponse.class);
+  public RevertResponse revertAfterPayTransaction(UUID transactionId, RevertAfterPayTransactionRequest request) throws IOException {
+    final String actionUri = "/afterpay/revert";
+    return transactionPost(transactionId, actionUri, request, RevertResponse.class);
+  }
+
+  public AfterPayTransactionResultResponse afterPayTransactionResult(UUID transactionId) throws IOException {
+    final String actionUri = "/afterpay/result";
+    return transactionGet(transactionId, actionUri, AfterPayTransactionResultResponse.class);
+  }
+
+  public AfterPayTransactionCommitResponse commitAfterPayTransaction(UUID transactionId, CommitAfterPayTransactionRequest request) throws IOException {
+    final String actionUri = "/afterpay/commit";
+    return transactionPost(transactionId, actionUri, request, AfterPayTransactionCommitResponse.class);
+  }
+
+  public AfterPayTransactionStatusResponse afterPayTransactionStatus(UUID transactionId) throws IOException {
+    String response = executeGet("/transaction/" + transactionId + "/afterpay", createNameValuePairs());
+    return jsonParser.mapResponse(response, AfterPayTransactionStatusResponse.class);
   }
 
   public CommitTransactionResponse commitTransaction(UUID transactionId, CommitTransactionRequest request) throws IOException {
@@ -195,11 +215,6 @@ public class PaymentAPIConnection implements Closeable {
     return transactionGet(transactionId, actionUri, PivoTransactionResultResponse.class);
   }
 
-  public SiirtoTransactionResultResponse siirtoTransactionResult(UUID transactionId) throws IOException {
-    final String actionUri = "/siirto/result";
-    return transactionGet(transactionId, actionUri, SiirtoTransactionResultResponse.class);
-  }
-
   public TransactionStatusResponse transactionStatus(UUID transactionId) throws IOException {
     return transactionGet(transactionId, "",  TransactionStatusResponse.class);
   }
@@ -209,15 +224,10 @@ public class PaymentAPIConnection implements Closeable {
     return jsonParser.mapResponse(response, PivoTransactionStatusResponse.class);
   }
 
-  public SiirtoTransactionStatusResponse siirtoTransactionStatus(UUID transactionId) throws IOException {
-      String response = executeGet("/transaction/siirto/" + transactionId, createNameValuePairs());
-      return jsonParser.mapResponse(response, SiirtoTransactionStatusResponse.class);
-  }
-
   private <T> T transactionPost(UUID transactionId, String actionUri, Request request, Class<T> clazz) throws IOException {
     final String paymentUri = "/transaction/";
     String uri = paymentUri + transactionId + actionUri;
-    String response = executePost(uri, createNameValuePairs(), request);
+    String response = executePost(uri, createNameValuePairs(request.getRequestId()), request);
 
     return jsonParser.mapResponse(response, clazz);
   }
@@ -345,18 +355,22 @@ public class PaymentAPIConnection implements Closeable {
     return ss.createSignature(method, uri, nameValuePairs, json);
   }
 
+  private List<NameValuePair> createNameValuePairs() {
+    return createNameValuePairs(PaymentHighwayUtility.createRequestId());
+  }
+
   /**
    * Create name value pairs
    *
    * @return
    */
-  private List<NameValuePair> createNameValuePairs() {
+  private List<NameValuePair> createNameValuePairs(String requestId) {
     List<NameValuePair> nameValuePairs = new ArrayList<>();
     nameValuePairs.add(new BasicNameValuePair("sph-api-version", SPH_API_VERSION));
     nameValuePairs.add(new BasicNameValuePair("sph-account", this.account));
     nameValuePairs.add(new BasicNameValuePair("sph-merchant", this.merchant));
     nameValuePairs.add(new BasicNameValuePair("sph-timestamp", PaymentHighwayUtility.getUtcTimestamp()));
-    nameValuePairs.add(new BasicNameValuePair("sph-request-id", PaymentHighwayUtility.createRequestId()));
+    nameValuePairs.add(new BasicNameValuePair("sph-request-id", requestId));
     return nameValuePairs;
   }
 

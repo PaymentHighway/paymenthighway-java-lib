@@ -31,10 +31,14 @@ public final class FormBuilderConstants {
   public final static String SPH_WEBHOOK_FAILURE_URL = "sph-webhook-failure-url";
   public final static String SPH_WEBHOOK_CANCEL_URL = "sph-webhook-cancel-url";
   public final static String SPH_WEBHOOK_DELAY = "sph-webhook-delay";
-  public final static String SPH_SHOW_PAYMENT_METHOD_SELECTOR = "sph-show-payment-method-selector";
   public final static String SPH_TOKENIZE = "sph-tokenize";
   public final static String SPH_REQUEST_SHIPPING_ADDRESS = "sph-request-shipping-address";
   public final static String SPH_PHONE_NUMBER = "sph-phone-number";
   public final static String SPH_REFERENCE_NUMBER = "sph-reference-number";
   public final static String SPH_APP_URL = "sph-app-url";
+  public final static String SPH_ORDER_DESCRIPTION = "sph-order-description";
+  public final static String SPH_SOCIAL_SECURITY_NUMBER = "sph-social-security-number";
+  public final static String SPH_EMAIL_ADDRESS = "sph-email-address";
+  public final static String SPH_SPLITTING_MERCHANT_ID = "sph-splitting-merchant-id";
+  public final static String SPH_SPLITTING_AMOUNT = "sph-splitting-amount";
 }

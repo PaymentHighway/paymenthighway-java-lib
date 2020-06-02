@@ -1,17 +1,13 @@
 package io.paymenthighway.formBuilders;
 
 public class MobilePayParametersBuilder
-  extends GenericFormBuilder<MobilePayParametersBuilder>
+  extends GenericPaymentParametersBuilder<MobilePayParametersBuilder>
   implements MobilePayParametersInterface {
 
     public MobilePayParametersBuilder(String method, String signatureKeyId, String signatureSecret, String account, String merchant,
                                       String baseUrl, String successUrl, String failureUrl, String cancelUrl,
                                       String amount, String currency, String orderId, String description) {
-        super(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl, failureUrl, cancelUrl);
-        addNameValuePair(FormBuilderConstants.SPH_AMOUNT, amount);
-        addNameValuePair(FormBuilderConstants.SPH_CURRENCY, currency);
-        addNameValuePair(FormBuilderConstants.SPH_ORDER, orderId);
-        addNameValuePair(FormBuilderConstants.DESCRIPTION, description);
+        super(method, signatureKeyId, signatureSecret, account, merchant, baseUrl, successUrl, failureUrl, cancelUrl, amount, currency, orderId, description);
         serviceUri = "/form/view/mobilepay";
     }
 

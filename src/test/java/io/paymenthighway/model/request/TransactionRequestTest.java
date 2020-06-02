@@ -36,7 +36,7 @@ public class TransactionRequestTest {
     String expiryMonth = "11";
     Card card = new Card(pan, cvc, expiryYear, expiryMonth);
 
-    TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
+    TransactionRequest transaction = TransactionRequest.Builder(card, 9999, "EUR").build();
 
     JsonGenerator jsonGenerator = new JsonGenerator();
     String json = jsonGenerator.createTransactionJson(transaction);
@@ -50,7 +50,7 @@ public class TransactionRequestTest {
 
     Token token = new Token(UUID.randomUUID());
 
-    TransactionRequest transaction = new TransactionRequest(token, "9999", "EUR", true);
+    TransactionRequest transaction = TransactionRequest.Builder(token, 9999, "EUR").build();
 
     JsonGenerator jsonGenerator = new JsonGenerator();
     String json = jsonGenerator.createTransactionJson(transaction);

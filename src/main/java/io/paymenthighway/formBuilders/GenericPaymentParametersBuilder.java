@@ -37,8 +37,8 @@ public class GenericPaymentParametersBuilder<T>
    * @return Form builder
    */
   @SuppressWarnings("unchecked")
+  @Deprecated
   public T showPaymentMethodSelectionPage(Boolean show) {
-    addNameValuePair(FormBuilderConstants.SPH_SHOW_PAYMENT_METHOD_SELECTOR, show);
     return (T) this;
   }
 
@@ -51,6 +51,32 @@ public class GenericPaymentParametersBuilder<T>
   @SuppressWarnings("unchecked")
   public T tokenize(Boolean tokenize) {
     addNameValuePair(FormBuilderConstants.SPH_TOKENIZE, tokenize);
+    return (T) this;
+  }
+
+  /**
+   * Reference number used when settling the transaction to the merchant account.
+   * Only used if one-by-ony transaction settling is configured.
+   *
+   * @param referenceNumber In RF or Finnish reference number format.
+   * @return Form builder
+   */
+  @SuppressWarnings("unchecked")
+  public T referenceNumber(String referenceNumber) {
+    addNameValuePair(FormBuilderConstants.SPH_REFERENCE_NUMBER, referenceNumber);
+    return (T) this;
+  }
+
+  /**
+   * Payment splitting
+   *
+   * @param merchantId Sub-merchant ID from the settlements provider. Not to be confused with the sph-merchant value.
+   * @param amount The amount settled to the sub-merchant's account. The rest will be considered as the main merchant's commission. In the smallest currency unit. E.g. 99.99 € = 9999.
+   * @return Form builder
+   */
+  public T splitting(Long merchantId, Long amount) {
+    addNameValuePair(FormBuilderConstants.SPH_SPLITTING_MERCHANT_ID, merchantId.toString());
+    addNameValuePair(FormBuilderConstants.SPH_SPLITTING_AMOUNT, amount.toString());
     return (T) this;
   }
 }

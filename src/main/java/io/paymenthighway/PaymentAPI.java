@@ -4,6 +4,9 @@ import io.paymenthighway.connect.PaymentAPIConnection;
 import io.paymenthighway.exception.AuthenticationException;
 import io.paymenthighway.model.request.*;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.model.response.transaction.ChargeCitResponse;
+import io.paymenthighway.model.response.transaction.ChargeMitResponse;
+import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.impl.client.CloseableHttpClient;
 
@@ -94,9 +97,43 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
+  @Deprecated
+  public DebitTransactionResponse debitTransaction(UUID transactionId, TransactionRequest request) throws IOException {
 
     return paymentApi.debitTransaction(transactionId, request);
+  }
+
+  /**
+   * Merchant Customer Initiated Transaction (MIT)
+   * Used when a customer is not participating in the payment flow.
+   * A contract and understanding between the merchant and the customer must be established, allowing this kind of payments.
+   *
+   * @param transactionId Transaction id
+   * @param request Charge Mit Transaction Request
+   * @return ChargeMitResponse response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public ChargeMitResponse chargeMerchantInitiatedTransaction(UUID transactionId, ChargeMitRequest request) throws IOException {
+
+    return paymentApi.chargeMerchantInitiatedTransaction(transactionId, request);
+  }
+
+  /**
+   * Charge Customer Initiated Transaction (CIT)
+   * Used when a customer is participating in the payment flow.
+   *
+   * @param transactionId Transaction id
+   * @param request Charge Cit Transaction Request
+   * @return ChargeCitResponse response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public ChargeCitResponse chargeCustomerInitiatedTransaction(UUID transactionId, ChargeCitRequest request) throws IOException {
+
+    return paymentApi.chargeCustomerInitiatedTransaction(transactionId, request);
   }
 
   /**
@@ -109,7 +146,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
+  public DebitTransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
     throws IOException {
 
     return paymentApi.debitMasterpassTransaction(transactionId, request);
@@ -125,7 +162,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse debitApplePayTransaction(UUID transactionId, ApplePayTransactionRequest request) throws IOException {
+  public DebitTransactionResponse debitApplePayTransaction(UUID transactionId, ApplePayTransactionRequest request) throws IOException {
     return paymentApi.debitApplePayTransaction(transactionId, request);
   }
 
@@ -171,28 +208,11 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertTransaction(UUID transactionId) throws IOException {
+  public RevertResponse revertTransaction(UUID transactionId) throws IOException {
 
     RevertTransactionRequest revertRequest = new RevertTransactionRequest();
 
     return paymentApi.revertTransaction(transactionId, revertRequest);
-  }
-
-  /**
-   * Payment Highway Revert Siirto Transaction
-   *
-   * @param transactionId Transaction id
-   * @param referenceNumber Reference number
-   * @return Transaction response
-   * @throws HttpResponseException Exception
-   * @throws AuthenticationException Exception
-   * @throws IOException Exception
-   */
-  public TransactionResponse revertSiirtoTransaction(UUID transactionId, String referenceNumber) throws IOException {
-
-    RevertSiirtoTransactionRequest revertRequest = new RevertSiirtoTransactionRequest(referenceNumber);
-
-    return paymentApi.revertSiirtoTransaction(transactionId, revertRequest);
   }
 
   /**
@@ -204,7 +224,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertPivoTransaction(UUID transactionId) throws IOException {
+  public RevertResponse revertPivoTransaction(UUID transactionId) throws IOException {
 
     RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest();
 
@@ -221,7 +241,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertPivoTransaction(UUID transactionId, String referenceNumber) throws IOException {
+  public RevertResponse revertPivoTransaction(UUID transactionId, String referenceNumber) throws IOException {
 
     RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest(referenceNumber);
 
@@ -238,29 +258,11 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertTransaction(UUID transactionId, String amount) throws IOException {
+  public RevertResponse revertTransaction(UUID transactionId, String amount) throws IOException {
 
     RevertTransactionRequest revertRequest = new RevertTransactionRequest(amount);
 
     return paymentApi.revertTransaction(transactionId, revertRequest);
-  }
-
-  /**
-   * Payment Highway Revert Siirto Transaction with amount
-   *
-   * @param transactionId Transaction id
-   * @param referenceNumber Reference number
-   * @param amount Amount to revert
-   * @return Transaction response
-   * @throws HttpResponseException Exception
-   * @throws AuthenticationException Exception
-   * @throws IOException Exception
-   */
-  public TransactionResponse revertSiirtoTransaction(UUID transactionId, String referenceNumber, Long amount) throws IOException {
-
-    RevertSiirtoTransactionRequest revertRequest = new RevertSiirtoTransactionRequest(referenceNumber, amount);
-
-    return paymentApi.revertSiirtoTransaction(transactionId, revertRequest);
   }
 
   /**
@@ -273,7 +275,7 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertPivoTransaction(UUID transactionId, Long amount) throws IOException {
+  public RevertResponse revertPivoTransaction(UUID transactionId, Long amount) throws IOException {
 
     RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest(amount);
 
@@ -291,12 +293,96 @@ public class PaymentAPI implements Closeable {
    * @throws AuthenticationException Exception
    * @throws IOException Exception
    */
-  public TransactionResponse revertPivoTransaction(UUID transactionId, String referenceNumber, Long amount) throws IOException {
+  public RevertResponse revertPivoTransaction(UUID transactionId, String referenceNumber, Long amount) throws IOException {
 
     RevertPivoTransactionRequest revertRequest = new RevertPivoTransactionRequest(referenceNumber, amount);
 
     return paymentApi.revertPivoTransaction(transactionId, revertRequest);
   }
+
+  /**
+   * Revert AfterPay Transaction fully
+   * Committed payments will be refunded, uncommitted ones voided.
+   *
+   * @param transactionId Transaction id
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public RevertResponse revertAfterPayTransaction(UUID transactionId) throws IOException {
+
+    RevertAfterPayTransactionRequest revertRequest = new RevertAfterPayTransactionRequest();
+
+    return paymentApi.revertAfterPayTransaction(transactionId, revertRequest);
+  }
+
+  /**
+   * Revert AfterPay Transaction with the given amount
+   * Committed payments will be refunded, uncommitted ones voided.
+   *
+   * @param transactionId Transaction id
+   * @param amount Amount to revert
+   * @return Transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public RevertResponse revertAfterPayTransaction(UUID transactionId, Long amount) throws IOException {
+
+    RevertAfterPayTransactionRequest revertRequest = new RevertAfterPayTransactionRequest(amount);
+
+    return paymentApi.revertAfterPayTransaction(transactionId, revertRequest);
+  }
+
+  /**
+   * AfterPay Transaction Result Request
+   * Used to find out whether or not an uncommitted transaction succeeded, without actually committing (capturing) it.
+   *
+   * @param transactionId Transaction id
+   * @return AfterPay transaction result response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public AfterPayTransactionResultResponse afterPayTransactionResult(UUID transactionId) throws IOException {
+
+    return paymentApi.afterPayTransactionResult(transactionId);
+  }
+
+
+  /**
+   * AfterPay Transaction Commit Request
+   * Used to commit (capture) the transaction.
+   *
+   * @param transactionId Transaction id
+   * @param amount The amount to commit, must be less or equal than the initial transaction amount
+   * @return Commit transaction response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public AfterPayTransactionCommitResponse commitAfterPayTransaction(UUID transactionId, Long amount) throws IOException {
+
+    CommitAfterPayTransactionRequest commitRequest = new CommitAfterPayTransactionRequest(amount);
+
+    return paymentApi.commitAfterPayTransaction(transactionId, commitRequest);
+  }
+
+  /**
+   * AfterPay Transaction Status Request
+   *
+   * @param transactionId Transaction id
+   * @return AfterPay transaction status response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public AfterPayTransactionStatusResponse afterPayTransactionStatus(UUID transactionId) throws IOException {
+
+    return paymentApi.afterPayTransactionStatus(transactionId);
+  }
+
 
   /**
    * Payment Highway Transaction Status Request
@@ -324,20 +410,6 @@ public class PaymentAPI implements Closeable {
   public PivoTransactionStatusResponse pivoTransactionStatus(UUID transactionId) throws IOException {
 
     return paymentApi.pivoTransactionStatus(transactionId);
-  }
-
-  /**
-   * Payment Highway Siirto Transaction Status Request
-   *
-   * @param transactionId Transaction id
-   * @return Transaction status response
-   * @throws HttpResponseException Exception
-   * @throws AuthenticationException Exception
-   * @throws IOException Exception
-   */
-  public SiirtoTransactionStatusResponse siirtoTransactionStatus(UUID transactionId) throws IOException {
-
-      return paymentApi.siirtoTransactionStatus(transactionId);
   }
 
   /**
@@ -416,21 +488,6 @@ public class PaymentAPI implements Closeable {
   public PivoTransactionResultResponse pivoTransactionResult(UUID transactionId) throws IOException {
 
     return paymentApi.pivoTransactionResult(transactionId);
-  }
-
-  /**
-   * Payment Highway Siirto Transaction Result Request
-   * Used to find out whether or not an siirto transaction succeeded.
-   *
-   * @param transactionId Transaction id
-   * @return Transaction result response
-   * @throws HttpResponseException Exception
-   * @throws AuthenticationException Exception
-   * @throws IOException Exception
-   */
-  public SiirtoTransactionResultResponse siirtoTransactionResult(UUID transactionId) throws IOException {
-
-    return paymentApi.siirtoTransactionResult(transactionId);
   }
 
   /**

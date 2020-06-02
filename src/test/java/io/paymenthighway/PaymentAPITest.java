@@ -3,7 +3,11 @@ package io.paymenthighway;
 import io.paymenthighway.model.Splitting;
 import io.paymenthighway.model.Token;
 import io.paymenthighway.model.request.*;
+import io.paymenthighway.model.request.sca.*;
 import io.paymenthighway.model.response.*;
+import io.paymenthighway.model.response.transaction.ChargeCitResponse;
+import io.paymenthighway.model.response.transaction.ChargeMitResponse;
+import io.paymenthighway.model.response.transaction.DebitTransactionResponse;
 import io.paymenthighway.test.ExternalServiceTest;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -73,7 +77,11 @@ public class PaymentAPITest {
     return new PaymentAPI(serviceUrl, signatureKeyId, signatureSecret, account, merchant);
   }
 
-  private Card validTestCard = new Card("4153013999700024", "2023", "11", "024");
+  static private final String RESULT_CODE_OK = "100";
+  static private final String RESULT_CODE_SOFT_DECLINE = "400";
+
+  private static Card validTestCard = new Card("4153013999700321", "2023", "11", "321");
+  private static Card softDeclineCard = new Card("4153013999701170", "2023", "11", "170");
 
   private UUID initTransaction(PaymentAPI paymentAPI) throws IOException {
     InitTransactionResponse response = paymentAPI.initTransaction();
@@ -85,6 +93,19 @@ public class PaymentAPITest {
     assertNotNull(response);
     assertEquals(response.getResult().getMessage(), "OK");
     assertEquals(response.getResult().getCode(), "100");
+  }
+
+  private ChargeCitResponse performCustomerInitiatedTransaction(
+      Long amount,
+      Card card,
+      StrongCustomerAuthentication strongCustomerAuthentication
+  ) throws IOException {
+    PaymentAPI paymentAPI = createPaymentAPI();
+    UUID transactionId = initTransaction(paymentAPI);
+
+    ChargeCitRequest request = new ChargeCitRequest.Builder(card, amount, "EUR", "test-order-id", strongCustomerAuthentication).build();
+
+    return  paymentAPI.chargeCustomerInitiatedTransaction(transactionId, request);
   }
 
   @Test
@@ -131,7 +152,7 @@ public class PaymentAPITest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -142,6 +163,140 @@ public class PaymentAPITest {
     assertNotNull(transactionResponse);
     assertEquals(transactionResponse.getResult().getCode(), "100");
     assertEquals(transactionResponse.getResult().getMessage(), "OK");
+  }
+
+  @Test
+  public void testCitWithCardNoSoftDecline() throws IOException {
+
+    Urls urls = Urls.Builder("https://success.example.com", "https://failure.example.com", "https://cancel.example.com").build();
+    StrongCustomerAuthentication strongCustomerAuthentication = StrongCustomerAuthentication.Builder(urls).build();
+
+    ChargeCitResponse citResponse = performCustomerInitiatedTransaction(99L, validTestCard, strongCustomerAuthentication);
+
+    assertNotNull(citResponse);
+    assertEquals(RESULT_CODE_OK, citResponse.getResult().getCode());
+    assertEquals("OK", citResponse.getResult().getMessage());
+  }
+
+  @Test
+  public void testCitWithCardSoftDecline() throws IOException {
+
+    Urls urls = Urls.Builder("https://success.example.com", "https://failure.example.com", "https://cancel.example.com").build();
+    StrongCustomerAuthentication strongCustomerAuthentication = StrongCustomerAuthentication.Builder(urls).build();
+
+    ChargeCitResponse citResponse = performCustomerInitiatedTransaction(99L, softDeclineCard, strongCustomerAuthentication);
+
+    assertNotNull(citResponse);
+    assertEquals(RESULT_CODE_SOFT_DECLINE, citResponse.getResult().getCode());
+
+    String resultMessage = citResponse.getResult().getMessage();
+    assertNotNull(citResponse);
+    assertTrue("Unexpected result: " + resultMessage, resultMessage.matches(".*Soft Decline.*"));
+  }
+
+  @Test
+  public void testCitWithFullScaDetails() throws IOException {
+
+    Long testAmountInMinorUnits = 9999L;
+
+    Urls returnUrls = Urls.Builder("https://success.example.com", "https://failure.example.com","https://cancel.example.com")
+        .setWebhookSuccessUrl("https://example.com/webhook/success")
+        .setWebhookCancelUrl("https://example.com/webhook/cancel")
+        .setWebhookFailureUrl("https://example.com/webhook/failure")
+        .setWebhookDelay(0)
+        .build();
+
+    CustomerDetails customerDetails = CustomerDetails.Builder()
+        .setShippingAddressMatchesBillingAddress(true)
+        .setName("Eric Example")
+        .setEmail("eric.example@example.com")
+        .setHomePhone(new PhoneNumber("358", "123456789"))
+        .setMobilePhone(new PhoneNumber("358", "441234566"))
+        .setWorkPhone(new PhoneNumber("358", "441234566"))
+        .build();
+
+    Address address = Address.Builder()
+      .setCity("Helsinki")
+      .setCountry("246")
+      .setAddressLine1("Arkadiankatu 1")
+      .setAddressLine2("Something")
+      .setAddressLine3("Else")
+      .setPostCode("00101")
+      .setState("18")
+      .build();
+
+    CustomerAccount customerAccount = CustomerAccount.Builder()
+        .setAccountAgeIndicator(CustomerAccount.AccountAgeIndicator.MoreThan60Days)
+        .setAccountDate("2018-07-05")
+        .setChangeIndicator(CustomerAccount.ChangeIndicator.MoreThan60Days)
+        .setChangeDate("2018-09-11")
+        .setPasswordChangeIndicator(CustomerAccount.PasswordChangeIndicator.NoChange)
+        .setPasswordChangeDate("2018-07-05")
+        .setNumberOfRecentPurchases(7)
+        .setNumberOfAddCardAttemptsDay(1)
+        .setNumberOfTransactionActivityDay(3)
+        .setNumberOfTransactionActivityYear(8)
+        .setShippingAddressIndicator(CustomerAccount.ShippingAddressIndicator.Between30And60Days)
+        .setShippingAddressUsageDate("2019-07-01")
+        .setSuspiciousActivity(CustomerAccount.SuspiciousActivity.NoSuspiciousActivity)
+        .build();
+
+    Purchase purchase = Purchase.Builder()
+        .setShippingIndicator(Purchase.ShippingIndicator.ShipToCardholdersAddress)
+        .setDeliveryTimeFrame(Purchase.DeliveryTimeFrame.SameDayShipping)
+        .setDeliveryEmail("eric.example@example.com")
+        .setReorderItemsIndicator(Purchase.ReorderItemsIndicator.FirstTimeOrdered)
+        .setPreOrderPurchaseIndicator(Purchase.PreOrderItemsIndicator.FutureAvailability)
+        .setPreOrderDate("2025-12-10")
+        .setShippingNameIndicator(Purchase.ShippingNameIndicator.AccountNameMatchesShippingName)
+        .setGiftCardAmount(testAmountInMinorUnits)
+        .setGiftCardCount(20)
+        .build();
+
+    CustomerAuthenticationInfo customerAuthenticationInfo = CustomerAuthenticationInfo.Builder()
+        .setMethod(CustomerAuthenticationInfo.Method.OwnCredentials)
+        .setTimestamp("2019-08-27T09:22:52Z")
+        .setData("Unused")
+        .build();
+
+    StrongCustomerAuthentication strongCustomerAuthentication = new StrongCustomerAuthentication.Builder(returnUrls)
+        .setCustomerDetails(customerDetails)
+        .setCustomerAccount(customerAccount)
+        .setPurchase(purchase)
+        .setBillingAddress(address)
+        .setShippingAddress(address)
+        .setCustomerAuthenticationInfo(customerAuthenticationInfo)
+        .setDesiredChallengeWindowSize(StrongCustomerAuthentication.DesiredChallengeWindowSize.Window600x400)
+        .setExitIframeOnResult(false)
+        .setExitIframeOnThreeDSecure(false)
+        .build();
+
+    ChargeCitResponse citResponse = performCustomerInitiatedTransaction(
+        testAmountInMinorUnits,
+        validTestCard,
+        strongCustomerAuthentication
+    );
+
+    assertNotNull(citResponse);
+    assertEquals(RESULT_CODE_OK, citResponse.getResult().getCode());
+    assertEquals("OK", citResponse.getResult().getMessage());
+  }
+
+  @Test
+  public void testSoftDeclineCardIsAcceptedWithMitRequest() throws IOException {
+
+    PaymentAPI paymentAPI = createPaymentAPI();
+    UUID transactionId = initTransaction(paymentAPI);
+
+    ChargeMitRequest request = ChargeMitRequest.Builder(
+        softDeclineCard, 99L, "EUR", "test-order-id"
+    ).setReferenceNumber("1313").build();
+
+    ChargeMitResponse chargeMitResponse = paymentAPI.chargeMerchantInitiatedTransaction(transactionId, request);
+
+    assertNotNull(chargeMitResponse);
+    assertEquals(RESULT_CODE_OK, chargeMitResponse.getResult().getCode());
+    assertEquals("OK", chargeMitResponse.getResult().getMessage());
   }
 
   @Test
@@ -169,7 +324,7 @@ public class PaymentAPITest {
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -226,7 +381,7 @@ public class PaymentAPITest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -239,7 +394,7 @@ public class PaymentAPITest {
     assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
     // revert transaction
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
     try {
       revertResponse = paymentAPI.revertTransaction(transactionId, "9999");
     } catch (IOException e) {
@@ -277,7 +432,7 @@ public class PaymentAPITest {
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", true);
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -290,7 +445,7 @@ public class PaymentAPITest {
     assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
     // revert transaction
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
     try {
       revertResponse = paymentAPI.revertTransaction(transactionId);
     } catch (IOException e) {
@@ -343,7 +498,7 @@ public class PaymentAPITest {
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -355,7 +510,7 @@ public class PaymentAPITest {
     assertEquals(transactionResponse.getResult().getCode(), "100");
     assertEquals(transactionResponse.getResult().getMessage(), "OK");
 
-    TransactionResponse revertResponse = null;
+    RevertResponse revertResponse = null;
 
     try {
       revertResponse = paymentAPI.revertTransaction(transactionId, "9950");
@@ -412,7 +567,7 @@ public class PaymentAPITest {
 
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR", orderId.toString());
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
@@ -455,7 +610,7 @@ public class PaymentAPITest {
         .setSplitting(splitting)
         .build();
 
-    TransactionResponse transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
+    DebitTransactionResponse transactionResponse = paymentAPI.debitTransaction(transactionId, transaction);
     assertApiResponseSuccessful(transactionResponse);
 
     TransactionStatusResponse statusResponse = paymentAPI.transactionStatus(transactionId);
@@ -721,7 +876,7 @@ public class PaymentAPITest {
     Token token = new Token(tokenResponse.getCardToken().toString());
     TransactionRequest transaction = new TransactionRequest(token, "1111", "EUR");
 
-    TransactionResponse debitResponse = null;
+    DebitTransactionResponse debitResponse = null;
 
     try {
       debitResponse = paymentAPI.debitTransaction(initResponse.getId(), transaction);
@@ -837,7 +992,7 @@ public class PaymentAPITest {
 
     MasterpassTransactionRequest request = MasterpassTransactionRequest.Builder(50L, "EUR").build();
 
-    TransactionResponse transactionResponse = null;
+    DebitTransactionResponse transactionResponse = null;
 
     try {
       transactionResponse = paymentAPI.debitMasterpassTransaction(preGeneratedMasterpassTransaction, request);
