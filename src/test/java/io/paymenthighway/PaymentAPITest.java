@@ -1068,6 +1068,7 @@ public class PaymentAPITest {
         .setAppUrl("myapp://paid")
         .setLanguage("FI")
         .setOrder(UUID.randomUUID().toString())
+        .setSplitting(new Splitting("12345", 10L))
         .build();
 
     PaymentAPI paymentAPI = createPaymentAPI();

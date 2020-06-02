@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class PaymentRequestBuilderTest {
     @Test
-    public void testPivoRequestBuilder() {
+    public void testPivoRequestBuilder() throws Exception {
         PivoInitRequest request = PivoInitRequest.Builder(1L, "EUR")
             .setWebhookCancelUrl("http://www.example.com/cancel")
             .setWebhookFailureUrl("http://www.example.com/failure")

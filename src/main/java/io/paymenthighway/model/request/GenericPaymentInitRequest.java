@@ -1,6 +1,7 @@
 package io.paymenthighway.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.paymenthighway.model.Splitting;
 
 public class GenericPaymentInitRequest extends Request {
     @JsonProperty("amount") protected Long amount;
@@ -14,6 +15,8 @@ public class GenericPaymentInitRequest extends Request {
     @JsonProperty("webhook_success_url") protected String webhookSuccessUrl;
     @JsonProperty("webhook_cancel_url") protected String webhookCancelUrl;
     @JsonProperty("webhook_failure_url") protected String webhookFailureUrl;
+    @JsonProperty protected Splitting splitting;
+
     /**
      *
      * @return amount
@@ -92,5 +95,13 @@ public class GenericPaymentInitRequest extends Request {
      */
     public boolean getIsEstimatedAmount() {
         return isEstimatedAmount;
+    }
+
+    /**
+     *
+     * @return splitting
+     */
+    public Splitting getSplitting() {
+        return splitting;
     }
 }

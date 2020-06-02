@@ -1,5 +1,10 @@
 package io.paymenthighway.model.request;
 
+import io.paymenthighway.model.Splitting;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class GenericPaymentInitBuilder<T> {
     protected Long amount;
     protected String currency;
@@ -9,9 +14,10 @@ public class GenericPaymentInitBuilder<T> {
     protected String subMerchantId;
     protected String subMerchantName;
     protected boolean isEstimatedAmount;
-    protected String webhookSuccessUrl;
-    protected String webhookCancelUrl;
-    protected String webhookFailureUrl;
+    protected URL webhookSuccessUrl;
+    protected URL webhookCancelUrl;
+    protected URL webhookFailureUrl;
+    protected Splitting splitting;
 
     public GenericPaymentInitBuilder(Long amount, String currency) {
         this.amount = amount;
@@ -33,36 +39,69 @@ public class GenericPaymentInitBuilder<T> {
     /**
      * The URL the PH server makes request to after the transaction is handled. The payment itself may still be rejected.
      *
-     * @param url Webhook url to call when request is successfully handled
+     * @param webhookSuccessUrl Webhook url to call when request is successfully handled
      * @return builder
      */
     @SuppressWarnings("unchecked")
-    public T setWebhookSuccessUrl(String url) {
-        this.webhookSuccessUrl = url;
+    public T setWebhookSuccessUrl(String webhookSuccessUrl) throws MalformedURLException {
+        return setWebhookSuccessUrl(new URL(webhookSuccessUrl));
+    }
+
+    /**
+     * The URL the PH server makes request to after the transaction is handled. The payment itself may still be rejected.
+     *
+     * @param webhookSuccessUrl Webhook url to call when request is successfully handled
+     * @return builder
+     */
+    @SuppressWarnings("unchecked")
+    public T setWebhookSuccessUrl(URL webhookSuccessUrl) {
+        this.webhookSuccessUrl = webhookSuccessUrl;
         return (T) this;
     }
 
     /**
      * The URL the PH server makes request to after cancelling the transaction (clicking on the cancel button).
      *
-     * @param url Webhook url to call when user cancels request
+     * @param webhookCancelUrl Webhook url to call when user cancels request
      * @return builder
      */
     @SuppressWarnings("unchecked")
-    public T setWebhookCancelUrl(String url) {
-        this.webhookCancelUrl = url;
+    public T setWebhookCancelUrl(String webhookCancelUrl) throws MalformedURLException {
+        return setWebhookCancelUrl(new URL(webhookCancelUrl));
+    }
+
+    /**
+     * The URL the PH server makes request to after cancelling the transaction (clicking on the cancel button).
+     *
+     * @param webhookCancelUrl Webhook url to call when user cancels request
+     * @return builder
+     */
+    @SuppressWarnings("unchecked")
+    public T setWebhookCancelUrl(URL webhookCancelUrl) {
+        this.webhookCancelUrl = webhookCancelUrl;
         return (T) this;
     }
 
     /**
      * The URL the PH server makes request to after a failure such as an authentication or connectivity error.
      *
-     * @param url Webhook url to call when request failed
+     * @param webhookFailureUrl Webhook url to call when request failed
      * @return builder
      */
     @SuppressWarnings("unchecked")
-    public T setWebhookFailureUrl(String url) {
-        this.webhookFailureUrl = url;
+    public T setWebhookFailureUrl(String webhookFailureUrl) throws MalformedURLException {
+        return setWebhookFailureUrl(new URL(webhookFailureUrl));
+    }
+
+    /**
+     * The URL the PH server makes request to after a failure such as an authentication or connectivity error.
+     *
+     * @param webhookFailureUrl Webhook url to call when request failed
+     * @return builder
+     */
+    @SuppressWarnings("unchecked")
+    public T setWebhookFailureUrl(URL webhookFailureUrl) {
+        this.webhookFailureUrl = webhookFailureUrl;
         return (T) this;
     }
 
@@ -110,6 +149,17 @@ public class GenericPaymentInitBuilder<T> {
     @SuppressWarnings("unchecked")
     public T setSubMerchantName(String name) {
         this.subMerchantName = name;
+        return (T) this;
+    }
+
+    /**
+     * Payment splitting
+     * @param splitting Splitting (merchant id and amount)
+     * @return builder
+     */
+    @SuppressWarnings("unchecked")
+    public T setSplitting(Splitting splitting) {
+        this.splitting = splitting;
         return (T) this;
     }
 

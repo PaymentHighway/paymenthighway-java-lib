@@ -1,6 +1,7 @@
 package io.paymenthighway.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.paymenthighway.model.Splitting;
 
 public class PivoInitRequest extends GenericPaymentInitRequest {
     @JsonProperty("reference_number") private String referenceNumber;
@@ -103,9 +104,10 @@ public class PivoInitRequest extends GenericPaymentInitRequest {
         this.subMerchantId = builder.subMerchantId;
         this.subMerchantName = builder.subMerchantName;
         this.isEstimatedAmount = builder.isEstimatedAmount;
-        this.webhookSuccessUrl = builder.webhookSuccessUrl;
-        this.webhookCancelUrl = builder.webhookCancelUrl;
-        this.webhookFailureUrl = builder.webhookFailureUrl;
+        this.webhookSuccessUrl = toString(builder.webhookSuccessUrl);
+        this.webhookCancelUrl = toString(builder.webhookCancelUrl);
+        this.webhookFailureUrl = toString(builder.webhookFailureUrl);
+        this.splitting = builder.splitting;
 
     }
 }
