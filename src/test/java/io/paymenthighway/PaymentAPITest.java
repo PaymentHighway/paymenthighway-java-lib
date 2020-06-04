@@ -1057,4 +1057,25 @@ public class PaymentAPITest {
     );
     assertNull("When status is 'in_progress' transaction id should be null.", response.getTransactionId());
   }
+
+  @Test
+  @Category(ExternalServiceTest.class)
+  public void initPivoAppFlow() throws Exception {
+    PivoInitRequest request = PivoInitRequest.Builder(100L, "EUR")
+        .setWebhookSuccessUrl("https://myserver.com/success")
+        .setWebhookCancelUrl("https://myserver.com/cancel")
+        .setWebhookFailureUrl("https://myserver.com/failure")
+        .setAppUrl("myapp://paid")
+        .setLanguage("FI")
+        .setOrder(UUID.randomUUID().toString())
+        .setSplitting(new Splitting("12345", 10L))
+        .build();
+
+    PaymentAPI paymentAPI = createPaymentAPI();
+    PivoInitResponse response = paymentAPI.initPivoTransaction(request);
+
+    assertNotNull(response.getUri());
+    assertNotNull(response.getTransactionId());
+    assertNotNull(response.getValidUntil());
+  }
 }

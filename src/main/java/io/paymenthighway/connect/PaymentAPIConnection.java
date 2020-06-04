@@ -93,7 +93,7 @@ public class PaymentAPIConnection implements Closeable {
   }
 
   /**
-   * @param httpClient
+   * @param httpClient http client
    * @deprecated Use the constructor to inject the httpClient instead.
    */
   public void setHttpClient(CloseableHttpClient httpClient) {
@@ -157,6 +157,12 @@ public class PaymentAPIConnection implements Closeable {
     String requestUri = String.format("/app/mobilepay/%s", sessionToken);
     String response = executeGet(requestUri, createNameValuePairs());
     return jsonParser.mapResponse(response, MobilePayStatusResponse.class);
+  }
+
+  public PivoInitResponse initPivoTransaction(PivoInitRequest request) throws IOException {
+    String requestUri = "/app/pivo";
+    String response = executePost(requestUri, createNameValuePairs(), request);
+    return jsonParser.mapResponse(response, PivoInitResponse.class);
   }
 
   public RevertResponse revertTransaction(UUID transactionId, RevertTransactionRequest request) throws IOException {
