@@ -281,6 +281,35 @@ public class FormBuilderTest {
     assertTrue(signature.startsWith("SPH1"));
   }
 
+  @Test
+  public void testPaymentParametersWithSplitting() {
+
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    String amount = "9999";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "https://paymenthighway.fi/index-en.html";
+    String cancelUrl = "https://solinor.fi";
+    String description = "this is payment description";
+    Long splittingMerchantId = 123L;
+    String splittingMerchantIdString = "123";
+    Long splittingAmount = 10L;
+    String splittingAmountString = "10";
+
+    // create the payment highway request parameters
+    FormBuilder formBuilder = createFormBuilder(method, account, merchant);
+
+    FormContainer formContainer = formBuilder.paymentParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
+        .splitting(splittingMerchantId, splittingAmount)
+        .build();
+    assertEquals(15, formContainer.getFields().size());
+    checkSplittingParameters(formContainer.getFields(), splittingMerchantIdString, splittingAmountString);
+
+  }
+
   /**
    * Test with only the mandatory parameters.
    */
@@ -592,6 +621,37 @@ public class FormBuilderTest {
     assertTrue(response.contains("card_number_formatted"));
   }
 
+  @Test
+  public void testPayWithTokenAndCvcWithSplitting() {
+
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    String amount = "9999";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "http://www.solinor.com";
+    String cancelUrl = "https://solinor.fi";
+    String description = "this is payment description";
+    UUID token = UUID.fromString("71435029-fbb6-4506-aa86-8529efb640b0");
+    Long splittingMerchantId = 123L;
+    String splittingMerchantIdString = "123";
+    Long splittingAmount = 10L;
+    String splittingAmountString = "10";
+
+    // create the payment highway request parameters
+    FormBuilder formBuilder = createFormBuilder(method, account, merchant);
+
+    FormContainer formContainer = formBuilder.payWithTokenAndCvcParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description, token)
+        .splitting(splittingMerchantId, splittingAmount)
+        .build();
+
+    assertEquals(16, formContainer.getFields().size());
+    checkSplittingParameters(formContainer.getFields(), splittingMerchantIdString, splittingAmountString);
+
+  }
+
   /**
    * Test with optional parameters present.
    */
@@ -724,6 +784,34 @@ public class FormBuilderTest {
   }
 
   @Test
+  public void testMobilePaySplitting() {
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    String amount = "9999";
+    String currency = "EUR";
+    String orderId = "1000123A";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "http://www.solinor.com";
+    String cancelUrl = "https://solinor.fi";
+    String description = "this is payment description";
+    Long splittingMerchantId = 123L;
+    String splittingMerchantIdString = "123";
+    Long splittingAmount = 10L;
+    String splittingAmountString = "10";
+
+
+    FormBuilder formBuilder = createFormBuilder(method, account, merchant);
+
+    FormContainer formContainer = formBuilder.mobilePayParametersBuilder(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
+        .splitting(splittingMerchantId, splittingAmount)
+        .build();
+
+    assertEquals(15, formContainer.getFields().size());
+    checkSplittingParameters(formContainer.getFields(), splittingMerchantIdString, splittingAmountString);
+  }
+
+  @Test
   public void testPivoPaymentParameters() {
 
     String method = "POST";
@@ -760,6 +848,39 @@ public class FormBuilderTest {
   }
 
   @Test
+  public void testPivoSplittingParameters() {
+    String method = "POST";
+    String account = "test";
+    String merchant = "test_merchantId";
+    long amount = 9999L;
+    String orderId = "1000123A";
+    String successUrl = "https://www.paymenthighway.fi/";
+    String failureUrl = "http://www.solinor.com";
+    String cancelUrl = "https://solinor.fi";
+    String description = "this is payment description";
+    Long splittingMerchantId = 123L;
+    String splittingMerchantIdString = "123";
+    Long splittingAmount = 10L;
+    String splittingAmountString = "10";
+
+    FormBuilder formBuilder = createFormBuilder(method, account, merchant);
+
+    FormContainer formContainer = formBuilder.pivoParametersBuilder(
+        successUrl,
+        failureUrl,
+        cancelUrl,
+        amount,
+        orderId,
+        description
+    )
+        .splitting(splittingMerchantId, splittingAmount)
+        .build();
+
+    assertEquals(15, formContainer.getFields().size());
+    checkSplittingParameters(formContainer.getFields(), splittingMerchantIdString, splittingAmountString);
+  }
+
+  @Test
   public void testAfterPayParameters() {
 
      String orderDescription = "Description on the invoice";
@@ -784,5 +905,48 @@ public class FormBuilderTest {
        .build();
 
      assertEquals(18, formContainer.getFields().size());
+  }
+
+  @Test
+  public void testAfterPaySplitting() {
+
+    String orderDescription = "Description on the invoice";
+    Long splittingMerchantId = 123L;
+    String splittingMerchantIdString = "123";
+    Long splittingAmount = 10L;
+    String splittingAmountString = "10";
+
+    FormBuilder formBuilder = createFormBuilder(TestValues.methodPost, TestValues.account, TestValues.merchant);
+
+    FormContainer formContainer = formBuilder.afterPayParametersBuilder(
+        TestValues.successUrl,
+        TestValues.failureUrl,
+        TestValues.cancelUrl,
+        TestValues.amount,
+        TestValues.orderId,
+        TestValues.description,
+        orderDescription
+    )
+        .splitting(splittingMerchantId, splittingAmount)
+        .build();
+    assertEquals(16, formContainer.getFields().size());
+    checkSplittingParameters(formContainer.getFields(), splittingMerchantIdString, splittingAmountString);
+  }
+
+  private void checkSplittingParameters(List<NameValuePair> parameterList, String splittingMerchantId, String splittingAmount) {
+    boolean merchantFound = false;
+    boolean amountFound = false;
+    for( NameValuePair pair : parameterList) {
+      if(pair.getName().equals(FormBuilderConstants.SPH_SPLITTING_MERCHANT_ID)) {
+        assertEquals(pair.getValue(), splittingMerchantId);
+        merchantFound = true;
+      }
+      if(pair.getName().equals(FormBuilderConstants.SPH_SPLITTING_AMOUNT)) {
+        assertEquals(pair.getValue(), splittingAmount);
+        amountFound = true;
+      }
+    }
+    assertTrue(merchantFound);
+    assertTrue(amountFound);
   }
 }

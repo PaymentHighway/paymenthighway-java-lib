@@ -1,6 +1,7 @@
 package io.paymenthighway.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.paymenthighway.model.Splitting;
 
 import java.util.UUID;
 
@@ -35,6 +36,8 @@ public class PivoTransactionStatus {
   private String authorizationCode;
   @JsonProperty("filing_code")
   private String filingCode;
+  @JsonProperty("splitting")
+  private Splitting splitting;
 
   public UUID getId() {
     return id;
@@ -110,5 +113,12 @@ public class PivoTransactionStatus {
 
   public String getFilingCode() {
     return filingCode;
+  }
+
+  /**
+   * @return Splitting information if the transaction was splitted into sub-merchant and commission parts.
+   */
+  public Splitting getSplitting() {
+    return splitting;
   }
 }
