@@ -1,7 +1,6 @@
 package io.paymenthighway.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.paymenthighway.model.Splitting;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -12,8 +11,6 @@ public class MobilePayInitRequest extends GenericPaymentInitRequest {
   @JsonProperty("return_uri") private String returnUri;
   @JsonProperty("shop_name") private String shopName;
   @JsonProperty("shop_logo_url") private String shopLogoUrl;
-
-  protected MobilePayInitRequest() {}
 
   /**
    *
@@ -76,21 +73,9 @@ public class MobilePayInitRequest extends GenericPaymentInitRequest {
   }
 
   private MobilePayInitRequest(Builder builder) {
-    // Required parameters
-    this.amount = builder.amount;
-    this.currency = builder.currency;
-    this.order = builder.order;
+    super(builder);
     this.returnUri = toString(builder.returnUri);
-    this.webhookSuccessUrl = toString(builder.webhookSuccessUrl);
-    this.webhookCancelUrl = toString(builder.webhookCancelUrl);
-    this.webhookFailureUrl = toString(builder.webhookFailureUrl);
-
-    // Optional parameters
-    this.language = builder.language;
-    this.subMerchantName = builder.subMerchantName;
-    this.subMerchantId = builder.subMerchantId;
     this.shopName = builder.shopName;
     this.shopLogoUrl = toString(builder.shopLogoUrl);
-    this.splitting = builder.splitting;
   }
 }

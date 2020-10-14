@@ -1,12 +1,8 @@
 package io.paymenthighway.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.paymenthighway.model.Splitting;
 
-public class GenericPaymentInitRequest extends Request {
-    @JsonProperty("amount") protected Long amount;
-    @JsonProperty("currency") protected String currency;
-    @JsonProperty("order") protected String order;
+public class GenericPaymentInitRequest extends GenericPaymentRequest {
     @JsonProperty("language") protected String language;
     @JsonProperty("description") protected String description;
     @JsonProperty("sub_merchant_id") protected String subMerchantId;
@@ -15,30 +11,17 @@ public class GenericPaymentInitRequest extends Request {
     @JsonProperty("webhook_success_url") protected String webhookSuccessUrl;
     @JsonProperty("webhook_cancel_url") protected String webhookCancelUrl;
     @JsonProperty("webhook_failure_url") protected String webhookFailureUrl;
-    @JsonProperty protected Splitting splitting;
 
-    /**
-     *
-     * @return amount
-     */
-    public Long getAmount() {
-        return amount;
-    }
-
-    /**
-     *
-     * @return currency
-     */
-    public String getCurrency() {
-        return currency;
-    }
-
-    /**
-     *
-     * @return order
-     */
-    public String getOrder() {
-        return order;
+    protected <T> GenericPaymentInitRequest(GenericPaymentInitBuilder<T> builder) {
+      super(builder);
+      this.language = builder.language;
+      this.description = builder.description;
+      this.subMerchantId = builder.subMerchantId;
+      this.subMerchantName = builder.subMerchantName;
+      this.isEstimatedAmount = builder.isEstimatedAmount;
+      this.webhookSuccessUrl = toString(builder.webhookSuccessUrl);
+      this.webhookCancelUrl = toString(builder.webhookCancelUrl);
+      this.webhookFailureUrl = toString(builder.webhookFailureUrl);
     }
 
     /**
@@ -95,13 +78,5 @@ public class GenericPaymentInitRequest extends Request {
      */
     public boolean getIsEstimatedAmount() {
         return isEstimatedAmount;
-    }
-
-    /**
-     *
-     * @return splitting
-     */
-    public Splitting getSplitting() {
-        return splitting;
     }
 }
