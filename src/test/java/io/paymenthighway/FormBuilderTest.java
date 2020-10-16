@@ -934,19 +934,7 @@ public class FormBuilderTest {
   }
 
   private void checkSplittingParameters(List<NameValuePair> parameterList, String splittingMerchantId, String splittingAmount) {
-    boolean merchantFound = false;
-    boolean amountFound = false;
-    for( NameValuePair pair : parameterList) {
-      if(pair.getName().equals(FormBuilderConstants.SPH_SPLITTING_MERCHANT_ID)) {
-        assertEquals(pair.getValue(), splittingMerchantId);
-        merchantFound = true;
-      }
-      if(pair.getName().equals(FormBuilderConstants.SPH_SPLITTING_AMOUNT)) {
-        assertEquals(pair.getValue(), splittingAmount);
-        amountFound = true;
-      }
-    }
-    assertTrue(merchantFound);
-    assertTrue(amountFound);
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SPLITTING_MERCHANT_ID, splittingMerchantId);
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SPLITTING_AMOUNT, splittingAmount);
   }
 }
