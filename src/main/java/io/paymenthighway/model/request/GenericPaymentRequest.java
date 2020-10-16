@@ -13,12 +13,15 @@ public class GenericPaymentRequest extends Request {
   protected String order;
   @JsonProperty
   protected Splitting splitting;
+  @JsonProperty("sub_merchant")
+  protected SubMerchant subMerchant;
 
   protected <T> GenericPaymentRequest(GenericPaymentBuilder<T> builder) {
     this.amount = builder.amount;
     this.currency = builder.currency;
     this.order = builder.order;
     this.splitting = builder.splitting;
+    this.subMerchant = builder.subMerchant;
   }
 
   /**
@@ -47,5 +50,12 @@ public class GenericPaymentRequest extends Request {
    */
   public Splitting getSplitting() {
     return splitting;
+  }
+
+  /**
+   * @return Payment Facilitator's sub-merchant
+   */
+  public SubMerchant getSubMerchant() {
+    return subMerchant;
   }
 }

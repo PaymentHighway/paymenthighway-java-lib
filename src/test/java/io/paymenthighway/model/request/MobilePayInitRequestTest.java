@@ -1,6 +1,7 @@
 package io.paymenthighway.model.request;
 
 import io.paymenthighway.json.JsonGenerator;
+import io.paymenthighway.test.TestResources;
 import org.junit.Test;
 
 import java.net.URI;
@@ -15,6 +16,7 @@ public class MobilePayInitRequestTest {
             .setWebhookSuccessUrl(new URL("https://myapp.server/success"))
             .setWebhookCancelUrl("https://myapp.server/cancel")
             .setReturnUri(new URI("myapp://view"))
+            .setSubMerchant(TestResources.TestSubMerchant)
             .build();
 
     JsonGenerator jsonGenerator = new JsonGenerator();
@@ -23,5 +25,7 @@ public class MobilePayInitRequestTest {
     assertTrue(json.contains("https://myapp.server/success"));
     assertTrue(json.contains("https://myapp.server/cancel"));
     assertTrue(json.contains("myapp://view"));
+
+    TestResources.assertTestSubMerchant(json);
   }
 }

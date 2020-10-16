@@ -7,6 +7,7 @@ public class GenericPaymentBuilder<T> {
   protected String currency;
   protected String order;
   protected Splitting splitting;
+  protected SubMerchant subMerchant;
 
   public GenericPaymentBuilder(Long amount, String currency) {
     this.amount = amount;
@@ -40,6 +41,18 @@ public class GenericPaymentBuilder<T> {
   @SuppressWarnings("unchecked")
   public T setSplitting(Splitting splitting) {
     this.splitting = splitting;
+    return (T) this;
+  }
+
+  /**
+   * Set Payment Facilitator sub-merchant details. Only to be used by an actual Payment Facilitator!
+   *
+   * @param subMerchant Sub-merchant details
+   * @return builder
+   */
+  @SuppressWarnings("unchecked")
+  public T setSubMerchant(SubMerchant subMerchant) {
+    this.subMerchant = subMerchant;
     return (T) this;
   }
 }

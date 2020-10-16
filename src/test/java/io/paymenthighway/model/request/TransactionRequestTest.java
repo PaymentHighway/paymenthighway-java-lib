@@ -2,6 +2,9 @@ package io.paymenthighway.model.request;
 
 import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.model.Token;
+import io.paymenthighway.model.request.sca.StrongCustomerAuthentication;
+import io.paymenthighway.model.request.sca.Urls;
+import io.paymenthighway.test.TestResources;
 import org.junit.*;
 
 import java.util.UUID;
@@ -57,5 +60,43 @@ public class TransactionRequestTest {
 
     assertFalse(json.contains("pan"));
     assertTrue(json.contains("token"));
+  }
+
+  @Test
+  public void citRequestBuildsWithSubMerchant() {
+    Token token = new Token(UUID.randomUUID());
+    String orderId = "order_123";
+
+    StrongCustomerAuthentication sca = StrongCustomerAuthentication.Builder(Urls.Builder(
+        "https://success.example.com",
+        "https://failure.example.com",
+        "https://cancel.example.com"
+    ).build()).build();
+
+
+    ChargeCitRequest request = ChargeCitRequest
+        .Builder(token, 99L, "EUR", orderId, sca)
+        .setSubMerchant(TestResources.TestSubMerchant)
+        .build();
+
+    String json = new JsonGenerator().createTransactionJson(request);
+
+    TestResources.assertTestSubMerchant(json);
+  }
+
+  @Test
+  public void mitRequestBuildsWithSubMerchant() {
+    Token token = new Token(UUID.randomUUID());
+    String orderId = "order_123";
+
+
+    ChargeMitRequest request = ChargeMitRequest
+        .Builder(token, 99L, "EUR", orderId)
+        .setSubMerchant(TestResources.TestSubMerchant)
+        .build();
+
+    String json = new JsonGenerator().createTransactionJson(request);
+
+    TestResources.assertTestSubMerchant(json);
   }
 }

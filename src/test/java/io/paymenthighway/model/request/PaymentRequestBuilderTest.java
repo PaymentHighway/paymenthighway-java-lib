@@ -2,6 +2,7 @@ package io.paymenthighway.model.request;
 
 import io.paymenthighway.json.JsonGenerator;
 import io.paymenthighway.model.JsonTestHelper;
+import io.paymenthighway.test.TestResources;
 import org.junit.Test;
 
 public class PaymentRequestBuilderTest {
@@ -15,6 +16,7 @@ public class PaymentRequestBuilderTest {
             .setAppUrl("app://url")
             .setOrder("orderNumber")
             .setDescription("simple description")
+            .setSubMerchant(TestResources.TestSubMerchant)
             .build();
 
         JsonGenerator jsonGenerator = new JsonGenerator();
@@ -29,5 +31,6 @@ public class PaymentRequestBuilderTest {
         JsonTestHelper.testJson(json, "order", "orderNumber");
         JsonTestHelper.testJson(json, "description", "simple description");
 
+        TestResources.assertTestSubMerchant(json);
     }
 }
