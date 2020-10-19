@@ -54,7 +54,7 @@ public class MobilePayParametersBuilder
      * @return MobilePayParametersInterface
      */
     public MobilePayParametersBuilder subMerchantId(String subMerchantId) {
-        addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_ID, subMerchantId);
+        addOrReplaceNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_ID, subMerchantId);
         return this;
     }
 
@@ -63,7 +63,7 @@ public class MobilePayParametersBuilder
      * @return MobilePayParametersInterface
      */
     public MobilePayParametersBuilder subMerchantName(String subMerchantName) {
-        addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_NAME, subMerchantName);
+        addOrReplaceNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_NAME, subMerchantName);
         return this;
     }
 }
