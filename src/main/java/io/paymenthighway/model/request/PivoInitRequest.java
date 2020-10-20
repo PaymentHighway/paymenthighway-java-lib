@@ -94,6 +94,5 @@ public class PivoInitRequest extends GenericPaymentInitRequest {
         this.referenceNumber = builder.referenceNumber;
         this.phoneNumber = builder.phoneNumber;
         this.appUrl = builder.appUrl;
-        this.isEstimatedAmount = builder.isEstimatedAmount;
     }
 }
