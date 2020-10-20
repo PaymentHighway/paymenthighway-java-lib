@@ -25,8 +25,14 @@ public final class FormBuilderConstants {
   public final static String SPH_SHOP_LOGO_URL = "sph-shop-logo-url";
   public final static String SPH_MOBILEPAY_PHONE_NUMBER = "sph-mobilepay-phone-number";
   public final static String SPH_MOBILEPAY_SHOP_NAME = "sph-mobilepay-shop-name";
-  public final static String SPH_SUB_MERCHANT_NAME = "sph-sub-merchant-name";
   public final static String SPH_SUB_MERCHANT_ID = "sph-sub-merchant-id";
+  public final static String SPH_SUB_MERCHANT_MCC = "sph-sub-merchant-merchant-category-code";
+  public final static String SPH_SUB_MERCHANT_NAME = "sph-sub-merchant-name";
+  public final static String SPH_SUB_MERCHANT_STREET_ADDRESS = "sph-sub-merchant-street-address";
+  public final static String SPH_SUB_MERCHANT_CITY = "sph-sub-merchant-city";
+  public final static String SPH_SUB_MERCHANT_POSTAL_CODE = "sph-sub-merchant-postal-code";
+  public final static String SPH_SUB_MERCHANT_TELEPHONE = "sph-sub-merchant-telephone";
+  public final static String SPH_SUB_MERCHANT_COUNTRY_CODE = "sph-sub-merchant-country-code";
   public final static String SPH_WEBHOOK_SUCCESS_URL = "sph-webhook-success-url";
   public final static String SPH_WEBHOOK_FAILURE_URL = "sph-webhook-failure-url";
   public final static String SPH_WEBHOOK_CANCEL_URL = "sph-webhook-cancel-url";

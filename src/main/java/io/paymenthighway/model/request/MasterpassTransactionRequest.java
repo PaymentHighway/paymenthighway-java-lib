@@ -3,10 +3,7 @@ package io.paymenthighway.model.request;
 /**
  * Masterpass Transaction request POJO
  */
-public class MasterpassTransactionRequest extends Request {
-
-  private String amount = null;
-  private String currency = null;
+public class MasterpassTransactionRequest extends GenericPaymentRequest {
 
   private Boolean commit;
 
@@ -14,17 +11,12 @@ public class MasterpassTransactionRequest extends Request {
     return new Builder(amount, currency);
   }
 
-  public static class Builder {
-
-    private Long amount = null;
-    private String currency = null;
+  public static class Builder extends GenericPaymentBuilder<Builder> {
 
     private Boolean commit;
 
-
     public Builder(long amount, String currency) {
-      this.amount = amount;
-      this.currency = currency;
+      super(amount, currency);
     }
 
     public Builder setCommit(Boolean commit) {
@@ -38,20 +30,8 @@ public class MasterpassTransactionRequest extends Request {
   }
 
   private MasterpassTransactionRequest(Builder builder) {
-    // Required parameters
-    this.amount   = Long.toString(builder.amount);
-    this.currency = builder.currency;
-
-    // Optional parameters
+    super(builder);
     this.commit   = builder.commit;
-  }
-
-  public String getAmount() {
-    return amount;
-  }
-
-  public String getCurrency() {
-    return currency;
   }
 
   public Boolean getCommit() {

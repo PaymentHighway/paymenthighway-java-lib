@@ -5,6 +5,8 @@ import org.junit.Assert;
 
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 public class Helper {
 
   public static NameValuePair assertFieldExists(List<NameValuePair> fields, String key) throws AssertionError {
@@ -22,4 +24,8 @@ public class Helper {
     return found;
   }
 
+  public static void assertFieldValueExists(List<NameValuePair> fields, String key, String value) throws AssertionError {
+    NameValuePair field = assertFieldExists(fields, key);
+    assertEquals(field.getValue(), value);
+  }
 }

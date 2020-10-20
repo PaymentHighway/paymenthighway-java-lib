@@ -2,6 +2,9 @@ package io.paymenthighway;
 
 import io.paymenthighway.connect.FormAPIConnection;
 import io.paymenthighway.formBuilders.FormBuilderConstants;
+import io.paymenthighway.model.request.ContactInformation;
+import io.paymenthighway.model.request.SubMerchant;
+import io.paymenthighway.test.TestResources;
 import org.apache.http.NameValuePair;
 import org.junit.*;
 
@@ -282,7 +285,7 @@ public class FormBuilderTest {
   }
 
   @Test
-  public void testPaymentParametersWithSplitting() {
+  public void testPaymentParametersWithSplittingAndSubMerchant() {
 
     String method = "POST";
     String account = "test";
@@ -304,10 +307,11 @@ public class FormBuilderTest {
 
     FormContainer formContainer = formBuilder.paymentParameters(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
         .splitting(splittingMerchantId, splittingAmount)
+        .subMerchant(TestResources.TestSubMerchant)
         .build();
-    assertEquals(15, formContainer.getFields().size());
+    assertEquals(23, formContainer.getFields().size());
     checkSplittingParameters(formContainer.getFields(), splittingMerchantIdString, splittingAmountString);
-
+    checkSubMerchantParameters(formContainer.getFields(), TestResources.TestSubMerchant);
   }
 
   /**
@@ -784,7 +788,7 @@ public class FormBuilderTest {
   }
 
   @Test
-  public void testMobilePaySplitting() {
+  public void testMobilePaySplittingAndSubMerchant() {
     String method = "POST";
     String account = "test";
     String merchant = "test_merchantId";
@@ -805,10 +809,12 @@ public class FormBuilderTest {
 
     FormContainer formContainer = formBuilder.mobilePayParametersBuilder(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
         .splitting(splittingMerchantId, splittingAmount)
+        .subMerchant(TestResources.TestSubMerchant)
         .build();
 
-    assertEquals(15, formContainer.getFields().size());
+    assertEquals(23, formContainer.getFields().size());
     checkSplittingParameters(formContainer.getFields(), splittingMerchantIdString, splittingAmountString);
+    checkSubMerchantParameters(formContainer.getFields(), TestResources.TestSubMerchant);
   }
 
   @Test
@@ -848,7 +854,7 @@ public class FormBuilderTest {
   }
 
   @Test
-  public void testPivoSplittingParameters() {
+  public void testPivoSplittingAndSubMerchantParameters() {
     String method = "POST";
     String account = "test";
     String merchant = "test_merchantId";
@@ -874,10 +880,12 @@ public class FormBuilderTest {
         description
     )
         .splitting(splittingMerchantId, splittingAmount)
+        .subMerchant(TestResources.TestSubMerchant)
         .build();
 
-    assertEquals(15, formContainer.getFields().size());
+    assertEquals(23, formContainer.getFields().size());
     checkSplittingParameters(formContainer.getFields(), splittingMerchantIdString, splittingAmountString);
+    checkSubMerchantParameters(formContainer.getFields(), TestResources.TestSubMerchant);
   }
 
   @Test
@@ -934,19 +942,21 @@ public class FormBuilderTest {
   }
 
   private void checkSplittingParameters(List<NameValuePair> parameterList, String splittingMerchantId, String splittingAmount) {
-    boolean merchantFound = false;
-    boolean amountFound = false;
-    for( NameValuePair pair : parameterList) {
-      if(pair.getName().equals(FormBuilderConstants.SPH_SPLITTING_MERCHANT_ID)) {
-        assertEquals(pair.getValue(), splittingMerchantId);
-        merchantFound = true;
-      }
-      if(pair.getName().equals(FormBuilderConstants.SPH_SPLITTING_AMOUNT)) {
-        assertEquals(pair.getValue(), splittingAmount);
-        amountFound = true;
-      }
-    }
-    assertTrue(merchantFound);
-    assertTrue(amountFound);
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SPLITTING_MERCHANT_ID, splittingMerchantId);
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SPLITTING_AMOUNT, splittingAmount);
+  }
+
+  private void checkSubMerchantParameters(List<NameValuePair> parameterList, SubMerchant subMerchant) {
+
+    ContactInformation contactInformation = subMerchant.getContactInformation();
+
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_ID, subMerchant.getId());
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_MCC, subMerchant.getMerchantCategoryCode());
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_NAME, contactInformation.getName());
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_STREET_ADDRESS, contactInformation.getStreetAddress());
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_CITY, contactInformation.getCity());
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_POSTAL_CODE, contactInformation.getPostalCode());
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_TELEPHONE, contactInformation.getTelephone());
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_COUNTRY_CODE, contactInformation.getCountryCode());
   }
 }

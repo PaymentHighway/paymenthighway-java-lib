@@ -1,14 +1,9 @@
 package io.paymenthighway.model.request;
 
-import io.paymenthighway.model.Splitting;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class GenericPaymentInitBuilder<T> {
-    protected Long amount;
-    protected String currency;
-    protected String order;
+public class GenericPaymentInitBuilder<T> extends GenericPaymentBuilder<T> {
     protected String language;
     protected String description;
     protected String subMerchantId;
@@ -17,23 +12,9 @@ public class GenericPaymentInitBuilder<T> {
     protected URL webhookSuccessUrl;
     protected URL webhookCancelUrl;
     protected URL webhookFailureUrl;
-    protected Splitting splitting;
 
     public GenericPaymentInitBuilder(Long amount, String currency) {
-        this.amount = amount;
-        this.currency = currency;
-    }
-
-    /**
-     * Merchant defined order identifier. Should be unique per transaction.
-     *
-     * @param order Order identifier
-     * @return builder
-     */
-    @SuppressWarnings("unchecked")
-    public T setOrder(String order) {
-        this.order = order;
-        return (T) this;
+        super(amount, currency);
     }
 
     /**
@@ -151,16 +132,4 @@ public class GenericPaymentInitBuilder<T> {
         this.subMerchantName = name;
         return (T) this;
     }
-
-    /**
-     * Payment splitting
-     * @param splitting Splitting (merchant id and amount)
-     * @return builder
-     */
-    @SuppressWarnings("unchecked")
-    public T setSplitting(Splitting splitting) {
-        this.splitting = splitting;
-        return (T) this;
-    }
-
 }

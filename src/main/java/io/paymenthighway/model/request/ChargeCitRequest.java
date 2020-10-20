@@ -1,43 +1,31 @@
 package io.paymenthighway.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.paymenthighway.model.Splitting;
 import io.paymenthighway.model.Token;
 import io.paymenthighway.model.request.sca.StrongCustomerAuthentication;
 
-public class ChargeCitRequest extends Request {
-  @JsonProperty
-  private Long amount;
-  @JsonProperty
-  private String currency;
-
+public class ChargeCitRequest extends GenericPaymentRequest {
   @JsonProperty
   private Token token;
   @JsonProperty
   private Card card;
 
   @JsonProperty
-  private String order;
-  @JsonProperty
   private Customer customer;
   @JsonProperty
   private Boolean commit;
-  @JsonProperty
-  private Splitting splitting;
+
   @JsonProperty("strong_customer_authentication")
   private StrongCustomerAuthentication strongCustomerAuthentication;
   @JsonProperty("reference_number")
   private String referenceNumber;
 
   private ChargeCitRequest(Builder builder) {
-    amount = builder.amount;
-    currency = builder.currency;
+    super(builder);
     token = builder.token;
     card = builder.card;
-    order = builder.order;
     customer = builder.customer;
     commit = builder.commit;
-    splitting = builder.splitting;
     strongCustomerAuthentication = builder.strongCustomerAuthentication;
     referenceNumber = builder.referenceNumber;
   }
@@ -69,15 +57,11 @@ public class ChargeCitRequest extends Request {
     return new Builder(card, amount, currency, order, strongCustomerAuthentication);
   }
 
-  public static final class Builder {
-    private Long amount;
-    private String currency;
+  public static final class Builder extends GenericPaymentBuilder<Builder> {
     private Token token;
     private Card card;
-    private String order;
     private Customer customer;
     private Boolean commit;
-    private Splitting splitting;
     private StrongCustomerAuthentication strongCustomerAuthentication;
     private String referenceNumber;
 
@@ -90,10 +74,8 @@ public class ChargeCitRequest extends Request {
      * @param strongCustomerAuthentication Information provided for the SCA in case of a soft decline response from the issuer
      */
     public Builder(Token token, Long amount, String currency, String order, StrongCustomerAuthentication strongCustomerAuthentication) {
+      super(amount, currency, order);
       this.token = token;
-      this.amount = amount;
-      this.currency = currency;
-      this.order = order;
       this.strongCustomerAuthentication = strongCustomerAuthentication;
     }
 
@@ -107,10 +89,8 @@ public class ChargeCitRequest extends Request {
      * @param strongCustomerAuthentication Information provided for the SCA in case of a soft decline response from the issuer
      */
     public Builder(Card card, Long amount, String currency, String order, StrongCustomerAuthentication strongCustomerAuthentication) {
+      super(amount, currency, order);
       this.card = card;
-      this.amount = amount;
-      this.currency = currency;
-      this.order = order;
       this.strongCustomerAuthentication = strongCustomerAuthentication;
     }
 
@@ -121,11 +101,6 @@ public class ChargeCitRequest extends Request {
 
     public Builder setCommit(Boolean commit) {
       this.commit = commit;
-      return this;
-    }
-
-    public Builder setSplitting(Splitting splitting) {
-      this.splitting = splitting;
       return this;
     }
 

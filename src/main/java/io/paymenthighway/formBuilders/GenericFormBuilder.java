@@ -3,6 +3,8 @@ package io.paymenthighway.formBuilders;
 import io.paymenthighway.Constants;
 import io.paymenthighway.FormContainer;
 import io.paymenthighway.PaymentHighwayUtility;
+import io.paymenthighway.model.request.ContactInformation;
+import io.paymenthighway.model.request.SubMerchant;
 import io.paymenthighway.security.SecureSigner;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -23,6 +25,7 @@ public class GenericFormBuilder<T> {
   protected String cancelUrl;
   protected String language;
   protected String serviceUri;
+  protected SubMerchant subMerchant;
   protected List<NameValuePair> nameValuePairs;
 
   private SecureSigner ss;
@@ -72,6 +75,19 @@ public class GenericFormBuilder<T> {
 
   protected boolean addNameValuePair(String name, String value) {
     return nameValuePairs.add(new BasicNameValuePair(name, value));
+  }
+
+  protected boolean addOrReplaceNameValuePair(String name, String value) {
+    removeNameValuePairIfExists(name);
+    return nameValuePairs.add(new BasicNameValuePair(name, value));
+  }
+
+  private void removeNameValuePairIfExists(String name) {
+    for (NameValuePair nameValuePair : nameValuePairs) {
+      if (nameValuePair.getName().equals(name)) {
+        nameValuePairs.remove(nameValuePair);
+      }
+    }
   }
 
   /**
@@ -131,6 +147,30 @@ public class GenericFormBuilder<T> {
   @SuppressWarnings("unchecked")
   public T webhookDelay(Integer delay) {
     addNameValuePair(FormBuilderConstants.SPH_WEBHOOK_DELAY, delay.toString());
+    return (T) this;
+  }
+
+  /**
+   * Set Payment Facilitator sub-merchant details. Only to be used by an actual Payment Facilitator!
+   * @param subMerchant Sub-merchant details
+   * @return Form builder
+   */
+  @SuppressWarnings("unchecked")
+  public T subMerchant(SubMerchant subMerchant) {
+    this.subMerchant = subMerchant;
+
+    ContactInformation contactInformation = subMerchant.getContactInformation();
+
+    addOrReplaceNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_ID, subMerchant.getId());
+    addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_MCC, subMerchant.getMerchantCategoryCode());
+
+    addOrReplaceNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_NAME, contactInformation.getName());
+    addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_STREET_ADDRESS, contactInformation.getStreetAddress());
+    addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_CITY, contactInformation.getCity());
+    addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_POSTAL_CODE, contactInformation.getPostalCode());
+    addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_COUNTRY_CODE, contactInformation.getCountryCode());
+    addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_TELEPHONE, contactInformation.getTelephone());
+
     return (T) this;
   }
 
