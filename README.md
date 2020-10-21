@@ -13,6 +13,12 @@ The Java Client is a Maven project built so that it will work on Java 1.7 and Ja
 
 ### Significant Changes
 
+#### V2.1.0: Sub-merchant details for Payment Facilitators
+- Note: These changes are only relevant to certain Payment Facilitators and the usage must be specifically agreed upon!
+- New API version 20200915
+- Adding Payment Facilitator's sub-merchant details to requests is now possible
+- Financial adjustments to Reconciliation reports
+
 #### V2.0.0: Siirto API removed, new response fields for card transactions, TransactionResponse removed 
 - New API version 20200401
 - Removed Siirto API 
@@ -54,7 +60,7 @@ Add as dependency:
         <dependency>
             <groupId>io.paymenthighway</groupId>
             <artifactId>paymenthighway</artifactId>
-            <version>2.0.0</version>
+            <version>2.1.0</version>
         </dependency>
     </dependencies>
 ```
