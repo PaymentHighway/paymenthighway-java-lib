@@ -13,6 +13,8 @@ public class ReconciliationReportResponse extends Response {
   CommissionSettlement[] commissionSettlements;
   @JsonProperty("financial_adjustments")
   FinancialAdjustment[] financialAdjustments;
+  @JsonProperty("rejections")
+  Rejection[] rejections;
 
   public ReconciliationSettlement[] getReconciliationSettlements() {
     return this.reconciliationSettlements;
@@ -24,5 +26,9 @@ public class ReconciliationReportResponse extends Response {
 
   public FinancialAdjustment[] getFinancialAdjustments() {
     return financialAdjustments;
+  }
+
+  public Rejection[] getRejections() {
+    return rejections;
   }
 }
