@@ -1,7 +1,6 @@
 package io.paymenthighway.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.paymenthighway.model.response.masterpass.MasterpassInfo;
 import io.paymenthighway.model.response.profile.ProfileInfo;
 
 public class UserProfileResponse extends Response {
@@ -13,7 +12,6 @@ public class UserProfileResponse extends Response {
   @JsonProperty("cardholder_authentication")
   private String cardholderAuthentication;
 
-  private MasterpassInfo masterpass;
 
   /**
    * @return user information
@@ -32,12 +30,5 @@ public class UserProfileResponse extends Response {
 
   public String getCardholderAuthentication() {
     return cardholderAuthentication;
-  }
-
-  /**
-   * @return masterpass transaction information if masterpass wallet was used
-   */
-  public MasterpassInfo getMasterpass() {
-    return masterpass;
   }
 }

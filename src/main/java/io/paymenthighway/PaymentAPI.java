@@ -137,22 +137,6 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
-   * Payment Highway Masterpass Debit Transaction
-   *
-   * @param transactionId Transaction id
-   * @param request Masterpass Debit Transaction request
-   * @return Transaction response
-   * @throws HttpResponseException Exception
-   * @throws AuthenticationException Exception
-   * @throws IOException Exception
-   */
-  public DebitTransactionResponse debitMasterpassTransaction(UUID transactionId, MasterpassTransactionRequest request)
-    throws IOException {
-
-    return paymentApi.debitMasterpassTransaction(transactionId, request);
-  }
-
-  /**
    * Payment Highway Apple Pay Transaction
    *
    * @param transactionId Transaction id
@@ -447,7 +431,7 @@ public class PaymentAPI implements Closeable {
   /**
    * Payment Highway User profile information
    *
-   * For now used to find user information from masterpass, example shipping address
+   * For now after masterpass this api isn't supported for any payment type
    *
    * @param transactionId Transaction id
    * @return User profile response
