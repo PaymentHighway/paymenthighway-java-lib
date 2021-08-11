@@ -300,51 +300,6 @@ _MobilePay payment is to be committed as any other Form Payment_
 * Once a ShopLogoURL has been sent to MPOnline the .png-file on that URL must never be changed. If the shop wants a new (or more than one) logo, a new ShopLogoURL must be used. 
 * The logo must be hosted on a HTTPS (secure) server.
 
-
-### Example Masterpass form payment
-
-    String amount = "1990";
-    String currency = "EUR";
-    String orderId = "1000123A";
-    String description = "A Box of Dreams. 19,90€";
-    String language = "EN";
-    
-    FormContainer formContainer = formBuilder.masterpassParameters(successUrl, failureUrl, cancelUrl,
-            amount, currency, orderId, description)
-            .language(language)
-            .build();
-    
-    // read form parameters
-    String httpMethod = formContainer.getMethod();
-    String actionUrl = formContainer.getAction();
-    List<NameValuePair> fields = formContainer.getFields();
-
-    System.out.println("Initialized form with request-id: " + formContainer.getRequestId());
-
-    for (NameValuePair field : fields) {
-        field.getName();
-        field.getValue();
-    }
-    
-#### Optional parameters
- Parameter | type 
------------|------
-use3ds | bool        
-language | string (e.q. FI or EN)    
-tokenize | bool
-webhookSuccessUrl | String
-webhookFailureUrl | String
-webhookCancelUrl | String 
-webhookDelay | Int
-
----
-
-Each method returns a FormContainer object which provides required hidden fields for the HTML form to make a successful transaction to Form API. The builder will generate a request id, timestamp, and secure signature for the transactions, which are included in the FormContainer fields.
-
-In order to charge a card given in the Form API, the corresponding transaction id must be committed by using Payment API.
-
-In addition, after the user is redirected to one of your provided success, failure or cancel URLs, you should validate the request parameters and the signature.
-
 ### Example validateFormRedirect
 
     SecureSigner secureSigner = new SecureSigner(signatureKeyId, signatureSecret);
