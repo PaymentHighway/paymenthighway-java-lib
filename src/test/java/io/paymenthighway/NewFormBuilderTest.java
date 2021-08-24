@@ -532,32 +532,6 @@ public class NewFormBuilderTest {
     this.validateWebhookParameters(formContainer.getFields(), false);
   }
 
-  @Test
-  public void testMasterpassWebhookParameters() {
-    FormContainer formContainer = this.formBuilder.masterpassParameters(
-      this.successUrl,
-      this.failureUrl,
-      this.cancelUrl,
-      Long.valueOf(this.amount),
-      this.currency,
-      this.orderId,
-      this.description
-    )
-      .webhookSuccessUrl(this.webhookSuccessUrl)
-      .webhookFailureUrl(this.webhookFailureUrl)
-      .webhookCancelUrl(this.webhookCancelUrl)
-      .webhookDelay(this.webhookDelay)
-      .language(this.language)
-      .referenceNumber("1313")
-      .build();
-
-    String signature = Helper.assertFieldExists(formContainer.getFields(), FormBuilderConstants.SIGNATURE).getValue();
-    assertNotNull(signature);
-    assertTrue(signature.startsWith("SPH1"));
-
-    this.validateWebhookParameters(formContainer.getFields(), false);
-  }
-
   private void validateWebhookParameters(List<NameValuePair> nameValuePairs, boolean ignoreDelay) {
     for (NameValuePair nameValuePair : nameValuePairs) {
       String name = nameValuePair.getName();
