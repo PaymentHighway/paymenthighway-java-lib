@@ -675,18 +675,16 @@ public class PaymentAPITest {
       e.printStackTrace();
     }
     // read redirect uri and GET params from it.
-    HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(HttpCoreContext.HTTP_REQUEST);
+    List<URI> redirectURIs = context.getRedirectLocations();
+    assertEquals(5, redirectURIs.size());
 
-    List<NameValuePair> params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
+    String query = redirectURIs.get(1).getQuery();
+
+    Matcher matcherTransactionId = Pattern.compile("(?<=sph-transaction-id=).{36}").matcher(query);
+    assertTrue(matcherTransactionId.find());
 
     // get sph-transaction-id
-    String transactionId = null;
-    for (NameValuePair param : params) {
-      if (param.getName().equalsIgnoreCase("sph-transaction-id")) {
-        transactionId = param.getValue();
-      }
-    }
-    assertNotNull(transactionId);
+    String transactionId = matcherTransactionId.group();
 
     CommitTransactionResponse commitResponse = null;
 
@@ -757,18 +755,16 @@ public class PaymentAPITest {
       e.printStackTrace();
     }
     // read redirect uri and GET params from it.
-    HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(
-        HttpCoreContext.HTTP_REQUEST);
+    List<URI> redirectURIs = context.getRedirectLocations();
+    assertEquals(5, redirectURIs.size());
 
-    List<NameValuePair> params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
+    String query = redirectURIs.get(1).getQuery();
+
+    Matcher matcherTokenizationId = Pattern.compile("(?<=sph-tokenization-id=).{36}").matcher(query);
+    assertTrue(matcherTokenizationId.find());
 
     // get sph-tokenization-id
-    UUID tokenizationId = null;
-    for (NameValuePair param : params) {
-      if (param.getName().equalsIgnoreCase("sph-tokenization-id")) {
-        tokenizationId = UUID.fromString(param.getValue());
-      }
-    }
+    UUID tokenizationId = UUID.fromString(matcherTokenizationId.group());
 
     TokenizationResponse tokenResponse = null;
 
@@ -837,18 +833,16 @@ public class PaymentAPITest {
       e.printStackTrace();
     }
     // read redirect uri and GET params from it.
-    HttpUriRequest currentReq = (HttpUriRequest) context.getAttribute(
-        HttpCoreContext.HTTP_REQUEST);
+    List<URI> redirectURIs = context.getRedirectLocations();
+    assertEquals(5, redirectURIs.size());
 
-    List<NameValuePair> params = URLEncodedUtils.parse(currentReq.getURI(), "UTF-8");
+    String query = redirectURIs.get(1).getQuery();
+
+    Matcher matcherTokenizationId = Pattern.compile("(?<=sph-tokenization-id=).{36}").matcher(query);
+    assertTrue(matcherTokenizationId.find());
 
     // get sph-tokenization-id
-    UUID tokenizationId = null;
-    for (NameValuePair param : params) {
-      if (param.getName().equalsIgnoreCase("sph-tokenization-id")) {
-        tokenizationId = UUID.fromString(param.getValue());
-      }
-    }
+    UUID tokenizationId = UUID.fromString(matcherTokenizationId.group());
 
     TokenizationResponse tokenResponse = null;
 
