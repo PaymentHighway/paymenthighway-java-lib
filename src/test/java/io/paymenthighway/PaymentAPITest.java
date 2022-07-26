@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -882,6 +883,49 @@ public class PaymentAPITest {
     assertEquals(debitResponse.getResult().getCode(), "100");
     assertEquals(debitResponse.getResult().getMessage(), "OK");
 
+  }
+
+  @Test
+  public void testFormSessionStatus() {
+
+    // create the payment highway service
+    PaymentAPI paymentAPI = createPaymentAPI();
+
+    // create the payment highway request parameters
+    FormBuilder formBuilder = new FormBuilder(
+            "POST", this.signatureKeyId, this.signatureSecret,
+            this.account, this.merchant, this.serviceUrl);
+
+    FormContainer formContainer = formBuilder.generateAddCardParameters(
+            "http://www.paymenthighway.fi", "http://www.solinor.com/", "http://www.solinor.fi", "EN");
+
+    FormAPI formApi = new FormAPI(this.serviceUrl, this.signatureKeyId, this.signatureSecret);
+    String result = null;
+    try {
+      result = formApi.addCard(formContainer.getFields());
+    } catch (IOException e1) {
+      e1.printStackTrace();
+    }
+    assertNotNull(result);
+    Matcher matcher = Pattern.compile("(?<=form action=\").{51}").matcher(result);
+    assertTrue(matcher.find());
+    String sessionId = matcher.group().split("/")[2];
+
+    FormSessionStatusResponse response = null;
+
+    try {
+      response = paymentAPI.formSessionStatus(UUID.fromString(sessionId));
+    } catch (IOException e2) {
+      e2.printStackTrace();
+    }
+
+    assertNotNull(response);
+    assertEquals("tokenize", response.getOperation());
+    assertEquals("started", response.getStatus().getState());
+    assertEquals("OK", response.getResult().getMessage());
+    assertNull(response.getTransactionId());
+    assertNotNull(Instant.parse(response.getCreated()));
+    assertNotNull(Instant.parse(response.getValidUntil()));
   }
 
   @Test
