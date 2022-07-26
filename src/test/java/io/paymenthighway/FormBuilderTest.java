@@ -151,7 +151,6 @@ public class FormBuilderTest {
 
     assertNotNull(response);
     assertTrue(response.contains("card_number_formatted"));
-    assertTrue(response.contains("Payment Highway"));
   }
 
   /**
@@ -191,7 +190,6 @@ public class FormBuilderTest {
 
     assertNotNull(response);
     assertTrue(response.contains("card_number_formatted"));
-    assertTrue(response.contains("Payment Highway"));
   }
 
   @Test
@@ -223,7 +221,6 @@ public class FormBuilderTest {
 
     assertNotNull(response);
     assertTrue(response.contains("card_number_formatted"));
-    assertTrue(response.contains("Payment Highway"));
   }
 
   /**

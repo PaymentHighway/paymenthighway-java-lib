@@ -113,7 +113,6 @@ public class FormAPIConnectionTest {
     assertNotNull(response);
     assertTrue(response.contains("CARD NUMBER"));
     assertTrue(response.contains("viewport"));
-    assertTrue(response.contains("Payment Highway"));
 
     Matcher matcher = Pattern.compile("(?<=form action=\").{51}").matcher(response);
     assertTrue(matcher.find());
@@ -199,7 +198,6 @@ public class FormAPIConnectionTest {
     assertNotNull(response);
     assertTrue(response.contains("CARD NUMBER"));
     assertTrue(response.contains("viewport"));
-    assertTrue(response.contains("Payment Highway"));
     assertTrue(response.contains("Payment Information"));
     assertTrue(response.contains("card-info"));
   }
@@ -234,7 +232,6 @@ public class FormAPIConnectionTest {
     assertNotNull(response);
     assertTrue(response.contains("CARD NUMBER"));
     assertTrue(response.contains("viewport"));
-    assertTrue(response.contains("Payment Highway"));
     assertTrue(response.contains("Payment Information"));
     assertTrue(response.contains("card-info"));
   }
