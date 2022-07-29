@@ -915,7 +915,7 @@ public class PaymentAPITest {
 
     assertNotNull(response);
     assertEquals("tokenize", response.getOperation());
-    assertEquals("started", response.getStatus().getState());
+    assertEquals("in_progress", response.getStatus().getState());
     assertEquals("OK", response.getResult().getMessage());
     assertNull(response.getTransactionId());
     assertNotNull(Instant.parse(response.getCreated()));
