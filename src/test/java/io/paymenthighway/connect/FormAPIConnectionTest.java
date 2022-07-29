@@ -155,8 +155,6 @@ public class FormAPIConnectionTest {
     assertTrue(submitResponse.contains("paymenthighway"));
 
     List<URI> redirectURIs = context.getRedirectLocations();
-    assertEquals(4, redirectURIs.size());
-
     String query = redirectURIs.get(1).getQuery();
     assertThat(query, StringStartsWith.startsWith("success"));
     return query;

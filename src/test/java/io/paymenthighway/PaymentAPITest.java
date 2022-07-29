@@ -756,10 +756,7 @@ public class PaymentAPITest {
       e.printStackTrace();
     }
     // read redirect uri and GET params from it.
-    List<URI> redirectURIs = context.getRedirectLocations();
-    assertEquals(5, redirectURIs.size());
-
-    String query = redirectURIs.get(1).getQuery();
+    String query = context.getRedirectLocations().get(1).getQuery();
 
     Matcher matcherTokenizationId = Pattern.compile("(?<=sph-tokenization-id=).{36}").matcher(query);
     assertTrue(matcherTokenizationId.find());
@@ -834,10 +831,7 @@ public class PaymentAPITest {
       e.printStackTrace();
     }
     // read redirect uri and GET params from it.
-    List<URI> redirectURIs = context.getRedirectLocations();
-    assertEquals(5, redirectURIs.size());
-
-    String query = redirectURIs.get(1).getQuery();
+    String query = context.getRedirectLocations().get(1).getQuery();
 
     Matcher matcherTokenizationId = Pattern.compile("(?<=sph-tokenization-id=).{36}").matcher(query);
     assertTrue(matcherTokenizationId.find());
