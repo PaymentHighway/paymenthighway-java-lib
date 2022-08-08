@@ -444,6 +444,10 @@ NOTE: The `debitTransaction` method is deprecated since Sep 14th 2019 in favor o
 
     OrderSearchResponse orderSearchResponse = paymentAPI.searchOrders("order");
 
+### Example Form Session Status
+
+    FormSessionStatusResponse formSessionStatusResponse = paymentAPI.formSessionStatus("sessionId");
+
 ### Providing a custom HTTP client
 
 #### httpcomponents.httpclient version > 4.5.4

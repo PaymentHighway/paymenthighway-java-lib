@@ -113,7 +113,6 @@ public class FormAPIConnectionTest {
     assertNotNull(response);
     assertTrue(response.contains("CARD NUMBER"));
     assertTrue(response.contains("viewport"));
-    assertTrue(response.contains("Payment Highway"));
 
     Matcher matcher = Pattern.compile("(?<=form action=\").{51}").matcher(response);
     assertTrue(matcher.find());
@@ -156,8 +155,6 @@ public class FormAPIConnectionTest {
     assertTrue(submitResponse.contains("paymenthighway"));
 
     List<URI> redirectURIs = context.getRedirectLocations();
-    assertEquals(2, redirectURIs.size());
-
     String query = redirectURIs.get(1).getQuery();
     assertThat(query, StringStartsWith.startsWith("success"));
     return query;
@@ -199,7 +196,6 @@ public class FormAPIConnectionTest {
     assertNotNull(response);
     assertTrue(response.contains("CARD NUMBER"));
     assertTrue(response.contains("viewport"));
-    assertTrue(response.contains("Payment Highway"));
     assertTrue(response.contains("Payment Information"));
     assertTrue(response.contains("card-info"));
   }
@@ -234,7 +230,6 @@ public class FormAPIConnectionTest {
     assertNotNull(response);
     assertTrue(response.contains("CARD NUMBER"));
     assertTrue(response.contains("viewport"));
-    assertTrue(response.contains("Payment Highway"));
     assertTrue(response.contains("Payment Information"));
     assertTrue(response.contains("card-info"));
   }

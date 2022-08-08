@@ -383,6 +383,20 @@ public class PaymentAPI implements Closeable {
   }
 
   /**
+   * Payment Highway Form Session Status Request
+   *
+   * @param sessionId Session id
+   * @return Form session status response
+   * @throws HttpResponseException Exception
+   * @throws AuthenticationException Exception
+   * @throws IOException Exception
+   */
+  public FormSessionStatusResponse formSessionStatus(UUID sessionId) throws IOException {
+
+    return paymentApi.formSessionStatus(sessionId);
+  }
+
+  /**
    * Payment Highway Pivo Transaction Status Request
    *
    * @param transactionId Transaction id

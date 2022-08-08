@@ -1302,42 +1302,16 @@ public class PaymentAPIConnectionTest {
   }
 
   /**
-   * This will test successful tokenization request
-   */
-  @Test
-  public void testTokenization1() {
-
-    // TODO: fetch this from Form API get parameters
-    UUID tokenizationId = UUID.fromString("08cc223a-cf93-437c-97a2-f338eaf0d860");
-
-    TokenizationResponse tokenResponse = null;
-    try {
-      tokenResponse = conn.tokenization(tokenizationId);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    assertNotNull(tokenResponse);
-    assertEquals("2017", tokenResponse.getCard().getExpireYear());
-    assertEquals("71435029-fbb6-4506-aa86-8529efb640b0", tokenResponse.getCardToken().toString());
-    assertEquals("no", tokenResponse.getCard().getCvcRequired());
-    assertEquals("415301", tokenResponse.getCard().getBin());
-    assertEquals("debit", tokenResponse.getCard().getFunding());
-    assertEquals("unknown", tokenResponse.getCard().getCategory());
-    assertEquals("FI", tokenResponse.getCard().getCountryCode());
-    // no Customer info was available when the tokenizationId was generated so it should not be visible in the response
-    assertNull(tokenResponse.getCustomer());
-    assertEquals("no", tokenResponse.getCardholderAuthentication());
-    assertEquals(Boolean.FALSE, tokenResponse.getRecurring());
-    checkAcquirerInfo(tokenResponse, "060");
-  }
-
-  /**
    * This will test successful tokenization request, with Customer info in the response
    */
   @Test
-  public void testTokenization2() {
+  public void testTokenization() {
 
     // TODO: fetch this from Form API get parameters
+    // Test setup created manually. If this stops working then ...
+    // 1. execute a new add_card request using our test form (target staging),
+    // 2. replace with the value of query parameter "sph-tokenization-id" found in success redirect URL,
+    // 3. adjust assertions.
     UUID tokenizationId = UUID.fromString("475d49ec-2c37-4ae5-a6ef-33dc6b60ac71");
 
     TokenizationResponse tokenResponse = null;
