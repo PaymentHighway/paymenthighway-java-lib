@@ -47,6 +47,42 @@ public class Purchase {
     return new Builder();
   }
 
+  public ShippingIndicator getShippingIndicator() {
+    return shippingIndicator;
+  }
+
+  public DeliveryTimeFrame getDeliveryTimeFrame() {
+    return deliveryTimeFrame;
+  }
+
+  public String getDeliveryEmail() {
+    return deliveryEmail;
+  }
+
+  public ReorderItemsIndicator getReorderItemsIndicator() {
+    return reorderItemsIndicator;
+  }
+
+  public PreOrderItemsIndicator getPreOrderPurchaseIndicator() {
+    return preOrderPurchaseIndicator;
+  }
+
+  public String getPreOrderDate() {
+    return preOrderDate;
+  }
+
+  public ShippingNameIndicator getShippingNameIndicator() {
+    return shippingNameIndicator;
+  }
+
+  public Long getGiftCardAmount() {
+    return giftCardAmount;
+  }
+
+  public Integer getGiftCardCount() {
+    return giftCardCount;
+  }
+
   public static final class Builder {
     private ShippingIndicator shippingIndicator;
     private DeliveryTimeFrame deliveryTimeFrame;

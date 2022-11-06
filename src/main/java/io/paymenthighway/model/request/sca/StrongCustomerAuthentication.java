@@ -47,6 +47,46 @@ public class StrongCustomerAuthentication {
     exitIframeOnThreeDSecure = builder.exitIframeOnThreeDSecure;
   }
 
+  public Urls getReturnUrls() {
+    return returnUrls;
+  }
+
+  public CustomerDetails getCustomerDetails() {
+    return customerDetails;
+  }
+
+  public CustomerAccount getCustomerAccount() {
+    return customerAccount;
+  }
+
+  public Purchase getPurchase() {
+    return purchase;
+  }
+
+  public Address getBillingAddress() {
+    return billingAddress;
+  }
+
+  public Address getShippingAddress() {
+    return shippingAddress;
+  }
+
+  public CustomerAuthenticationInfo getCustomerAuthenticationInfo() {
+    return customerAuthenticationInfo;
+  }
+
+  public DesiredChallengeWindowSize getDesiredChallengeWindowSize() {
+    return desiredChallengeWindowSize;
+  }
+
+  public Boolean getExitIframeOnResult() {
+    return exitIframeOnResult;
+  }
+
+  public Boolean getExitIframeOnThreeDSecure() {
+    return exitIframeOnThreeDSecure;
+  }
+
   /**
    * @param returnUrls The URLs where to redirect the user and send the webhook requests to, after the
    *                   Strong Customer Authentication is performed via the 3DS url response in case of a soft decline.

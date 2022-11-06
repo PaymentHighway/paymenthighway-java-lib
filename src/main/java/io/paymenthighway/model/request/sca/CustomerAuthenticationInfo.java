@@ -23,6 +23,18 @@ public class CustomerAuthenticationInfo {
     return new Builder();
   }
 
+  public Method getMethod() {
+    return method;
+  }
+
+  public String getTimestamp() {
+    return timestamp;
+  }
+
+  public String getData() {
+    return data;
+  }
+
   public static final class Builder {
     private Method method;
     private String timestamp;
