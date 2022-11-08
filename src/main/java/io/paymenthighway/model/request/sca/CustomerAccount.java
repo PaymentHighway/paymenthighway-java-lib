@@ -50,6 +50,58 @@ public class CustomerAccount {
     return new Builder();
   }
 
+  public AccountAgeIndicator getAccountAgeIndicator() {
+    return accountAgeIndicator;
+  }
+
+  public String getAccountDate() {
+    return accountDate;
+  }
+
+  public ChangeIndicator getChangeIndicator() {
+    return changeIndicator;
+  }
+
+  public String getChangeDate() {
+    return changeDate;
+  }
+
+  public PasswordChangeIndicator getPasswordChangeIndicator() {
+    return passwordChangeIndicator;
+  }
+
+  public String getPasswordChangeDate() {
+    return passwordChangeDate;
+  }
+
+  public Integer getNumberOfRecentPurchases() {
+    return numberOfRecentPurchases;
+  }
+
+  public Integer getNumberOfAddCardAttemptsDay() {
+    return numberOfAddCardAttemptsDay;
+  }
+
+  public Integer getNumberOfTransactionActivityDay() {
+    return numberOfTransactionActivityDay;
+  }
+
+  public Integer getNumberOfTransactionActivityYear() {
+    return numberOfTransactionActivityYear;
+  }
+
+  public ShippingAddressIndicator getShippingAddressIndicator() {
+    return shippingAddressIndicator;
+  }
+
+  public String getShippingAddressUsageDate() {
+    return shippingAddressUsageDate;
+  }
+
+  public SuspiciousActivity getSuspiciousActivity() {
+    return suspiciousActivity;
+  }
+
   public static class Builder {
     private AccountAgeIndicator accountAgeIndicator;
     private String accountDate;

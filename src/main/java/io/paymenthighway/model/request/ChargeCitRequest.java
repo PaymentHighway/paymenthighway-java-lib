@@ -30,6 +30,30 @@ public class ChargeCitRequest extends GenericPaymentRequest {
     referenceNumber = builder.referenceNumber;
   }
 
+  public Token getToken() {
+    return token;
+  }
+
+  public Card getCard() {
+    return card;
+  }
+
+  public Customer getCustomer() {
+    return customer;
+  }
+
+  public Boolean getCommit() {
+    return commit;
+  }
+
+  public StrongCustomerAuthentication getStrongCustomerAuthentication() {
+    return strongCustomerAuthentication;
+  }
+
+  public String getReferenceNumber() {
+    return referenceNumber;
+  }
+
   /**
    * Payment using a card token when the customer is participating in the payment flow.
    * @param token Card token to charge

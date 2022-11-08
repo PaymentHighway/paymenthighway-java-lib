@@ -35,6 +35,34 @@ public class Urls {
     webhookDelay = builder.webhookDelay;
   }
 
+  public String getSuccessfulUrl() {
+    return successUrl;
+  }
+
+  public String getFailureUrl() {
+    return failureUrl;
+  }
+
+  public String getCancelUrl() {
+    return cancelUrl;
+  }
+
+  public String getWebhookSuccessfulUrl() {
+    return webhookSuccessUrl;
+  }
+
+  public String getWebhookFailureUrl() {
+    return webhookFailureUrl;
+  }
+
+  public String getWebhookCancelUrl() {
+    return webhookCancelUrl;
+  }
+
+  public Integer getWebhookDelay() {
+    return webhookDelay;
+  }
+
   /**
    * @param successUrl The URL the user is redirected after the transaction is handled. The payment itself may still be rejected.
    * @param failureUrl The URL the user is redirected after a failure such as an authentication or connectivity error.

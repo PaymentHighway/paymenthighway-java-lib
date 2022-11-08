@@ -39,6 +39,34 @@ public class Address {
     return new Builder();
   }
 
+  public String getCity() {
+    return city;
+  }
+
+  public String getCountry() {
+    return country;
+  }
+
+  public String getAddressLine1() {
+    return addressLine1;
+  }
+
+  public String getAddressLine2() {
+    return addressLine2;
+  }
+
+  public String getAddressLine3() {
+    return addressLine3;
+  }
+
+  public String getPostCode() {
+    return postCode;
+  }
+
+  public String getState() {
+    return state;
+  }
+
   public static class Builder {
 
     private String city;

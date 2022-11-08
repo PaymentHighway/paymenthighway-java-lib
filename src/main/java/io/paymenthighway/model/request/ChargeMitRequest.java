@@ -25,6 +25,26 @@ public class ChargeMitRequest extends GenericPaymentRequest {
     referenceNumber = builder.referenceNumber;
   }
 
+  public Token getToken() {
+    return token;
+  }
+
+  public Card getCard() {
+    return card;
+  }
+
+  public Customer getCustomer() {
+    return customer;
+  }
+
+  public Boolean getCommit() {
+    return commit;
+  }
+
+  public String getReferenceNumber() {
+    return referenceNumber;
+  }
+
   /**
    * Payment using a card token when the customer is not participating in the payment flow.
    * A contract and understanding between the merchant and the customer must be established, allowing this kind of payments.

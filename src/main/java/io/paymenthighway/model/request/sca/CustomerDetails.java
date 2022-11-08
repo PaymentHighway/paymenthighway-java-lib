@@ -35,6 +35,30 @@ public class CustomerDetails {
     return new Builder();
   }
 
+  public Boolean getShippingAddressMatchesBillingAddress() {
+    return shippingAddressMatchesBillingAddress;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public PhoneNumber getHomePhone() {
+    return homePhone;
+  }
+
+  public PhoneNumber getMobilePhone() {
+    return mobilePhone;
+  }
+
+  public PhoneNumber getWorkPhone() {
+    return workPhone;
+  }
+
   public static final class Builder {
     private Boolean shippingAddressMatchesBillingAddress;
     private String name;

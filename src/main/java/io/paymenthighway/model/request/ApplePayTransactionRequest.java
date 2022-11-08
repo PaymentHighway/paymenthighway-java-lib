@@ -16,6 +16,22 @@ public class ApplePayTransactionRequest extends GenericPaymentRequest {
   @JsonProperty("reference_number")
   private String referenceNumber;
 
+  public PaymentData getPaymentData() {
+    return paymentData;
+  }
+
+  public Boolean getCommit() {
+    return commit;
+  }
+
+  public Customer getCustomer() {
+    return customer;
+  }
+
+  public String referenceNumber() {
+    return referenceNumber;
+  }
+
   public static Builder Builder(PaymentData paymentData, long amount, String currency) {
     return new Builder(paymentData, amount, currency);
   }
