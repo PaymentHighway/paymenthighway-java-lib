@@ -17,4 +17,12 @@ public class PhoneNumber {
     this.countryCode = countryCode;
     this.number = number;
   }
+
+  public String getCountryCode() {
+    return countryCode;
+  }
+
+  public String getNumber() {
+    return number;
+  }
 }
