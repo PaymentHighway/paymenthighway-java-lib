@@ -74,14 +74,16 @@ public class TransactionRequestTest {
     ).build()).build();
 
 
+    SubMerchant testSubMerchant = TestResources.TestSubMerchant;
+
     ChargeCitRequest request = ChargeCitRequest
         .Builder(token, 99L, "EUR", orderId, sca)
-        .setSubMerchant(TestResources.TestSubMerchant)
+        .setSubMerchant(testSubMerchant)
         .build();
 
     String json = new JsonGenerator().createTransactionJson(request);
 
-    TestResources.assertTestSubMerchant(json);
+    TestResources.assertTestSubMerchant(json, testSubMerchant);
   }
 
   @Test
@@ -90,13 +92,15 @@ public class TransactionRequestTest {
     String orderId = "order_123";
 
 
+    SubMerchant testSubMerchant = TestResources.TestSubMerchant;
+
     ChargeMitRequest request = ChargeMitRequest
         .Builder(token, 99L, "EUR", orderId)
-        .setSubMerchant(TestResources.TestSubMerchant)
+        .setSubMerchant(testSubMerchant)
         .build();
 
     String json = new JsonGenerator().createTransactionJson(request);
 
-    TestResources.assertTestSubMerchant(json);
+    TestResources.assertTestSubMerchant(json, testSubMerchant);
   }
 }
