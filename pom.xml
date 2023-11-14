@@ -11,9 +11,9 @@
   <url>https://www.paymenthighway.fi/en/</url>
 
   <scm>
-    <connection>scm:git:git@github.com:solinor/paymenthighway-java-lib.git</connection>
-    <developerConnection>scm:git:git@github.com:solinor/paymenthighway-java-lib.git</developerConnection>
-    <url>git@github.com:solinor/paymenthighway-java-lib.git</url>
+    <connection>scm:git:git@github.com:PaymentHighway/paymenthighway-java-lib.git</connection>
+    <developerConnection>scm:git:git@github.com:PaymentHighway/paymenthighway-java-lib.git</developerConnection>
+    <url>git@github.com:PaymentHighway/paymenthighway-java-lib.git</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -40,11 +40,6 @@
       <id>Swie</id>
       <name>Terho Siikanen</name>
       <url>https://github.com/Swie</url>
-    </developer>
-    <developer>
-      <id>Kostersson</id>
-      <name>Pauli Kostamo</name>
-      <url>https://github.com/Kostersson</url>
     </developer>
   </developers>
 
