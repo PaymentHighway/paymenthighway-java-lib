@@ -28,6 +28,6 @@ public class MobilePayInitRequestTest {
     assertTrue(json.contains("https://myapp.server/cancel"));
     assertTrue(json.contains("myapp://view"));
 
-    TestResources.assertTestSubMerchant(json, testSubMerchant);
+    TestResources.assertTestSubMerchantWithVatId(json, testSubMerchant);
   }
 }

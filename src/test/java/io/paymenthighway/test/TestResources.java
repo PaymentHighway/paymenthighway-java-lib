@@ -46,6 +46,22 @@ public class TestResources {
     JsonTestHelper.testJson(json, "postal_code", contactInformation.getPostalCode());
     JsonTestHelper.testJson(json, "country_code", contactInformation.getCountryCode());
     JsonTestHelper.testJson(json, "telephone", contactInformation.getTelephone());
+  }
+
+  public static void assertTestSubMerchantWithVatId(String json, SubMerchant testSubMerchant) {
+    JsonTestHelper.keyExists(json, "sub_merchant");
+    JsonTestHelper.testJson(json, "id", testSubMerchant.getId());
+    JsonTestHelper.testJson(json, "merchant_category_code", testSubMerchant.getMerchantCategoryCode());
+
+    ContactInformation contactInformation = testSubMerchant.getContactInformation();
+
+    JsonTestHelper.keyExists(json, "contact_information");
+    JsonTestHelper.testJson(json, "name", contactInformation.getName());
+    JsonTestHelper.testJson(json, "street_address", contactInformation.getStreetAddress());
+    JsonTestHelper.testJson(json, "city", contactInformation.getCity());
+    JsonTestHelper.testJson(json, "postal_code", contactInformation.getPostalCode());
+    JsonTestHelper.testJson(json, "country_code", contactInformation.getCountryCode());
+    JsonTestHelper.testJson(json, "telephone", contactInformation.getTelephone());
 
     JsonTestHelper.testJson(json, "vat_id", testSubMerchant.getVatId());
   }
