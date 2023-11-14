@@ -164,6 +164,10 @@ public class GenericFormBuilder<T> {
     addOrReplaceNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_ID, subMerchant.getId());
     addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_MCC, subMerchant.getMerchantCategoryCode());
 
+    if (subMerchant.getVatId() != null) {
+      addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_VAT_ID, subMerchant.getVatId());
+    }
+
     addOrReplaceNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_NAME, contactInformation.getName());
     addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_STREET_ADDRESS, contactInformation.getStreetAddress());
     addNameValuePair(FormBuilderConstants.SPH_SUB_MERCHANT_CITY, contactInformation.getCity());

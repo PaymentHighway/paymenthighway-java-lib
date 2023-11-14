@@ -804,14 +804,15 @@ public class FormBuilderTest {
 
     FormBuilder formBuilder = createFormBuilder(method, account, merchant);
 
+    SubMerchant testSubMerchantWithVatId = TestResources.TestSubMerchantWithVatId;
     FormContainer formContainer = formBuilder.mobilePayParametersBuilder(successUrl, failureUrl, cancelUrl, amount, currency, orderId, description)
         .splitting(splittingMerchantId, splittingAmount)
-        .subMerchant(TestResources.TestSubMerchant)
+        .subMerchant(testSubMerchantWithVatId)
         .build();
 
-    assertEquals(23, formContainer.getFields().size());
+    assertEquals(24, formContainer.getFields().size());
     checkSplittingParameters(formContainer.getFields(), splittingMerchantIdString, splittingAmountString);
-    checkSubMerchantParameters(formContainer.getFields(), TestResources.TestSubMerchant);
+    checkSubMerchantWithVatIdParameters(formContainer.getFields(), testSubMerchantWithVatId);
   }
 
   @Test
@@ -955,5 +956,10 @@ public class FormBuilderTest {
     Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_POSTAL_CODE, contactInformation.getPostalCode());
     Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_TELEPHONE, contactInformation.getTelephone());
     Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_COUNTRY_CODE, contactInformation.getCountryCode());
+  }
+
+  private void checkSubMerchantWithVatIdParameters(List<NameValuePair> parameterList, SubMerchant subMerchant) {
+    checkSubMerchantParameters(parameterList, subMerchant);
+    Helper.assertFieldValueExists(parameterList, FormBuilderConstants.SPH_SUB_MERCHANT_VAT_ID, subMerchant.getVatId());
   }
 }

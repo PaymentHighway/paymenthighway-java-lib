@@ -9,6 +9,8 @@ public class SubMerchant {
   String merchantCategoryCode;
   @JsonProperty("contact_information")
   ContactInformation contactInformation;
+  @JsonProperty("vat_id")
+  String vatId;
 
   /**
    * Sub-merchant details, only to be used if initiated by a Payment Facilitator
@@ -22,6 +24,20 @@ public class SubMerchant {
     this.contactInformation = contactInformation;
   }
 
+  /**
+   * Sub-merchant details, only to be used if initiated by a Payment Facilitator
+   * @param id Payment Facilitator assigned numeric sub-merchant identifier
+   * @param merchantCategoryCode Four digit merchant category code
+   * @param contactInformation Sub-merchant's contact details
+   * @param vatId Sub-merchant's VAT ID, required for MobilePay requests
+   */
+  public SubMerchant(String id, String merchantCategoryCode, ContactInformation contactInformation, String vatId) {
+    this.id = id;
+    this.merchantCategoryCode = merchantCategoryCode;
+    this.contactInformation = contactInformation;
+    this.vatId = vatId;
+  }
+
   public String getId() {
     return id;
   }
@@ -32,5 +48,9 @@ public class SubMerchant {
 
   public ContactInformation getContactInformation() {
     return contactInformation;
+  }
+
+  public String getVatId() {
+    return vatId;
   }
 }

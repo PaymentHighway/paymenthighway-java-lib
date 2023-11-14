@@ -8,6 +8,8 @@ import org.junit.Test;
 public class PaymentRequestBuilderTest {
     @Test
     public void testPivoRequestBuilder() throws Exception {
+        SubMerchant testSubMerchant = TestResources.TestSubMerchant;
+
         PivoInitRequest request = PivoInitRequest.Builder(1L, "EUR")
             .setWebhookCancelUrl("http://www.example.com/cancel")
             .setWebhookFailureUrl("http://www.example.com/failure")
@@ -16,7 +18,7 @@ public class PaymentRequestBuilderTest {
             .setAppUrl("app://url")
             .setOrder("orderNumber")
             .setDescription("simple description")
-            .setSubMerchant(TestResources.TestSubMerchant)
+            .setSubMerchant(testSubMerchant)
             .build();
 
         JsonGenerator jsonGenerator = new JsonGenerator();
@@ -31,6 +33,6 @@ public class PaymentRequestBuilderTest {
         JsonTestHelper.testJson(json, "order", "orderNumber");
         JsonTestHelper.testJson(json, "description", "simple description");
 
-        TestResources.assertTestSubMerchant(json);
+        TestResources.assertTestSubMerchant(json, testSubMerchant);
     }
 }

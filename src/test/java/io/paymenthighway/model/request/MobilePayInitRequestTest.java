@@ -12,11 +12,13 @@ import static org.junit.Assert.assertTrue;
 public class MobilePayInitRequestTest {
   @Test
   public void serializeUriAndUrls() throws Exception {
+    SubMerchant testSubMerchant = TestResources.TestSubMerchantWithVatId;
+
     MobilePayInitRequest request = MobilePayInitRequest.Builder(1000, "EUR")
             .setWebhookSuccessUrl(new URL("https://myapp.server/success"))
             .setWebhookCancelUrl("https://myapp.server/cancel")
             .setReturnUri(new URI("myapp://view"))
-            .setSubMerchant(TestResources.TestSubMerchant)
+            .setSubMerchant(testSubMerchant)
             .build();
 
     JsonGenerator jsonGenerator = new JsonGenerator();
@@ -26,6 +28,6 @@ public class MobilePayInitRequestTest {
     assertTrue(json.contains("https://myapp.server/cancel"));
     assertTrue(json.contains("myapp://view"));
 
-    TestResources.assertTestSubMerchant(json);
+    TestResources.assertTestSubMerchantWithVatId(json, testSubMerchant);
   }
 }
