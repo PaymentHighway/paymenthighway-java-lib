@@ -81,8 +81,8 @@ public class PaymentAPITest {
   static private final String RESULT_CODE_OK = "100";
   static private final String RESULT_CODE_SOFT_DECLINE = "400";
 
-  private static Card validTestCard = new Card("4153013999700321", "2023", "11", "321");
-  private static Card softDeclineCard = new Card("4153013999701170", "2023", "11", "170");
+  private static Card validTestCard = new Card("4153013999700321", "2026", "11", "321");
+  private static Card softDeclineCard = new Card("4153013999701170", "2026", "11", "170");
 
   private UUID initTransaction(PaymentAPI paymentAPI) throws IOException {
     InitTransactionResponse response = paymentAPI.initTransaction();
@@ -148,7 +148,7 @@ public class PaymentAPITest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     TransactionRequest transaction = new TransactionRequest(card, "9999", "EUR");
@@ -319,7 +319,7 @@ public class PaymentAPITest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -377,7 +377,7 @@ public class PaymentAPITest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -428,7 +428,7 @@ public class PaymentAPITest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -493,7 +493,7 @@ public class PaymentAPITest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -561,7 +561,7 @@ public class PaymentAPITest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     UUID orderId = UUID.randomUUID();
@@ -657,7 +657,7 @@ public class PaymentAPITest {
     submitParameters.add(new BasicNameValuePair("card_number_formatted", "4153 0139 9970 0024"));
     submitParameters.add(new BasicNameValuePair("card_number", "4153013999700024"));
     submitParameters.add(new BasicNameValuePair("expiration_month", "11"));
-    submitParameters.add(new BasicNameValuePair("expiration_year", "2023"));
+    submitParameters.add(new BasicNameValuePair("expiration_year", "2026"));
     submitParameters.add(new BasicNameValuePair("expiry", "11 / 17"));
     submitParameters.add(new BasicNameValuePair("cvv", "024"));
 
@@ -700,7 +700,7 @@ public class PaymentAPITest {
     assertEquals(commitResponse.getResult().getMessage(), "OK");
     assertTrue(commitResponse.getCardToken().toString().length() == 36);
     assertEquals(commitResponse.getCard().getPartialPan(), "0024");
-    assertEquals(commitResponse.getCard().getExpireYear(), "2023");
+    assertEquals(commitResponse.getCard().getExpireYear(), "2026");
 
   }
 
@@ -737,7 +737,7 @@ public class PaymentAPITest {
     submitParameters.add(new BasicNameValuePair("card_number_formatted", "4153 0139 9970 0024"));
     submitParameters.add(new BasicNameValuePair("card_number", "4153013999700024"));
     submitParameters.add(new BasicNameValuePair("expiration_month", "11"));
-    submitParameters.add(new BasicNameValuePair("expiration_year", "2023"));
+    submitParameters.add(new BasicNameValuePair("expiration_year", "2026"));
     submitParameters.add(new BasicNameValuePair("expiry", "11 / 17"));
     submitParameters.add(new BasicNameValuePair("cvv", "024"));
 
@@ -773,10 +773,10 @@ public class PaymentAPITest {
     }
 
     assertNotNull(tokenResponse);
-    assertEquals(tokenResponse.getCard().getExpireYear(), "2023");
+    assertEquals(tokenResponse.getCard().getExpireYear(), "2026");
     assertTrue(tokenResponse.getCardToken().toString().length() == 36);
     assertEquals(tokenResponse.getResult().getMessage(), "OK");
-    assertEquals(tokenResponse.getCard().getCvcRequired(), "no");
+    assertEquals(tokenResponse.getCard().getCvcRequired(), "not_tested");
 
   }
 
@@ -812,7 +812,7 @@ public class PaymentAPITest {
     submitParameters.add(new BasicNameValuePair("card_number_formatted", "4153 0139 9970 0024"));
     submitParameters.add(new BasicNameValuePair("card_number", "4153013999700024"));
     submitParameters.add(new BasicNameValuePair("expiration_month", "11"));
-    submitParameters.add(new BasicNameValuePair("expiration_year", "2023"));
+    submitParameters.add(new BasicNameValuePair("expiration_year", "2026"));
     submitParameters.add(new BasicNameValuePair("expiry", "11 / 17"));
     submitParameters.add(new BasicNameValuePair("cvv", "024"));
 
@@ -848,7 +848,7 @@ public class PaymentAPITest {
     }
 
     assertNotNull(tokenResponse);
-    assertEquals(tokenResponse.getCard().getExpireYear(), "2023");
+    assertEquals(tokenResponse.getCard().getExpireYear(), "2026");
     assertTrue(tokenResponse.getCardToken().toString().length() == 36);
     assertEquals(tokenResponse.getResult().getMessage(), "OK");
 

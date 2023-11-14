@@ -479,7 +479,7 @@ public class PaymentAPIConnectionTest {
 
     TokenizationResponse tokenResponse = createAndTestTokenizationId("4153013999700024", "11", "2023", "024");
 
-    assertEquals("no", tokenResponse.getCard().getCvcRequired());
+    assertEquals("not_tested", tokenResponse.getCard().getCvcRequired());
     assertEquals("debit", tokenResponse.getCard().getFunding());
     assertEquals("unknown", tokenResponse.getCard().getCategory());
 
@@ -526,7 +526,7 @@ public class PaymentAPIConnectionTest {
     );
     assertEquals("9999", statusResponse.getTransaction().getCurrentAmount());
     assertEquals(transactionId, statusResponse.getTransaction().getId());
-    assertEquals("no", statusResponse.getTransaction().getCard().getCvcRequired());
+    assertEquals("not_tested", statusResponse.getTransaction().getCard().getCvcRequired());
     checkAcquirerInfo(statusResponse.getTransaction(), "000");
   }
 
@@ -822,7 +822,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -883,7 +883,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -951,7 +951,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
 
@@ -1018,7 +1018,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer("83.145.208.186");
@@ -1091,7 +1091,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     Customer customer = new Customer("83.145.208.186");
@@ -1162,7 +1162,7 @@ public class PaymentAPIConnectionTest {
 
     String pan = "4153013999700024";
     String cvc = "024";
-    String expiryYear = "2023";
+    String expiryYear = "2026";
     String expiryMonth = "11";
     Card card = new Card(pan, expiryYear, expiryMonth, cvc);
     UUID orderId = UUID.randomUUID();
@@ -1312,7 +1312,7 @@ public class PaymentAPIConnectionTest {
     // 1. execute a new add_card request using our test form (target staging),
     // 2. replace with the value of query parameter "sph-tokenization-id" found in success redirect URL,
     // 3. adjust assertions.
-    UUID tokenizationId = UUID.fromString("475d49ec-2c37-4ae5-a6ef-33dc6b60ac71");
+    UUID tokenizationId = UUID.fromString("ffdd479c-f783-49fa-9c01-5bb60d3f9e57");
 
     TokenizationResponse tokenResponse = null;
     try {
@@ -1321,9 +1321,9 @@ public class PaymentAPIConnectionTest {
       e.printStackTrace();
     }
     assertNotNull(tokenResponse);
-    assertEquals("2017", tokenResponse.getCard().getExpireYear());
-    assertEquals("71435029-fbb6-4506-aa86-8529efb640b0", tokenResponse.getCardToken().toString());
-    assertEquals("no", tokenResponse.getCard().getCvcRequired());
+    assertEquals("2026", tokenResponse.getCard().getExpireYear());
+    assertEquals("feabf8e0-6836-4f9a-88e7-5e34e6c9320e", tokenResponse.getCardToken().toString());
+    assertEquals("not_tested", tokenResponse.getCard().getCvcRequired());
     assertEquals("415301", tokenResponse.getCard().getBin());
     assertEquals("debit", tokenResponse.getCard().getFunding());
     assertEquals("unknown", tokenResponse.getCard().getCategory());
@@ -1331,7 +1331,7 @@ public class PaymentAPIConnectionTest {
     // Customer information from the time the tokenizationId was generated through the Form API add_card request
     assertEquals("83.145.208.185", tokenResponse.getCustomer().getNetworkAddress()); // Manually updated :/
     assertEquals("FI", tokenResponse.getCustomer().getCountryCode());
-    assertEquals("no", tokenResponse.getCardholderAuthentication());
+    assertEquals("attempted", tokenResponse.getCardholderAuthentication());
     checkAcquirerInfo(tokenResponse, "060");
   }
 
